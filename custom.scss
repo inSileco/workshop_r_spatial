@@ -1,0 +1,27 @@
+/*-- scss:defaults --*/
+
+// fonts
+$font-family-sans-serif: "Merriweather", Palatino, FreeSerif, serif !default;
+
+// colors
+$body-bg: #f6f6f6 !default;
+$body-color: #000 !default;
+$link-color: #37abc8 !default;
+$selection-bg: #26351c !default;
+
+// code 
+$code-block-bg: #f6f6f6;
+/* Change the color for the font of code blocks */
+$code-block-color: #383d3d;
+/* Change the border color for code blocks */
+$code-block-border-color: #37abc8;
+
+
+// headings
+$presentation-heading-font: "Merriweather", Palatino, FreeSerif, serif !default;
+$presentation-heading-color: #383d3d !default;
+
+/*-- scss:rules --*/
+.reveal a {
+    line-height: 1.2em;
+}
