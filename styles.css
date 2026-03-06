@@ -1,0 +1,71 @@
+/* styles.css */
+.title-slide {
+  text-align: center;
+}
+
+.title-slide .logos {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.title-slide .logos img {
+  margin: 20px;
+  width: 100px;
+  /* Adjust as needed */
+  height: auto;
+}
+
+.reveal .slide-background-content {
+  background-color: white;
+}
+
+
+.footer {
+  text-align: center !important;
+  font-size: 22px !important;
+}
+
+/* Hide logo on title slide */
+#title-slide .slide-logo {
+  display: none;
+}
+
+/* Make logo clickable */
+.slide-logo {
+  cursor: pointer;
+  height: 140px !important;
+  max-height: none !important;
+}
+
+
+
+
+/* size helpers*/
+.fz50 {
+  font-size: 50% !important;
+}
+
+.fz75 {
+  font-size: 75% !important;
+}
+
+.fz90 {
+  font-size: 90% !important;
+}
+
+.fz110 {
+  font-size: 110% !important;
+}
+
+.fz125 {
+  font-size: 125% !important;
+}
+
+.fz150 {
+  font-size: 150% !important;
+}
+
+.fz200 {
+  font-size: 200% !important;
+}
