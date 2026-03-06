@@ -1,0 +1,17 @@
+project:
+  type: default
+  output-dir: _site
+
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: true
+    transition: fade
+    highlight-style: arrow
+    css: styles.css
+    incremental: false
+    toc: false
+    toc-depth: 2
+    code-block-bg: "#f8f8f8"
+    code-block-border-left: "#37abc8"
+    logo: img/main.svg

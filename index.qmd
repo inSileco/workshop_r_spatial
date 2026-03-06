@@ -3,20 +3,6 @@ title: "Workshop R spatial"
 author: "Team inSileco"
 date: "2026-03-25"
 from: markdown+emoji
-format:
-  revealjs:
-    theme: [default, custom.scss]
-    slide-number: true
-    # chalkboard: true
-    transition: fade
-    highlight-style: arrow
-    css: styles.css
-    incremental: false
-    toc: false
-    toc-depth: 2
-    code-block-bg: "#f8f8f8" # Custom background color
-    code-block-border-left: "#37abc8" # Custom left border color
-    logo: img/main.svg
 ---
 
 ```{=html}

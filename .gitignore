@@ -1,4 +1,6 @@
-# 
+# Quarto output
+/_site/
+/.quarto/
 index.html
 index_files
 
