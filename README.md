@@ -19,3 +19,10 @@ Presentation build with [Quarto](https://quarto.org/) (see [Revealjs](https://qu
 ```R
 quarto preview index.Qmd
 ```
+
+## Publish 
+
+
+```R
+quarto publish gh-pages
+```

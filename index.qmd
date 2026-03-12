@@ -33,7 +33,15 @@ document.addEventListener('DOMContentLoaded', function() {
 ## How? 
 
 
+## Main package 
 
+
+- Before ``
+- Now
+  - stars + 
+  - terra 
+
+- GDAL/Proj5/GEOS 
 
 
 ## Slide Title
