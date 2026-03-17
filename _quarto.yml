@@ -2,6 +2,9 @@ project:
   type: default
   output-dir: _site
 
+execute:
+  echo: true
+
 format:
   revealjs:
     theme: [default, custom.scss]
