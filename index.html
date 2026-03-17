@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </section>
 <section id="simple-features-from-scratch" class="slide level2">
 <h2>Simple features from scratch</h2>
-<!-- do we want to go theren?? -->
+<!-- do we want to go there?? -->
 <ul>
 <li>One point</li>
 </ul>
@@ -598,7 +598,7 @@ First 10 features:
 <ul>
 <li>read this</li>
 <li>do that manip</li>
-<li>save as this</li>
+<li>save as this csv and or geospatial file</li>
 </ul>
 </section></section>
 <section>
@@ -690,7 +690,15 @@ band                                               NULL</code></pre>
 </section>
 <section id="crop" class="slide level2">
 <h2>crop</h2>
-</section></section>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a><span class="co"># Crop raster to a bounding box</span></span>
+<span id="cb30-2"><a href=""></a>bbox <span class="ot">&lt;-</span> <span class="fu">st_bbox</span>(<span class="fu">c</span>(<span class="at">xmin =</span> <span class="dv">288776</span>, <span class="at">ymin =</span> <span class="dv">9120000</span>, <span class="at">xmax =</span> <span class="dv">292000</span>, <span class="at">ymax =</span> <span class="dv">9123000</span>),</span>
+<span id="cb30-3"><a href=""></a>                <span class="at">crs =</span> <span class="fu">st_crs</span>(r))</span>
+<span id="cb30-4"><a href=""></a>r_crop <span class="ot">&lt;-</span> r[bbox]</span>
+<span id="cb30-5"><a href=""></a><span class="fu">plot</span>(r_crop[,,,<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch"></section></section>
 <section>
 <section id="terra" class="title-slide slide level1 center">
 <h1><code>terra</code></h1>
@@ -698,32 +706,285 @@ band                                               NULL</code></pre>
 </section>
 <section id="terra-1" class="slide level2">
 <h2><code>terra</code></h2>
-<p>Redo everything with terra</p>
-</section></section>
+<ul>
+<li><code>terra</code> replaces the older <code>raster</code> package</li>
+<li>Handles both vector and raster data</li>
+<li>Fast, memory-efficient (C++ backend)</li>
+</ul>
+</section>
+<section id="simple-features-with-terra" class="slide level2">
+<h2>Simple features with <code>terra</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a><span class="fu">library</span>(terra)</span>
+<span id="cb31-2"><a href=""></a><span class="co"># Create vector points</span></span>
+<span id="cb31-3"><a href=""></a>pts <span class="ot">&lt;-</span> <span class="fu">vect</span>(</span>
+<span id="cb31-4"><a href=""></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb31-5"><a href=""></a>    <span class="at">bird =</span> <span class="fu">c</span>(<span class="st">"Snow Goose"</span>, <span class="st">"Common Eider"</span>, <span class="st">"Herring Gull"</span>),</span>
+<span id="cb31-6"><a href=""></a>    <span class="at">date =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">"2025-04-12"</span>, <span class="st">"2025-04-13"</span>, <span class="st">"2025-04-14"</span>)),</span>
+<span id="cb31-7"><a href=""></a>    <span class="at">lon =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">71.2080</span>, <span class="sc">-</span><span class="fl">71.2500</span>, <span class="sc">-</span><span class="fl">71.1800</span>),</span>
+<span id="cb31-8"><a href=""></a>    <span class="at">lat =</span> <span class="fu">c</span>(<span class="fl">46.8139</span>, <span class="fl">46.8200</span>, <span class="fl">46.8000</span>)</span>
+<span id="cb31-9"><a href=""></a>  ),</span>
+<span id="cb31-10"><a href=""></a>  <span class="at">geom =</span> <span class="fu">c</span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>), <span class="at">crs =</span> <span class="st">"EPSG:4326"</span></span>
+<span id="cb31-11"><a href=""></a>)</span>
+<span id="cb31-12"><a href=""></a>pts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> class       : SpatVector 
+ geometry    : points 
+ dimensions  : 3, 2  (geometries, attributes)
+ extent      : -71.25, -71.18, 46.8, 46.82  (xmin, xmax, ymin, ymax)
+ coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+ names       :         bird       date
+ type        :        &lt;chr&gt;     &lt;Date&gt;
+ values      :   Snow Goose 2025-04-12
+               Common Eider 2025-04-13
+               Herring Gull 2025-04-14</code></pre>
+</div>
+</div>
+</section>
+<section id="reading-and-writing-vector-files" class="slide level2">
+<h2>Reading and writing vector files</h2>
+<ul>
+<li><code>vect()</code></li>
+<li><code>writeVector()</code></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href=""></a>nc_terra <span class="ot">&lt;-</span> <span class="fu">vect</span>(<span class="fu">system.file</span>(<span class="st">"shape/nc.shp"</span>, <span class="at">package =</span> <span class="st">"sf"</span>))</span>
+<span id="cb33-2"><a href=""></a>nc_terra</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> class       : SpatVector 
+ geometry    : polygons 
+ dimensions  : 100, 14  (geometries, attributes)
+ extent      : -84.32385, -75.45698, 33.88199, 36.58965  (xmin, xmax, ymin, ymax)
+ source      : nc.shp
+ coord. ref. : lon/lat NAD27 (EPSG:4267) 
+ names       :  AREA PERIMETER CNTY_ CNTY_ID      NAME  FIPS    FIPSNO CRESS_ID
+ type        : &lt;num&gt;     &lt;num&gt; &lt;num&gt;   &lt;num&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;num&gt;    &lt;int&gt;
+ values      : 0.114     1.442  1825    1825      Ashe 37009 3.701e+04        5
+               0.061     1.231  1827    1827 Alleghany 37005   3.7e+04        3
+               0.143      1.63  1828    1828     Surry 37171 3.717e+04       86
+ BIR74 SID74 (and 4 more)
+ &lt;num&gt; &lt;num&gt;             
+  1091     1             
+   487     0             
+  3188     5             </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a><span class="fu">writeVector</span>(nc_terra, <span class="st">"nc.geojson"</span>, <span class="at">filetype =</span> <span class="st">"GeoJSON"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="projection-1" class="slide level2">
+<h2>Projection</h2>
+<ul>
+<li><code>crs()</code></li>
+<li><code>project()</code></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a><span class="fu">crs</span>(nc_terra, <span class="at">describe =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   name authority code area         extent
+1 NAD27      EPSG 4267 &lt;NA&gt; NA, NA, NA, NA</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a>nc_lcc <span class="ot">&lt;-</span> <span class="fu">project</span>(nc_terra, <span class="st">"EPSG:32198"</span>)</span>
+<span id="cb38-2"><a href=""></a><span class="fu">crs</span>(nc_lcc, <span class="at">describe =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    name authority  code            area
+1 NAD83 / Quebec Lambert      EPSG 32198 Canada - Quebec
+                        extent
+1 -79.85, -57.10, 44.99, 62.62</code></pre>
+</div>
+</div>
+</section>
+<section id="visualisation-1" class="slide level2">
+<h2>Visualisation</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href=""></a><span class="fu">plot</span>(nc_terra, <span class="st">"AREA"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-24-1.png" width="960" class="r-stretch"></section>
+<section id="buffer-1" class="slide level2">
+<h2>Buffer</h2>
+<ul>
+<li><code>buffer()</code></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href=""></a>nc_sub <span class="ot">&lt;-</span> nc_terra[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span>
+<span id="cb41-2"><a href=""></a>nc_buf <span class="ot">&lt;-</span> <span class="fu">buffer</span>(nc_sub, <span class="at">width =</span> <span class="dv">10000</span>)</span>
+<span id="cb41-3"><a href=""></a><span class="fu">plot</span>(nc_buf, <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">border =</span> <span class="st">"blue"</span>)</span>
+<span id="cb41-4"><a href=""></a><span class="fu">plot</span>(nc_sub, <span class="at">col =</span> <span class="st">"salmon"</span>, <span class="at">border =</span> <span class="st">"red"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section>
+<section id="distance-1" class="slide level2">
+<h2>Distance</h2>
+<ul>
+<li><code>distance()</code></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href=""></a>centroids <span class="ot">&lt;-</span> <span class="fu">centroids</span>(nc_terra[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ])</span>
+<span id="cb42-2"><a href=""></a><span class="fu">distance</span>(centroids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1        2
+2 34057.73         
+3 72811.16 40302.50</code></pre>
+</div>
+</div>
+</section>
+<section id="overlap-and-co" class="slide level2">
+<h2>Overlap and co</h2>
+<ul>
+<li><code>union()</code></li>
+<li><code>intersect()</code></li>
+<li><code>erase()</code></li>
+</ul>
+</section>
+<section id="simplify-1" class="slide level2">
+<h2>Simplify</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href=""></a>nc_simple <span class="ot">&lt;-</span> <span class="fu">simplifyGeom</span>(nc_terra[<span class="dv">1</span>, ], <span class="at">tolerance =</span> <span class="dv">5000</span>)</span>
+<span id="cb44-2"><a href=""></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb44-3"><a href=""></a><span class="fu">plot</span>(nc_terra[<span class="dv">1</span>, ], <span class="at">main =</span> <span class="st">"Original"</span>)</span>
+<span id="cb44-4"><a href=""></a><span class="fu">plot</span>(nc_simple, <span class="at">main =</span> <span class="st">"Simplified"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch"></section>
+<section id="raster-read-and-write" class="slide level2">
+<h2>Raster: read and write</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href=""></a>tif <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"tif/L7_ETMs.tif"</span>, <span class="at">package =</span> <span class="st">"stars"</span>)</span>
+<span id="cb45-2"><a href=""></a>r <span class="ot">&lt;-</span> <span class="fu">rast</span>(tif)</span>
+<span id="cb45-3"><a href=""></a>r</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class       : SpatRaster 
+size        : 352, 349, 6  (nrow, ncol, nlyr)
+resolution  : 28.5, 28.5  (x, y)
+extent      : 288776.3, 298722.8, 9110729, 9120761  (xmin, xmax, ymin, ymax)
+coord. ref. : SIRGAS 2000 / UTM zone 25S (EPSG:31985) 
+source      : L7_ETMs.tif 
+names       : L7_ETMs_1, L7_ETMs_2, L7_ETMs_3, L7_ETMs_4, L7_ETMs_5, L7_ETMs_6 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href=""></a><span class="fu">writeRaster</span>(r, <span class="st">"output.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="raster-reproject" class="slide level2">
+<h2>Raster: reproject</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href=""></a>r_proj <span class="ot">&lt;-</span> <span class="fu">project</span>(r, <span class="st">"EPSG:32198"</span>)</span>
+<span id="cb48-2"><a href=""></a>r_proj</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class       : SpatRaster 
+size        : 471, 470, 6  (nrow, ncol, nlyr)
+resolution  : 46.06228, 46.06228  (x, y)
+extent      : 5763741, 5785390, -5614580, -5592885  (xmin, xmax, ymin, ymax)
+coord. ref. : NAD83 / Quebec Lambert (EPSG:32198) 
+source(s)   : memory
+names       : L7_ETMs_1, L7_ETMs_2, L7_ETMs_3, L7_ETMs_4,  L7_ETMs_5,  L7_ETMs_6 
+min values  :   54.6343,  37.12177,   24.3444,  10.44152,   5.564501,   2.900728 
+max values  :  255.0000, 255.00000,  255.0000, 202.09982, 222.092819, 206.922241 </code></pre>
+</div>
+</div>
+</section>
+<section id="raster-extract" class="slide level2">
+<h2>Raster: extract</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href=""></a>pts <span class="ot">&lt;-</span> <span class="fu">vect</span>(</span>
+<span id="cb50-2"><a href=""></a>  <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">288776</span>, <span class="dv">291776</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">9120761</span>, <span class="dv">9122761</span>)),</span>
+<span id="cb50-3"><a href=""></a>  <span class="at">geom =</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"y"</span>), <span class="at">crs =</span> <span class="fu">crs</span>(r)</span>
+<span id="cb50-4"><a href=""></a>)</span>
+<span id="cb50-5"><a href=""></a><span class="fu">extract</span>(r, pts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  ID L7_ETMs_1 L7_ETMs_2 L7_ETMs_3 L7_ETMs_4 L7_ETMs_5 L7_ETMs_6
+1  1        NA        NA        NA        NA        NA        NA
+2  2        NA        NA        NA        NA        NA        NA</code></pre>
+</div>
+</div>
+</section>
+<section id="raster-crop" class="slide level2">
+<h2>Raster: crop</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href=""></a>e <span class="ot">&lt;-</span> <span class="fu">ext</span>(<span class="dv">288776</span>, <span class="dv">292000</span>, <span class="dv">9120000</span>, <span class="dv">9123000</span>)</span>
+<span id="cb52-2"><a href=""></a>r_crop <span class="ot">&lt;-</span> <span class="fu">crop</span>(r, e)</span>
+<span id="cb52-3"><a href=""></a><span class="fu">plot</span>(r_crop[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-32-1.png" width="960" class="r-stretch"></section></section>
+<section>
 <section id="exercise-4" class="title-slide slide level1 center">
 <h1>Exercise 4</h1>
-
+<!-- Main exercise, we go over it the day after -->
 </section>
-
-<section>
+<section id="exercise-4-1" class="slide level2">
+<h2>Exercise 4</h2>
+</section></section>
 <section id="day-2" class="title-slide slide level1 center">
 <h1>Day 2</h1>
 
 </section>
-<section id="note" class="slide level2">
-<h2>Note</h2>
-<p>https://sci1031.github.io/sci1031/lecon_intro.html</p>
+
+<section>
+<section id="exercise-4-2" class="title-slide slide level1 center">
+<h1>Exercise 4</h1>
+
+</section>
+<section id="exercise-4-3" class="slide level2">
+<h2>Exercise 4</h2>
+</section>
+<section id="function-and-parallel-computation" class="slide level2">
+<h2>Function and parallel computation</h2>
+<div class="footer">
+<p><a href="https://r-spatial.org/r/2023/09/21/stars-parallel.html">Parallel raster processing in stars</a></p>
+</div>
+</section>
+<section id="modeling-1" class="slide level2">
+<h2>Modeling 1</h2>
+<!-- create a dataframe based on spatial manipulation -->
+<!-- do we want to do an exercise here? -->
+</section>
+<section id="modeling-2" class="slide level2">
+<h2>Modeling 2</h2>
+<!-- use directly spatial objects to do stat -->
+</section></section>
+<section>
+<section id="advanced-mapping" class="title-slide slide level1 center">
+<h1>Advanced mapping</h1>
+
+</section>
+<section id="tmap" class="slide level2">
+<h2>tmap</h2>
+</section>
+<section id="leaflet" class="slide level2">
+<h2>leaflet</h2>
+</section></section>
+<section>
+<section id="do-more" class="title-slide slide level1 center">
+<h1>Do more</h1>
+
+</section>
+<section id="use-r-package" class="slide level2">
+<h2>Use R package</h2>
+</section>
+<section id="shiny-app-assistant" class="slide level2">
+<h2>Shiny App Assistant</h2>
 <ul>
-<li><p>https://geojson.io/next/</p></li>
-<li><p>https://r-spatial.org/r/2023/09/21/stars-parallel.html</p></li>
-<li><p>https://gallery.shinyapps.io/assistant</p></li>
-<li><p>Claude agent</p></li>
-<li><p>https://github.com/geoarrow/geoarrow-r</p></li>
-<li><p>https://cran.r-project.org/web/packages/rpostgis/index.html</p></li>
-<li><p>https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html</p></li>
+<li><p><a href="https://gallery.shinyapps.io/assistant" class="uri">https://gallery.shinyapps.io/assistant</a></p></li>
 <li><p>Create an app that allows users to upload GeoJSON files and visualize them using Leaflet.</p></li>
 <li><p>Modify the app to compute the total area when polygons are uploaded and display it in the card header.</p></li>
 <li><p>Modify the app to also compute the total length for line geometries and display it in the card header.</p></li>
+</ul>
+</section>
+<section id="codex-claude-and-others" class="slide level2">
+<h2>Codex, claude and others</h2>
+</section>
+<section id="using-recent-technos" class="slide level2">
+<h2>Using recent technos</h2>
+<ul>
+<li><a href="https://github.com/geoarrow/geoarrow-r" class="uri">https://github.com/geoarrow/geoarrow-r</a></li>
+<li><a href="https://cran.r-project.org/web/packages/rpostgis/index.html" class="uri">https://cran.r-project.org/web/packages/rpostgis/index.html</a></li>
+<li><a href="https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html" class="uri">https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html</a></li>
 </ul>
 
 </section></section>
