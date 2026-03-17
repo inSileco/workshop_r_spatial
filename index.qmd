@@ -114,7 +114,7 @@ For raster operations, terra relies on PROJ and GDAL rather than S2.
 
 ## Simple features from scratch
 
-<!-- do we want to go theren?? -->
+<!-- do we want to go there?? -->
 
 - One point
 
@@ -286,7 +286,7 @@ nc |>
 
 - read this 
 - do that manip 
-- save as this 
+- save as this csv and or geospatial file
 
 
 # `stars`
@@ -346,7 +346,16 @@ pts <- st_sfc(
 st_extract(r, pts)
 ```
 
-## crop 
+## crop
+
+```{R}
+#| echo: true
+# Crop raster to a bounding box
+bbox <- st_bbox(c(xmin = 288776, ymin = 9120000, xmax = 292000, ymax = 9123000),
+                crs = st_crs(r))
+r_crop <- r[bbox]
+plot(r_crop[,,,1])
+```
 
 
 
@@ -355,11 +364,170 @@ st_extract(r, pts)
 
 ## `terra`
 
-Redo everything with terra 
+- `terra` replaces the older `raster` package
+- Handles both vector and raster data
+- Fast, memory-efficient (C++ backend)
 
 
+## Simple features with `terra`
 
-# Exercise 4 
+```{R}
+#| echo: true
+library(terra)
+# Create vector points
+pts <- vect(
+  data.frame(
+    bird = c("Snow Goose", "Common Eider", "Herring Gull"),
+    date = as.Date(c("2025-04-12", "2025-04-13", "2025-04-14")),
+    lon = c(-71.2080, -71.2500, -71.1800),
+    lat = c(46.8139, 46.8200, 46.8000)
+  ),
+  geom = c("lon", "lat"), crs = "EPSG:4326"
+)
+pts
+```
+
+
+## Reading and writing vector files
+
+- `vect()`
+- `writeVector()`
+
+```{R}
+#| echo: true
+nc_terra <- vect(system.file("shape/nc.shp", package = "sf"))
+nc_terra
+```
+
+```{R}
+#| echo: true
+#| eval: false
+writeVector(nc_terra, "nc.geojson", filetype = "GeoJSON")
+```
+
+
+## Projection
+
+- `crs()`
+- `project()`
+
+```{R}
+#| echo: true
+crs(nc_terra, describe = TRUE)
+```
+
+```{R}
+#| echo: true
+nc_lcc <- project(nc_terra, "EPSG:32198")
+crs(nc_lcc, describe = TRUE)
+```
+
+
+## Visualisation
+
+```{R}
+#| echo: true
+plot(nc_terra, "AREA")
+```
+
+
+## Buffer
+
+- `buffer()`
+
+```{R}
+#| echo: true
+nc_sub <- nc_terra[1:3, ]
+nc_buf <- buffer(nc_sub, width = 10000)
+plot(nc_buf, col = "lightblue", border = "blue")
+plot(nc_sub, col = "salmon", border = "red", add = TRUE)
+```
+
+
+## Distance
+
+- `distance()`
+
+```{R}
+#| echo: true
+centroids <- centroids(nc_terra[1:3, ])
+distance(centroids)
+```
+
+
+## Overlap and co
+
+- `union()`
+- `intersect()`
+- `erase()`
+
+
+## Simplify
+
+```{R}
+#| echo: true
+nc_simple <- simplifyGeom(nc_terra[1, ], tolerance = 5000)
+par(mfrow = c(1, 2))
+plot(nc_terra[1, ], main = "Original")
+plot(nc_simple, main = "Simplified")
+```
+
+
+## Raster: read and write
+
+```{R}
+#| echo: true
+tif <- system.file("tif/L7_ETMs.tif", package = "stars")
+r <- rast(tif)
+r
+```
+
+```{R}
+#| echo: true
+#| eval: false
+writeRaster(r, "output.tif")
+```
+
+
+## Raster: reproject
+
+```{R}
+#| echo: true
+r_proj <- project(r, "EPSG:32198")
+r_proj
+```
+
+
+## Raster: extract
+
+```{R}
+#| echo: true
+pts <- vect(
+  data.frame(x = c(288776, 291776), y = c(9120761, 9122761)),
+  geom = c("x", "y"), crs = crs(r)
+)
+extract(r, pts)
+```
+
+
+## Raster: crop
+
+```{R}
+#| echo: true
+e <- ext(288776, 292000, 9120000, 9123000)
+r_crop <- crop(r, e)
+plot(r_crop[[1]])
+```
+
+
+# Exercise 4
+
+<!-- Main exercise, we go over it the day after -->
+
+
+## Exercise 4
+
+
 
 
 
@@ -368,19 +536,59 @@ Redo everything with terra
 
 # Day 2
 
-## Note 
+# Exercise 4
 
-https://sci1031.github.io/sci1031/lecon_intro.html
+## Exercise 4
 
 
-- https://geojson.io/next/
-- https://r-spatial.org/r/2023/09/21/stars-parallel.html
-- https://gallery.shinyapps.io/assistant
-- Claude agent 
-- https://github.com/geoarrow/geoarrow-r
-- https://cran.r-project.org/web/packages/rpostgis/index.html
-- https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html
+## Function and parallel computation
+
+
+:::footer
+[Parallel raster processing in stars](https://r-spatial.org/r/2023/09/21/stars-parallel.html)
+:::
+
+
+
+## Modeling 1
+
+<!-- create a dataframe based on spatial manipulation -->
+<!-- do we want to do an exercise here? -->
+
+
+## Modeling 2
+
+<!-- use directly spatial objects to do stat -->
+
+
+
+# Advanced mapping
+
+## tmap
+
+## leaflet 
+
+
+# Do more 
+
+
+## Use R package 
+
+## Shiny App Assistant 
+
+- <https://gallery.shinyapps.io/assistant>
 
 - Create an app that allows users to upload GeoJSON files and visualize them using Leaflet.
 - Modify the app to compute the total area when polygons are uploaded and display it in the card header.
 - Modify the app to also compute the total length for line geometries and display it in the card header.
+
+
+## Codex, claude and others
+
+
+
+## Using recent technos
+
+- <https://github.com/geoarrow/geoarrow-r>
+- <https://cran.r-project.org/web/packages/rpostgis/index.html>
+- <https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html>
