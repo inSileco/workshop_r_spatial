@@ -6,8 +6,8 @@
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.25">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.26">
 
   <meta name="author" content="Team inSileco">
   <meta name="dcterms.date" content="2026-03-25">
@@ -222,45 +222,36 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </section>
+<section id="day-1" class="title-slide slide level1 center">
+<h1>Day 1</h1>
+
+</section>
+
 <section id="welcome" class="title-slide slide level1 center">
 <h1>Welcome</h1>
-<!-- presentation (15min) -->
+<!-- Go around the table + slide insileco? -->
+<!-- Why do you expect  -->
 </section>
 
 <section>
-<section id="r-as-gis" class="title-slide slide level1 center">
-<h1>R as GIS</h1>
-
+<section id="r-as-a-gis-why" class="title-slide slide level1 center">
+<h1>R as a GIS: Why?</h1>
+<!-- Discuss why it makes sense to use R -->
 </section>
-<section id="why" class="slide level2">
-<h2>Why?</h2>
-</section>
-<section id="how" class="slide level2">
-<h2>How?</h2>
-</section>
-<section id="slide-title" class="slide level2">
-<h2>Slide Title</h2>
+<section id="r-to-build-reproducible-pipelines" class="slide level2">
+<h2>R to build reproducible pipelines</h2>
 <ul>
-<li>this is it</li>
+<li>integrate many tools:
+<ul>
+<li>C library: e.g.&nbsp;</li>
+<li>read many file</li>
+<li>do analysis</li>
+<li>write report</li>
+</ul></li>
 </ul>
-<div class="footer">
-<p><a href="https://github.com/r-spatial">r-spatial</a> &nbsp; <strong><em>·</em></strong> &nbsp; <a href="https://r.geocompx.org/">Geocomputation with R</a></p>
-</div>
-</section>
-<section id="slide-with-columns" class="slide level2">
-<h2>Slide with columns</h2>
-<div class="columns">
-<div class="column" style="width:40%;">
-<p>Left column</p>
-</div><div class="column" style="width:60%;">
-<p>Right column</p>
-</div></div>
-</section>
-<section id="slide-with-speaker-notes" class="slide level2">
-<h2>Slide with speaker notes</h2>
-<p>Slide content</p>
+<!-- Ideally a nice diagram with a workflow -->
 <aside class="notes">
-<p>Speaker notes go here.</p>
+<p>Could be python etc…</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -273,28 +264,280 @@ document.addEventListener('DOMContentLoaded', function() {
           display:block!important;
       }</style></aside>
 </section>
-<section id="code-r" class="slide level2">
-<h2>Code R</h2>
+<section id="a-note-about-ides" class="slide level2">
+<h2>A note about IDEs</h2>
+<!-- show them? -->
+<ul>
+<li>RStudio</li>
+<li>VSCode</li>
+<li>Positron</li>
+</ul>
+</section>
+<section id="a-note-about-geocomputation" class="slide level2">
+<h2>A note about geocomputation</h2>
+<ul>
+<li>General introduction
+<ul>
+<li>https://r.geocompx.org/</li>
+<li>https://sci1031.github.io/sci1031/</li>
+</ul></li>
+</ul>
+<div class="callout callout-caution callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Caution</strong></p>
+</div>
+<div class="callout-content">
+<p>We won’t cover general ‘what’s the best projection for that’ we will cover ‘how I can change the projection withR’</p>
+</div>
+</div>
+</div>
+</section>
+<section id="main-packages" class="slide level2">
+<h2>Main packages</h2>
+<ul>
+<li>Before <code>sp</code> + <code>raster</code></li>
+<li>Now
+<ul>
+<li><code>sf</code> + <code>stars</code></li>
+<li><code>terra</code> (+ tidyterra)</li>
+</ul></li>
+</ul>
+</section>
+<section id="main-packages-1" class="slide level2">
+<h2>Main packages</h2>
+<ul>
+<li><p>A nice level of abstraction to work with spatial data</p></li>
+<li><p><code>sf</code> GEOS and GDAL PROJ, S2Geometry for spherical operations (on longitude/latitude data).</p></li>
+<li><p><code>terra</code> does planar geometry using GEOS and GDAL.</p></li>
+</ul>
+<p>For raster operations, terra relies on PROJ and GDAL rather than S2.</p>
+<div class="footer">
+<p><a href="https://github.com/r-spatial">r-spatial</a> &nbsp; <strong><em>·</em></strong> &nbsp; <a href="https://r.geocompx.org/">Geocomputation with R</a></p>
+</div>
+</section></section>
+<section>
+<section id="sf" class="title-slide slide level1 center">
+<h1><code>sf</code></h1>
+
+</section>
+<section id="simple-features" class="slide level2">
+<h2>Simple features</h2>
+<blockquote>
+<p>Simple features or simple feature access refers to a formal standard (ISO 19125-1:2004) that describes how objects in the real world can be represented in computers, with emphasis on the spatial geometry of these objects. It also describes how such objects can be stored in and retrieved from databases, and which geometrical operations should be defined for them.</p>
+</blockquote>
+<blockquote>
+<p>The standard is widely implemented in spatial databases (such as PostGIS), commercial GIS (e.g., ESRI ArcGIS) and forms the vector data basis for libraries such as GDAL. A subset of simple features forms the GeoJSON standard.</p>
+</blockquote>
+<div class="footer">
+<p><a href="https://cran.r-project.org/web/packages/sf/vignettes/sf1.html">Simple features for R</a></p>
+</div>
+</section>
+<section id="simple-features-from-scratch" class="slide level2">
+<h2>Simple features from scratch</h2>
+<!-- do we want to go theren?? -->
+<ul>
+<li>One point</li>
+</ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">head</span>(CO2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-2"><a href=""></a><span class="fu">st_point</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">71.2080</span>, <span class="fl">46.8139</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="simple-features-from-scratch-1" class="slide level2">
+<h2>Simple features from scratch</h2>
+<ul>
+<li>3 points within a collection</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>geom <span class="ot">&lt;-</span> <span class="fu">st_sfc</span>(</span>
+<span id="cb2-2"><a href=""></a>  <span class="fu">st_point</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">71.2080</span>, <span class="fl">46.8139</span>)),  <span class="co"># Québec</span></span>
+<span id="cb2-3"><a href=""></a>  <span class="fu">st_point</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">71.2500</span>, <span class="fl">46.8200</span>)),</span>
+<span id="cb2-4"><a href=""></a>  <span class="fu">st_point</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="fl">71.1800</span>, <span class="fl">46.8000</span>)),</span>
+<span id="cb2-5"><a href=""></a>  <span class="at">crs =</span> <span class="dv">4326</span></span>
+<span id="cb2-6"><a href=""></a>)</span>
+<span id="cb2-7"><a href=""></a>geom</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  Plant   Type  Treatment conc uptake
-1   Qn1 Quebec nonchilled   95   16.0
-2   Qn1 Quebec nonchilled  175   30.4
-3   Qn1 Quebec nonchilled  250   34.8
-4   Qn1 Quebec nonchilled  350   37.2
-5   Qn1 Quebec nonchilled  500   35.3
-6   Qn1 Quebec nonchilled  675   39.2</code></pre>
+<pre><code>Geometry set for 3 features 
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -71.25 ymin: 46.8 xmax: -71.18 ymax: 46.82
+Geodetic CRS:  WGS 84</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="simple-features-from-scratch-2" class="slide level2">
+<h2>Simple features from scratch</h2>
+<p>A data frame with attributes</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-2"><a href=""></a>  <span class="at">bird =</span> <span class="fu">c</span>(<span class="st">"Snow Goose"</span>, <span class="st">"Common Eider"</span>, <span class="st">"Herring Gull"</span>),</span>
+<span id="cb4-3"><a href=""></a>  <span class="at">date =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">"2025-04-12"</span>, <span class="st">"2025-04-13"</span>, <span class="st">"2025-04-14"</span>))</span>
+<span id="cb4-4"><a href=""></a>)</span>
+<span id="cb4-5"><a href=""></a></span>
+<span id="cb4-6"><a href=""></a><span class="co"># 3. Combine attributes and geometry into an sf object</span></span>
+<span id="cb4-7"><a href=""></a>birds_sf <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(df, <span class="at">geometry =</span> geom)</span>
+<span id="cb4-8"><a href=""></a></span>
+<span id="cb4-9"><a href=""></a>birds_sf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
+<pre><code>Simple feature collection with 3 features and 2 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -71.25 ymin: 46.8 xmax: -71.18 ymax: 46.82
+Geodetic CRS:  WGS 84
+          bird       date                geometry
+1   Snow Goose 2025-04-12 POINT (-71.208 46.8139)
+2 Common Eider 2025-04-13    POINT (-71.25 46.82)
+3 Herring Gull 2025-04-14     POINT (-71.18 46.8)</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="co"># comment </span></span>
-<span id="cb5-2"><a href=""></a>cool <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">a =</span> <span class="dv">1</span>) {</span>
-<span id="cb5-3"><a href=""></a>    <span class="fu">return</span>(<span class="dv">2</span> <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb5-4"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</section>
+<section id="reading-and-writting-vector-files" class="slide level2">
+<h2>Reading and writting vector files</h2>
+<ul>
+<li><code>st_read()</code></li>
+<li><code>st_write()</code></li>
+</ul>
+<!-- Add R example  -->
+</section>
+<section id="projection" class="slide level2">
+<h2>Projection</h2>
+<ul>
+<li><code>st_crs()</code></li>
+<li><code>st_transform()</code></li>
+</ul>
+<!-- Add R example  -->
+</section>
+<section id="exercise-1-r-as-a-converter" class="slide level2">
+<h2>Exercise 1: R as a converter</h2>
+<p>Create a function that - read different files - write in geojson in 4326</p>
+<ul>
+<li>advanced? conversion using crs and format of a second file</li>
+</ul>
+</section>
+<section id="visualisation" class="slide level2">
+<h2>Visualisation</h2>
+<ul>
+<li><code>plot()</code></li>
+<li><code>mapview()</code></li>
+</ul>
+</section>
+<section id="buffer" class="slide level2">
+<h2>Buffer</h2>
+<ul>
+<li><code>st_buffer()</code></li>
+</ul>
+<!-- Add R example  -->
+</section>
+<section id="distance" class="slide level2">
+<h2>Distance</h2>
+<ul>
+<li><code>st_distance()</code></li>
+<li><code>st_length()</code></li>
+</ul>
+<!-- Add R example  -->
+</section>
+<section id="overalap-and-co" class="slide level2">
+<h2>Overalap and co</h2>
+<ul>
+<li><code>st_union()</code></li>
+<li><code>st_within()</code></li>
+<li><code>st_crosses()</code></li>
+</ul>
+</section>
+<section id="simplify" class="slide level2">
+<h2>simplify</h2>
+<!-- Add R example  -->
+</section>
+<section id="tidyverse-flow" class="slide level2">
+<h2>tidyverse flow</h2>
+<!-- Add R example  -->
+<ul>
+<li>group by / union</li>
+<li>data frame</li>
+</ul>
+</section>
+<section id="exercise-2" class="slide level2">
+<h2>Exercise 2</h2>
+<ul>
+<li>read this</li>
+<li>do that manip</li>
+<li>save as this</li>
+</ul>
+</section></section>
+<section>
+<section id="stars" class="title-slide slide level1 center">
+<h1><code>stars</code></h1>
+
+</section>
+<section id="stars-1" class="slide level2">
+<h2><code>stars</code></h2>
+<p>Spatiotemporal Arrays: Raster and Vector Datacubes</p>
+</section>
+<section id="example" class="slide level2">
+<h2>Example</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb6-2"><a href=""></a><span class="fu">library</span>(stars)</span>
+<span id="cb6-3"><a href=""></a>tif <span class="ot">=</span> <span class="fu">system.file</span>(<span class="st">"tif/L7_ETMs.tif"</span>, <span class="at">package =</span> <span class="st">"stars"</span>)</span>
+<span id="cb6-4"><a href=""></a><span class="fu">read_stars</span>(tif) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href=""></a>  <span class="fu">slice</span>(<span class="at">index =</span> <span class="dv">1</span>, <span class="at">along =</span> <span class="st">"band"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href=""></a>  <span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<section id="read-and-write" class="slide level2">
+<h2>read and write</h2>
+<!-- Add R example  -->
+</section>
+<section id="rewrap" class="slide level2">
+<h2>rewrap</h2>
+<!-- Add R example  -->
+</section>
+<section id="extract" class="slide level2">
+<h2>extract</h2>
+<!-- Add R example  -->
+</section>
+<section id="crop" class="slide level2">
+<h2>crop</h2>
+</section></section>
+<section>
+<section id="terra" class="title-slide slide level1 center">
+<h1><code>terra</code></h1>
+
+</section>
+<section id="terra-1" class="slide level2">
+<h2><code>terra</code></h2>
+<p>Redo everything with terra</p>
+</section></section>
+<section id="exercise-4" class="title-slide slide level1 center">
+<h1>Exercise 4</h1>
+
+</section>
+
+<section>
+<section id="day-2" class="title-slide slide level1 center">
+<h1>Day 2</h1>
+
+</section>
+<section id="note" class="slide level2">
+<h2>Note</h2>
+<p>https://sci1031.github.io/sci1031/lecon_intro.html</p>
+<ul>
+<li><p>https://geojson.io/next/</p></li>
+<li><p>https://r-spatial.org/r/2023/09/21/stars-parallel.html</p></li>
+<li><p>https://gallery.shinyapps.io/assistant</p></li>
+<li><p>Claude agent</p></li>
+<li><p>https://github.com/geoarrow/geoarrow-r</p></li>
+<li><p>https://cran.r-project.org/web/packages/rpostgis/index.html</p></li>
+<li><p>https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html</p></li>
+<li><p>Create an app that allows users to upload GeoJSON files and visualize them using Leaflet.</p></li>
+<li><p>Modify the app to compute the total area when polygons are uploaded and display it in the card header.</p></li>
+<li><p>Modify the app to also compute the total length for line geometries and display it in the card header.</p></li>
+</ul>
 
 </section></section>
     </div>
