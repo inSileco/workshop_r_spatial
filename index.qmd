@@ -158,20 +158,40 @@ birds_sf
 ```
 
 
-## Reading and writting vector files 
+## Reading and writting vector files
 
 - `st_read()`
 - `st_write()`
 
-<!-- Add R example  -->
+```{R}
+#| echo: true
+library(sf)
+nc <- st_read(system.file("shape/nc.shp", package = "sf"))
+nc
+```
+
+```{R}
+#| echo: true
+#| eval: false
+st_write(nc, "nc.geojson", driver = "GeoJSON")
+```
 
 
-## Projection 
+## Projection
 
 - `st_crs()`
 - `st_transform()`
 
-<!-- Add R example  -->
+```{R}
+#| echo: true
+st_crs(nc)
+```
+
+```{R}
+#| echo: true
+nc_lcc <- st_transform(nc, crs = 32198) # NAD83 / Quebec Lambert
+st_crs(nc_lcc)$input
+```
 
 
 
@@ -195,15 +215,27 @@ Create a function that
 
 - `st_buffer()`
 
-<!-- Add R example  -->
+```{R}
+#| echo: true
+# Buffer of 10 km around the first 3 counties
+nc_sub <- nc[1:3, ]
+nc_buf <- st_buffer(nc_sub, dist = 10000) # distance in meters (after transform)
+plot(st_geometry(nc_buf), col = "lightblue", border = "blue")
+plot(st_geometry(nc_sub), col = "salmon", border = "red", add = TRUE)
+```
 
 
-## Distance 
+## Distance
 
 - `st_distance()`
 - `st_length()`
 
-<!-- Add R example  -->
+```{R}
+#| echo: true
+# Distance between the first 3 counties (centroids)
+centroids <- st_centroid(nc[1:3, ])
+st_distance(centroids)
+```
 
 
 ## Overalap and co 
@@ -213,17 +245,41 @@ Create a function that
 - `st_crosses()`
 
 
-## simplify 
+## simplify
 
-<!-- Add R example  -->
+```{R}
+#| echo: true
+nc_simple <- st_simplify(nc[1, ], dTolerance = 5000)
+par(mfrow = c(1, 2))
+plot(st_geometry(nc[1, ]), main = "Original")
+plot(st_geometry(nc_simple), main = "Simplified")
+```
 
 
-## tidyverse flow 
+## tidyverse flow
 
-<!-- Add R example  -->
+```{R}
+#| echo: true
+library(dplyr)
 
-- group by / union
-- data frame 
+nc |>
+  mutate(area_km2 = as.numeric(st_area(geometry)) / 1e6) |>
+  filter(area_km2 > 1000) |>
+  select(NAME, area_km2) |>
+  arrange(desc(area_km2))
+```
+
+## tidyverse flow: group_by + summarise
+
+```{R}
+#| echo: true
+# group_by dissolves geometries via st_union under the hood
+nc |>
+  mutate(region = ifelse(CNTY_ID <= 50, "West", "East")) |>
+  group_by(region) |>
+  summarise(n_counties = n()) |>
+  plot()
+```
 
 
 ## Exercise 2 
@@ -253,17 +309,42 @@ read_stars(tif) |>
 ```
 
 
-## read and write 
+## read and write
 
-<!-- Add R example  -->
+```{R}
+#| echo: true
+library(stars)
+tif <- system.file("tif/L7_ETMs.tif", package = "stars")
+r <- read_stars(tif)
+r
+```
 
-## rewrap 
+```{R}
+#| echo: true
+#| eval: false
+write_stars(r, "output.tif")
+```
 
-<!-- Add R example  -->
+## rewarp
 
-## extract 
+```{R}
+#| echo: true
+r_warped <- st_warp(r, crs = st_crs(32198)) # reproject raster
+r_warped
+```
 
-<!-- Add R example  -->
+## extract
+
+```{R}
+#| echo: true
+# Extract raster values at point locations
+pts <- st_sfc(
+  st_point(c(288776, 9120761)),
+  st_point(c(291776, 9122761)),
+  crs = st_crs(r)
+)
+st_extract(r, pts)
+```
 
 ## crop 
 
