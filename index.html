@@ -401,7 +401,53 @@ Geodetic CRS:  WGS 84
 <li><code>st_read()</code></li>
 <li><code>st_write()</code></li>
 </ul>
-<!-- Add R example  -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">library</span>(sf)</span>
+<span id="cb6-2"><a href=""></a>nc <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">system.file</span>(<span class="st">"shape/nc.shp"</span>, <span class="at">package =</span> <span class="st">"sf"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `nc' from data source 
+  `/usr/local/lib/R/site-library/sf/shape/nc.shp' using driver `ESRI Shapefile'
+Simple feature collection with 100 features and 14 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
+Geodetic CRS:  NAD27</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>nc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 100 features and 14 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.45698 ymax: 36.58965
+Geodetic CRS:  NAD27
+First 10 features:
+    AREA PERIMETER CNTY_ CNTY_ID        NAME  FIPS FIPSNO CRESS_ID BIR74 SID74
+1  0.114     1.442  1825    1825        Ashe 37009  37009        5  1091     1
+2  0.061     1.231  1827    1827   Alleghany 37005  37005        3   487     0
+3  0.143     1.630  1828    1828       Surry 37171  37171       86  3188     5
+4  0.070     2.968  1831    1831   Currituck 37053  37053       27   508     1
+5  0.153     2.206  1832    1832 Northampton 37131  37131       66  1421     9
+6  0.097     1.670  1833    1833    Hertford 37091  37091       46  1452     7
+7  0.062     1.547  1834    1834      Camden 37029  37029       15   286     0
+8  0.091     1.284  1835    1835       Gates 37073  37073       37   420     0
+9  0.118     1.421  1836    1836      Warren 37185  37185       93   968     4
+10 0.124     1.428  1837    1837      Stokes 37169  37169       85  1612     1
+   NWBIR74 BIR79 SID79 NWBIR79                       geometry
+1       10  1364     0      19 MULTIPOLYGON (((-81.47276 3...
+2       10   542     3      12 MULTIPOLYGON (((-81.23989 3...
+3      208  3616     6     260 MULTIPOLYGON (((-80.45634 3...
+4      123   830     2     145 MULTIPOLYGON (((-76.00897 3...
+5     1066  1606     3    1197 MULTIPOLYGON (((-77.21767 3...
+6      954  1838     5    1237 MULTIPOLYGON (((-76.74506 3...
+7      115   350     2     139 MULTIPOLYGON (((-76.00897 3...
+8      254   594     2     371 MULTIPOLYGON (((-76.56251 3...
+9      748  1190     2     844 MULTIPOLYGON (((-78.30876 3...
+10     160  2038     5     176 MULTIPOLYGON (((-80.02567 3...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">st_write</span>(nc, <span class="st">"nc.geojson"</span>, <span class="at">driver =</span> <span class="st">"GeoJSON"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
 <section id="projection" class="slide level2">
 <h2>Projection</h2>
@@ -409,7 +455,35 @@ Geodetic CRS:  WGS 84
 <li><code>st_crs()</code></li>
 <li><code>st_transform()</code></li>
 </ul>
-<!-- Add R example  -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">st_crs</span>(nc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coordinate Reference System:
+  User input: NAD27 
+  wkt:
+GEOGCRS["NAD27",
+    DATUM["North American Datum 1927",
+        ELLIPSOID["Clarke 1866",6378206.4,294.978698213898,
+            LENGTHUNIT["metre",1]]],
+    PRIMEM["Greenwich",0,
+        ANGLEUNIT["degree",0.0174532925199433]],
+    CS[ellipsoidal,2],
+        AXIS["latitude",north,
+            ORDER[1],
+            ANGLEUNIT["degree",0.0174532925199433]],
+        AXIS["longitude",east,
+            ORDER[2],
+            ANGLEUNIT["degree",0.0174532925199433]],
+    ID["EPSG",4267]]</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>nc_lcc <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(nc, <span class="at">crs =</span> <span class="dv">32198</span>) <span class="co"># NAD83 / Quebec Lambert</span></span>
+<span id="cb13-2"><a href=""></a><span class="fu">st_crs</span>(nc_lcc)<span class="sc">$</span>input</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "EPSG:32198"</code></pre>
+</div>
+</div>
 </section>
 <section id="exercise-1-r-as-a-converter" class="slide level2">
 <h2>Exercise 1: R as a converter</h2>
@@ -430,15 +504,33 @@ Geodetic CRS:  WGS 84
 <ul>
 <li><code>st_buffer()</code></li>
 </ul>
-<!-- Add R example  -->
-</section>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="co"># Buffer of 10 km around the first 3 counties</span></span>
+<span id="cb15-2"><a href=""></a>nc_sub <span class="ot">&lt;-</span> nc[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span>
+<span id="cb15-3"><a href=""></a>nc_buf <span class="ot">&lt;-</span> <span class="fu">st_buffer</span>(nc_sub, <span class="at">dist =</span> <span class="dv">10000</span>) <span class="co"># distance in meters (after transform)</span></span>
+<span id="cb15-4"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(nc_buf), <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">border =</span> <span class="st">"blue"</span>)</span>
+<span id="cb15-5"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(nc_sub), <span class="at">col =</span> <span class="st">"salmon"</span>, <span class="at">border =</span> <span class="st">"red"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
 <section id="distance" class="slide level2">
 <h2>Distance</h2>
 <ul>
 <li><code>st_distance()</code></li>
 <li><code>st_length()</code></li>
 </ul>
-<!-- Add R example  -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a><span class="co"># Distance between the first 3 counties (centroids)</span></span>
+<span id="cb16-2"><a href=""></a>centroids <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(nc[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ])</span>
+<span id="cb16-3"><a href=""></a><span class="fu">st_distance</span>(centroids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Units: [m]
+         [,1]     [,2]     [,3]
+[1,]     0.00 34020.35 72728.02
+[2,] 34020.35     0.00 40259.55
+[3,] 72728.02 40259.55     0.00</code></pre>
+</div>
+</div>
 </section>
 <section id="overalap-and-co" class="slide level2">
 <h2>Overalap and co</h2>
@@ -450,16 +542,57 @@ Geodetic CRS:  WGS 84
 </section>
 <section id="simplify" class="slide level2">
 <h2>simplify</h2>
-<!-- Add R example  -->
-</section>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>nc_simple <span class="ot">&lt;-</span> <span class="fu">st_simplify</span>(nc[<span class="dv">1</span>, ], <span class="at">dTolerance =</span> <span class="dv">5000</span>)</span>
+<span id="cb18-2"><a href=""></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb18-3"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(nc[<span class="dv">1</span>, ]), <span class="at">main =</span> <span class="st">"Original"</span>)</span>
+<span id="cb18-4"><a href=""></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(nc_simple), <span class="at">main =</span> <span class="st">"Simplified"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"></section>
 <section id="tidyverse-flow" class="slide level2">
 <h2>tidyverse flow</h2>
-<!-- Add R example  -->
-<ul>
-<li>group by / union</li>
-<li>data frame</li>
-</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb19-2"><a href=""></a></span>
+<span id="cb19-3"><a href=""></a>nc <span class="sc">|&gt;</span></span>
+<span id="cb19-4"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">area_km2 =</span> <span class="fu">as.numeric</span>(<span class="fu">st_area</span>(geometry)) <span class="sc">/</span> <span class="fl">1e6</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-5"><a href=""></a>  <span class="fu">filter</span>(area_km2 <span class="sc">&gt;</span> <span class="dv">1000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-6"><a href=""></a>  <span class="fu">select</span>(NAME, area_km2) <span class="sc">|&gt;</span></span>
+<span id="cb19-7"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(area_km2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 66 features and 2 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -84.32385 ymin: 33.88199 xmax: -75.7637 ymax: 36.58965
+Geodetic CRS:  NAD27
+First 10 features:
+        NAME area_km2                       geometry
+1   Columbus 2450.831 MULTIPOLYGON (((-78.65572 3...
+2    Robeson 2439.935 MULTIPOLYGON (((-78.86451 3...
+3    Sampson 2438.121 MULTIPOLYGON (((-78.11377 3...
+4     Bladen 2289.053 MULTIPOLYGON (((-78.2615 34...
+5       Wake 2194.374 MULTIPOLYGON (((-78.92107 3...
+6     Pender 2181.567 MULTIPOLYGON (((-78.02592 3...
+7  Brunswick 2166.454 MULTIPOLYGON (((-78.65572 3...
+8   Johnston 2082.034 MULTIPOLYGON (((-78.53874 3...
+9     Duplin 2072.032 MULTIPOLYGON (((-77.68983 3...
+10  Beaufort 2045.471 MULTIPOLYGON (((-77.10377 3...</code></pre>
+</div>
+</div>
 </section>
+<section id="tidyverse-flow-group_by-summarise" class="slide level2">
+<h2>tidyverse flow: group_by + summarise</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="co"># group_by dissolves geometries via st_union under the hood</span></span>
+<span id="cb21-2"><a href=""></a>nc <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">region =</span> <span class="fu">ifelse</span>(CNTY_ID <span class="sc">&lt;=</span> <span class="dv">50</span>, <span class="st">"West"</span>, <span class="st">"East"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href=""></a>  <span class="fu">group_by</span>(region) <span class="sc">|&gt;</span></span>
+<span id="cb21-5"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">n_counties =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href=""></a>  <span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"></section>
 <section id="exercise-2" class="slide level2">
 <h2>Exercise 2</h2>
 <ul>
@@ -480,26 +613,80 @@ Geodetic CRS:  WGS 84
 <section id="example" class="slide level2">
 <h2>Example</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb6-2"><a href=""></a><span class="fu">library</span>(stars)</span>
-<span id="cb6-3"><a href=""></a>tif <span class="ot">=</span> <span class="fu">system.file</span>(<span class="st">"tif/L7_ETMs.tif"</span>, <span class="at">package =</span> <span class="st">"stars"</span>)</span>
-<span id="cb6-4"><a href=""></a><span class="fu">read_stars</span>(tif) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href=""></a>  <span class="fu">slice</span>(<span class="at">index =</span> <span class="dv">1</span>, <span class="at">along =</span> <span class="st">"band"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a href=""></a>  <span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb22-2"><a href=""></a><span class="fu">library</span>(stars)</span>
+<span id="cb22-3"><a href=""></a>tif <span class="ot">=</span> <span class="fu">system.file</span>(<span class="st">"tif/L7_ETMs.tif"</span>, <span class="at">package =</span> <span class="st">"stars"</span>)</span>
+<span id="cb22-4"><a href=""></a><span class="fu">read_stars</span>(tif) <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href=""></a>  <span class="fu">slice</span>(<span class="at">index =</span> <span class="dv">1</span>, <span class="at">along =</span> <span class="st">"band"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href=""></a>  <span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 </div>
-<img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<img data-src="index_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch"></section>
 <section id="read-and-write" class="slide level2">
 <h2>read and write</h2>
-<!-- Add R example  -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="fu">library</span>(stars)</span>
+<span id="cb23-2"><a href=""></a>tif <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"tif/L7_ETMs.tif"</span>, <span class="at">package =</span> <span class="st">"stars"</span>)</span>
+<span id="cb23-3"><a href=""></a>r <span class="ot">&lt;-</span> <span class="fu">read_stars</span>(tif)</span>
+<span id="cb23-4"><a href=""></a>r</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stars object with 3 dimensions and 1 attribute
+attribute(s):
+             Min. 1st Qu. Median     Mean 3rd Qu. Max.
+L7_ETMs.tif     1      54     69 68.91242      86  255
+dimension(s):
+     from  to  offset delta                     refsys point x/y
+x       1 349  288776  28.5 SIRGAS 2000 / UTM zone 25S FALSE [x]
+y       1 352 9120761 -28.5 SIRGAS 2000 / UTM zone 25S FALSE [y]
+band    1   6      NA    NA                         NA    NA    </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a><span class="fu">write_stars</span>(r, <span class="st">"output.tif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
-<section id="rewrap" class="slide level2">
-<h2>rewrap</h2>
-<!-- Add R example  -->
+<section id="rewarp" class="slide level2">
+<h2>rewarp</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>r_warped <span class="ot">&lt;-</span> <span class="fu">st_warp</span>(r, <span class="at">crs =</span> <span class="fu">st_crs</span>(<span class="dv">32198</span>)) <span class="co"># reproject raster</span></span>
+<span id="cb26-2"><a href=""></a>r_warped</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stars object with 3 dimensions and 1 attribute
+attribute(s), summary of first 1e+05 cells:
+             Min. 1st Qu. Median     Mean 3rd Qu. Max.  NA's
+L7_ETMs.tif    51      64     75 76.84465      89  255 47488
+dimension(s):
+     from  to   offset  delta                 refsys x/y
+x       1 470  5763741  46.06 NAD83 / Quebec Lambert [x]
+y       1 472 -5592885 -46.06 NAD83 / Quebec Lambert [y]
+band    1   6       NA     NA                     NA    </code></pre>
+</div>
+</div>
 </section>
 <section id="extract" class="slide level2">
 <h2>extract</h2>
-<!-- Add R example  -->
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a><span class="co"># Extract raster values at point locations</span></span>
+<span id="cb28-2"><a href=""></a>pts <span class="ot">&lt;-</span> <span class="fu">st_sfc</span>(</span>
+<span id="cb28-3"><a href=""></a>  <span class="fu">st_point</span>(<span class="fu">c</span>(<span class="dv">288776</span>, <span class="dv">9120761</span>)),</span>
+<span id="cb28-4"><a href=""></a>  <span class="fu">st_point</span>(<span class="fu">c</span>(<span class="dv">291776</span>, <span class="dv">9122761</span>)),</span>
+<span id="cb28-5"><a href=""></a>  <span class="at">crs =</span> <span class="fu">st_crs</span>(r)</span>
+<span id="cb28-6"><a href=""></a>)</span>
+<span id="cb28-7"><a href=""></a><span class="fu">st_extract</span>(r, pts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>stars object with 2 dimensions and 1 attribute
+attribute(s):
+             Min. 1st Qu. Median Mean 3rd Qu. Max. NA's
+L7_ETMs.tif    NA      NA     NA  NaN      NA   NA   12
+dimension(s):
+         from to                     refsys point
+geometry    1  2 SIRGAS 2000 / UTM zone 25S  TRUE
+band        1  6                         NA    NA
+                                                 values
+geometry POINT (288776 9120761), POINT (291776 9122761)
+band                                               NULL</code></pre>
+</div>
+</div>
 </section>
 <section id="crop" class="slide level2">
 <h2>crop</h2>
