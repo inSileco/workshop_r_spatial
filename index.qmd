@@ -37,27 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ## R to build reproducible pipelines
 
-- integrate many tools: 
-  - C library: e.g. 
-  - read many file 
-  - do analysis
-  - write report 
-
-
-<!-- Ideally a nice diagram with a workflow -->
+![](img/flow.svg)
 
 ::: {.notes}
 Could be python etc...
+Similar as QGIS for C libraries
 :::
-
-
-## A note about IDEs
-
-<!-- show them? -->
-
-- RStudio 
-- VSCode 
-- Positron 
 
 
 ## A note about geocomputation 
@@ -70,6 +55,52 @@ Could be python etc...
 ::: {.callout-caution}
 We won't cover general 'what's the best projection for that' we will cover 'how I can change the projection withR'
 :::
+
+
+
+
+## A note about IDEs
+
+<!-- show them? -->
+
+- RStudio 
+- VSCode 
+- Positron 
+
+
+## A note about pipes 
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+### `%>%`
+
+- pipe from maggritr
+
+```R
+CO2 %>%
+  dplyr::filter(Type == "Quebec")
+```
+:::
+
+::: {.column width="50%"}
+
+### `|>` 
+
+- native pipe 
+
+```R
+CO2 |>
+  dplyr::filter(Type == "Quebec")
+```
+
+:::
+
+::::
+
+
 
 
 
