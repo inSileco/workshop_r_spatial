@@ -1,0 +1,796 @@
+---
+title: "Workshop R spatial"
+author: "Team inSileco"
+date: "2026-03-25"
+from: markdown+emoji
+format: revealjs
+---
+
+```{=html}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var logo = document.querySelector('.slide-logo');
+  if (logo) {
+    var link = document.createElement('a');
+    link.href = 'https://www.insileco.io';
+    link.target = '_blank';
+    logo.parentNode.insertBefore(link, logo);
+    link.appendChild(logo);
+  }
+});
+</script>
+```
+
+# Day 1
+
+# Welcome
+
+## Objectives
+
+- understand spatial data structures in R
+- work operationally with vector and raster data
+- move from tables to geometries
+- align projections and study areas
+- compute spatial relationships and summaries
+- build analysis-ready outputs
+
+## What This Workshop Is
+
+- concept-driven first, package-specific second
+- focused on using R as a GIS
+- designed around two analytical routes:
+  - points: simpler entry route
+  - lines: more advanced route
+- built from complete instructor workflows that become exercises
+
+## What This Workshop Is Not
+
+- not a full geodesy or cartography course
+- not a survey of every spatial package in R
+- not a client-specific data walkthrough
+
+::: {.callout-caution}
+We will spend less time on "what is the perfect projection?" and more time on "how do I inspect, transform, and use projections correctly in R?"
+:::
+
+## Learning Routes
+
+:::: {.columns}
+::: {.column width="50%"}
+`Core route`
+
+- choose one ecosystem:
+  - `sf` + `stars`
+  - `terra`
+- choose one storyline:
+  - points
+  - lines
+:::
+::: {.column width="50%"}
+`Advanced route`
+
+- do both storylines in one ecosystem
+- or do one storyline plus:
+  - advanced GLM
+  - KDE
+  - both
+:::
+::::
+
+## A Note About IDEs
+
+- RStudio
+- VS Code
+- Positron
+
+## Geocomputation Resources
+
+- [Geocomputation with R](https://r.geocompx.org/)
+- [SCI1031 notes](https://sci1031.github.io/sci1031/)
+- [r-spatial ecosystem](https://github.com/r-spatial)
+
+:::footer
+[Geocomputation with R](https://r.geocompx.org/)
+&nbsp; ***·*** &nbsp;
+[r-spatial](https://github.com/r-spatial)
+:::
+
+# R As A GIS
+
+## Why Use R As A GIS?
+
+- one environment for import, cleaning, spatial processing, modeling, and reporting
+- reproducible workflows instead of manual click sequences
+- transparent transformations and analysis choices
+- easy transition from exploration to automation
+
+## Spatial Workflow Anatomy
+
+1. import data
+2. create or validate geometry
+3. inspect CRS and transform if needed
+4. restrict to a study area
+5. measure, join, intersect, extract
+6. summarise for analysis
+7. model, map, and export
+
+## Spatial Data At A Macro Level
+
+:::: {.columns}
+::: {.column width="50%"}
+`Vector`
+
+- discrete features
+- geometry + attributes
+- points, lines, polygons
+- typical questions:
+  - where?
+  - how far?
+  - what overlaps what?
+:::
+::: {.column width="50%"}
+`Raster`
+
+- gridded surfaces
+- cells with values
+- extent, resolution, CRS
+- typical questions:
+  - what value is here?
+  - how does the surface vary?
+  - what is the average over an area?
+:::
+::::
+
+## Main Packages
+
+:::: {.columns}
+::: {.column width="33%"}
+`sf`
+
+- vector data
+- simple features standard
+- geometry-aware data frames
+:::
+::: {.column width="33%"}
+`stars`
+
+- raster and arrays
+- good fit with `sf`
+- convenient for plotting and extraction
+:::
+::: {.column width="33%"}
+`terra`
+
+- vector + raster in one package
+- strong for raster operations
+- consistent GIS-style workflow
+:::
+::::
+
+## Supporting Packages
+
+- `dplyr` for data manipulation
+- `units` for explicit measurement handling in `sf`
+- `mapview` for rapid interactive mapping
+- `ggplot2` for polished static figures
+- `MASS::kde2d()` for simple KDE examples
+
+## How To Read The Rest Of This Deck
+
+- slides are concept-driven first
+- examples will often show an `sf/stars` view and a `terra` view
+- the goal is not to memorize APIs
+- the goal is to recognize the spatial task and know where the tools live
+
+# Vectors
+
+## Why Vectors First?
+
+- vectors are usually more intuitive for beginners
+- both workshop storylines start from tabular coordinates
+- joins, intersections, and measurements are easier to explain here first
+- raster integration makes more sense once the vector workflow is stable
+
+## The Vector Data Model
+
+- features have attributes and geometry
+- geometry lives in a CRS
+- geometry types matter:
+  - points for observations
+  - lines for trajectories
+  - polygons for regions and habitats
+
+## Two Vector Storylines
+
+:::: {.columns}
+::: {.column width="50%"}
+`Points route`
+
+- bird observations
+- start from tabular lon/lat
+- create points
+- join to polygon context
+:::
+::: {.column width="50%"}
+`Lines route`
+
+- telemetry fixes
+- start from lon/lat + timestamp
+- create points
+- rebuild tracks from ordered points
+:::
+::::
+
+## Import Vector And Tabular Data
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+birds <- read.csv("bird_observations.csv")
+ecodistricts <- st_read("ecodistricts.gpkg")
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+birds <- read.csv("bird_observations.csv")
+ecodistricts <- vect("ecodistricts.gpkg")
+```
+:::
+::::
+
+- key idea: import attributes and import geometry are separate concerns
+
+## Create Point Geometry From lon/lat
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+sites <- birds |>
+  st_as_sf(coords = c("longitude", "latitude"),
+           crs = 4326,
+           remove = FALSE)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+sites <- vect(birds,
+              geom = c("longitude", "latitude"),
+              crs = "EPSG:4326")
+```
+:::
+::::
+
+## Rebuild Lines From Ordered Points
+
+- start from telemetry points
+- sort by individual and timestamp
+- group ordered coordinates into tracks
+- line building is not a separate data source
+- it is a geometry-construction step
+
+::: {.notes}
+This is an important pedagogic distinction: participants are not "reading lines", they are constructing them.
+:::
+
+## CRS: What We Need Operationally
+
+- inspect current CRS
+- know whether data are geographic or projected
+- choose a working CRS for measurement and analysis
+- transform all relevant layers consistently
+
+## CRS API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+st_crs(sites)
+sites_qc <- st_transform(sites, 32198)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+crs(sites)
+sites_qc <- project(sites, "EPSG:32198")
+```
+:::
+::::
+
+## Restrict To The Study Area
+
+- keep only the relevant geographic scope
+- reduce clutter and computation
+- make later extraction and summaries easier
+- for vectors this is usually:
+  - filter
+  - crop
+  - keep overlapping features
+
+## Study-Area Restriction API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+sites <- st_filter(sites, east)
+ecodistricts <- st_filter(ecodistricts, east)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+sites <- crop(sites, east)
+ecodistricts <- crop(ecodistricts, east)
+```
+:::
+::::
+
+## Vector Measurements
+
+- polygon area
+- line length
+- distance from points or tracks to coast
+- measurement depends on CRS
+
+::: {.callout-note}
+`sf` often makes units explicit through `units`. `terra` usually returns numeric values whose interpretation depends on CRS and function behavior.
+:::
+
+## Measurement API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+ecodistricts$area <- st_area(ecodistricts)
+sites$coast_distance <- st_distance(sites, coast)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+ecodistricts$area_km2 <- expanse(ecodistricts, unit = "km")
+sites$coast_distance_km <- distance(sites, coast)[, 1] / 1000
+```
+:::
+::::
+
+## Vector Relationships
+
+:::: {.columns}
+::: {.column width="50%"}
+`Join logic`
+
+- attach polygon attributes to points
+- ask which polygon contains each feature
+- enrich observations with context
+:::
+::: {.column width="50%"}
+`Intersection logic`
+
+- create new geometries from overlap
+- for line workflows, create habitat-attributed track segments
+- this is not only an attribute join
+:::
+::::
+
+## Relationship API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+sites <- st_join(sites, ecodistricts)
+track_segments <- st_intersection(tracks, habitats)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+site_values <- extract(ecodistricts, sites)
+track_segments <- intersect(tracks, habitats)
+```
+:::
+::::
+
+## Quick Vector Mapping
+
+- `plot()` for fast sanity checks
+- `mapview()` for interactive exploration
+- the first map is often a QA/QC step, not a publication figure
+
+## Exercise Block: Vector Foundations
+
+- `M1`: import tables and vector layers, create geometry
+- `M2`: harmonize CRS and restrict to study area
+- `M3`: explore, measure, join, intersect
+
+:::: {.columns}
+::: {.column width="50%"}
+`Points scripts`
+
+- sections 1-7
+:::
+::: {.column width="50%"}
+`Lines scripts`
+
+- sections 1-9
+:::
+::::
+
+## Route Choice After Vector Foundations
+
+- most participants: continue with one storyline only
+- recommended default:
+  - points route for simpler progression
+  - lines route for advanced participants
+- strong participants can switch later to the other storyline
+
+# Day 2
+
+# Rasters
+
+## The Raster Data Model
+
+- a raster is a grid of cells with values
+- key metadata:
+  - extent
+  - resolution
+  - CRS
+  - number of layers
+- raster operations often modify the grid itself, not only attributes
+
+## Why Rasters Need Their Own Section
+
+- different mental model than vectors
+- projection can imply resampling
+- crop, mask, and extraction have different meanings than with vectors
+- learners benefit from seeing this as a separate object system first
+
+## Import And Inspect Rasters
+
+:::: {.columns}
+::: {.column width="50%"}
+`stars`
+
+```{r}
+#| eval: false
+temperature <- read_stars("temperature.tif")
+plot(temperature)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+temperature <- rast("temperature.tif")
+plot(temperature)
+```
+:::
+::::
+
+## What To Inspect Before Doing Anything Else
+
+- CRS
+- layer names
+- extent
+- resolution
+- whether the raster already covers the study area
+
+## Crop, Mask, Project
+
+:::: {.columns}
+::: {.column width="33%"}
+`Crop`
+
+- reduce extent
+- keep a rectangular window or study boundary extent
+:::
+::: {.column width="33%"}
+`Mask`
+
+- keep values only inside a geometry
+- remove cells outside a polygon
+:::
+::: {.column width="33%"}
+`Project`
+
+- change CRS
+- usually implies resampling
+- use carefully
+:::
+::::
+
+## Raster Transformation API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf/stars`
+
+```{r}
+#| eval: false
+bathymetry <- st_warp(bathymetry, crs = st_crs(tracks))
+bathymetry <- st_crop(bathymetry, st_bbox(tracks))
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+bathymetry <- project(bathymetry, target_crs)
+bathymetry <- crop(bathymetry, ext(tracks))
+```
+:::
+::::
+
+## Quick Raster Mapping
+
+- use `plot()` to inspect values and spatial coverage
+- use `mapview()` for interactive exploration where helpful
+- use `geom_stars()` later when building a final static map
+
+## Exercise Block: Raster Foundations
+
+- `M4`: import and inspect raster data
+- `M5`: crop, project, mask logic and prepare extraction
+
+:::: {.columns}
+::: {.column width="50%"}
+`Points scripts`
+
+- sections 8-11
+:::
+::: {.column width="50%"}
+`Lines scripts`
+
+- sections 10-13
+:::
+::::
+
+# Integrated Workflows
+
+## Why Integration Matters
+
+- most analyses combine feature geometry with gridded context
+- vectors define where
+- rasters contribute environmental values
+- analysis tables sit at the interface between the two
+
+## Vector-Raster Extraction
+
+- points: extract cell values at observation locations
+- lines: extract summaries along tracks or segments
+- segments: connect movement geometry to environmental context
+
+## Extraction API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf/stars`
+
+```{r}
+#| eval: false
+sites$tavg_january <- st_extract(temperature, sites)[[1]][, 1]
+segment_bathymetry <- st_extract(bathymetry, track_segments, FUN = mean)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+temperature_values <- extract(temperature, sites)
+segment_bathymetry <- extract(bathymetry, track_segments, fun = mean)
+```
+:::
+::::
+
+## Build Analysis Tables
+
+- keep only the attributes needed for modeling
+- drop geometry when the spatial step is complete
+- summarise by polygon, track, or segment
+- compute grouped metrics for later analysis
+
+## Table-Building Verbs
+
+- `st_drop_geometry()` or `as.data.frame()`
+- `select()`
+- `mutate()`
+- `group_by()`
+- `summarise()`
+- `count()`
+- `left_join()`
+
+## Analysis Menu In This Workshop
+
+:::: {.columns}
+::: {.column width="50%"}
+`Core`
+
+- counts by ecodistrict
+- grouped summaries
+- final mapped outputs
+:::
+::: {.column width="50%"}
+`Advanced`
+
+- pseudo-absence GLM for points
+- Gamma GLM on line segments
+- KDE for points or telemetry fixes
+:::
+::::
+
+## Simple Aggregated Modeling
+
+- points route:
+  - counts by ecodistrict
+  - simple Poisson GLM
+- lines route:
+  - summaries by track or segment
+  - model-ready tables from overlap and extraction
+
+## Advanced Analysis: Pseudo-Absence GLM
+
+- points workflow only
+- sample pseudo-absences
+- extract the same predictors as for presences
+- fit a simple binomial GLM
+
+## Advanced Analysis: Segment-Level GLM
+
+- lines workflow only
+- use habitat-attributed segments
+- integrate segment length, environmental summaries, and habitat context
+- fit a Gamma GLM on segment-level outcomes
+
+## Advanced Analysis: KDE
+
+- available in both storylines
+- used to create a smooth surface of concentration or intensity
+- useful for exploratory visualization and discussion
+
+::: {.callout-note}
+In the workshop scripts, KDE values are scaled to 0-1 for plotting convenience only. The raw density concept is unchanged.
+:::
+
+## Final Maps
+
+- combine vector layers, raster context, and derived outputs
+- distinguish quick QA/QC maps from communicative figures
+- choose the simplest map that answers the question
+
+## Export Outputs
+
+- export vector outputs
+- export summary tables
+- keep derived objects for later reporting or modeling
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf/stars`
+
+- `st_write()`
+- `write.csv()`
+:::
+::: {.column width="50%"}
+`terra`
+
+- `writeVector()`
+- `write.csv()`
+:::
+::::
+
+## Exercise Architecture
+
+1. `M1-M3`: vector foundations
+2. `M4-M5`: raster foundations
+3. `M6`: summaries and analysis tables
+4. `M7-M8`: advanced options
+5. `M9`: final map and export
+
+## Script Split: Points
+
+`Core beginner`
+
+- sections 1-12
+- import
+- create points
+- CRS
+- study area
+- measurements and joins
+- raster extraction
+- summaries
+
+`Optional advanced`
+
+- section 13: simple GLM
+- sections 14-15: pseudo-absence GLM and KDE
+- sections 16-17: final map and export
+
+## Script Split: Lines
+
+`Core advanced`
+
+- sections 1-14
+- import
+- create points
+- rebuild tracks
+- CRS
+- study area
+- measurements
+- habitat intersection
+- raster extraction
+- summaries
+
+`Optional advanced`
+
+- sections 15-16: segment GLM and KDE
+- sections 17-18: final map and export
+
+## Suggested Delivery Logic
+
+- everyone sees the same concept deck
+- everyone chooses one package ecosystem
+- most participants complete either:
+  - points core + one advanced option
+  - lines core + one advanced option
+- advanced participants may do both storylines in one ecosystem
+
+## Extension: Workflow Structuring
+
+- write small reusable functions
+- group them into a package
+- expose a workflow through Shiny when useful
+- this is a conceptual endpoint for the workshop, not a participant coding task
+
+## Takeaways
+
+- think in spatial tasks, not only package names
+- separate vector and raster mental models before integrating them
+- use CRS deliberately
+- distinguish joins from intersections
+- move from spatial objects to analysis tables consciously
+- use mapping throughout the workflow, not only at the end
+
+## Next Step In The Hands-On
+
+- choose your ecosystem:
+  - `sf` + `stars`
+  - `terra`
+- choose your storyline:
+  - points
+  - lines
+- begin with `M1`: import and geometry creation
