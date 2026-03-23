@@ -20,6 +20,89 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 ```
 
+<!-- Data & library setup -->
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(sf)
+library(terra)
+library(stars)
+library(mapview)
+aoi <- st_read("data/polygons.gpkg", layer = "study_area", quiet = TRUE)
+zones <- st_read("data/polygons.gpkg", layer = "zones", quiet = TRUE)
+terra_aoi <- terra::vect("data/polygons.gpkg", layer = "study_area")
+terra_zones <- terra::vect("data/polygons.gpkg", layer = "zones")
+points_tbl <- read.csv("data/points.csv")
+points_sf <- st_as_sf(points_tbl, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+terra_points <- terra::vect(points_tbl, geom = c("lon", "lat"), crs = "EPSG:4326")
+tracks_sf <- points_sf |>
+  dplyr::arrange(track_id, timestamp) |>
+  dplyr::group_by(track_id) |>
+  dplyr::summarise(do_union = FALSE) |>
+  st_cast("LINESTRING")
+tracks_tbl <- points_tbl |>
+  dplyr::arrange(track_id, timestamp) |>
+  dplyr::summarise(
+    wkt = paste0(
+      "LINESTRING (",
+      paste(paste(lon, lat), collapse = ", "),
+      ")"
+    ),
+    .by = track_id
+  )
+terra_tracks <- terra::vect(tracks_tbl, geom = "wkt", crs = "EPSG:4326")
+aoi_qc <- st_transform(aoi, 32198)
+zones_qc <- st_transform(zones, 32198)
+points_sf_qc <- st_transform(points_sf, 32198)
+tracks_sf_qc <- st_transform(tracks_sf, 32198)
+terra_aoi_qc <- terra::project(terra_aoi, "EPSG:32198")
+terra_zones_qc <- terra::project(terra_zones, "EPSG:32198")
+terra_points_qc <- terra::project(terra_points, "EPSG:32198")
+terra_tracks_qc <- terra::project(terra_tracks, "EPSG:32198")
+focus_area <- zones |>
+  dplyr::filter(zone_id %in% c("NE", "SE")) |>
+  dplyr::summarise()
+points_focus_sf <- st_filter(points_sf, focus_area)
+zones_focus_sf <- st_crop(zones, st_bbox(focus_area))
+terra_focus_area <- terra_zones[terra_zones$zone_id %in% c("NE", "SE")]
+terra_points_focus <- crop(terra_points, terra_focus_area)
+terra_zones_focus <- crop(terra_zones, ext(terra_focus_area))
+zone_area_sf <- data.frame(
+  zone_id = zones_qc$zone_id,
+  area_km2 = round(as.numeric(units::set_units(st_area(zones_qc), "km^2")), 1)
+)
+track_length_sf <- data.frame(
+  track_id = tracks_sf_qc$track_id,
+  length_km = round(as.numeric(units::set_units(st_length(tracks_sf_qc), "km")), 1)
+)
+point_boundary_sf <- data.frame(
+  obs_id = points_sf_qc$obs_id,
+  boundary_km = round(as.numeric(units::set_units(st_distance(points_sf_qc, st_boundary(aoi_qc)), "km")), 1)
+)
+zone_area_terra <- data.frame(
+  zone_id = terra_zones_qc$zone_id,
+  area_km2 = round(expanse(terra_zones_qc, unit = "km"), 1)
+)
+track_length_terra <- data.frame(
+  track_id = terra_tracks_qc$track_id,
+  length_km = round(perim(terra_tracks_qc) / 1000, 1)
+)
+point_boundary_terra <- data.frame(
+  obs_id = terra_points_qc$obs_id,
+  boundary_km = round(distance(terra_points_qc, as.lines(terra_aoi_qc))[, 1] / 1000, 1)
+)
+points_joined_sf <- st_join(points_sf, zones[, c("zone_id", "zone_type")])
+terra_point_attrs <- terra::extract(terra_zones, terra_points)
+terra_points_joined <- cbind(terra_points, terra_point_attrs[, c("zone_id", "zone_type")])
+track_segments_sf <- suppressWarnings(st_intersection(tracks_sf_qc, zones_qc))
+terra_track_segments <- intersect(terra_tracks_qc, terra_zones_qc)
+point_buffers_sf <- st_buffer(points_sf_qc, dist = 10000)
+terra_point_buffers <- buffer(terra_points_qc, width = 10000)
+```
+
+
+
 # Welcome 
 
 <!-- Go around the table + slide insileco? -->
@@ -71,9 +154,36 @@ By the end of the workshop, participants should be able to use R as a GIS, work 
 - extract raster values to vector features
 - build summaries, analyses, and maps
 
+## Workshop Structure
+
+:::: {.columns}
+::: {.column width="50%"}
+::: {.callout-note}
+## Materials
+
+- short concept-driven slides
+- live examples in R
+- reusable scripts and resources for later review
+:::
+:::
+::: {.column width="50%"}
+::: {.callout-tip}
+## Exercises
+
+- targeted hands-on exercises
+- designed specifically for workshop participants
+- based on the data shared ahead of the event
+:::
+:::
+::::
+
+::: {.callout icon=false}
+The workshop alternates between concise instructional material and applied exercises, so participants can move directly from concepts to practice.
+:::
+
 # R as a GIS
 
-<!-- Discuss why it makes sense to use R -->
+<!-- Discuss why it makes sense to use R as a GIS -->
 
 ## R to build reproducible pipelines
 
@@ -302,7 +412,7 @@ Similar as QGIS for C libraries
 ### The goal of this workshop is not to teach a specific IDE. Use the environment that lets you work comfortably with scripts, objects, plots, and spatial outputs.
 :::
 
-## A note on pipes 
+## A Note on Pipes 
 
 ::: {.callout-note}
 ### What are pipes?
@@ -337,12 +447,181 @@ CO2 |>
 
 ::::
 
+## A Note on Code
 
+***Choose Your Tool(s)***
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| eval: false
+sf_object <- sf::function(...)
+stars_object <- stars::function(...)
+```
+
+##### `terra`
+
+```{r}
+#| eval: false
+terra_object <- terra::function(...)
+```
+:::
+
+<br> 
+
+::: {.callout-note}
+### Navigating through the code in the presentation
+The slides often show the same operation twice: once with `sf/stars`, and once with `terra`.
+
+You do not need to follow both versions at once. Use the tabs to stay in the ecosystem you chose for the workshop.
+:::
+
+
+
+## A Note on Exercises
+
+***Choose Your Route***
+
+![](img/route_matrix.svg){width=82% fig-align="center"}
+
+::: {.callout-note}
+### Do both levels!
+More advanced participants can complete both workflows, as there will be advanced workflows available with both points and lines. 
+:::
 
 
 # Vector Data in R
 
 ***sf*** & ***terra***
+
+## Read Vector Data
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+aoi <- st_read("data/polygons.gpkg", layer = "study_area")
+zones <- st_read("data/polygons.gpkg", layer = "zones")
+aoi
+zones
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(aoi)
+head(zones)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+#| 
+par(mar = c(0, 0, 0, 0))
+plot(
+  st_geometry(aoi),
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2.5,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  st_geometry(zones),
+  add = TRUE,
+  col = c("#9ecae1aa", "#fdae6baa", "#a1d99baa", "#fdd0a2aa"),
+  border = "#264653",
+  lwd = 1.2
+)
+zone_centers <- st_coordinates(st_centroid(zones))
+text(
+  zone_centers[, 1],
+  zone_centers[, 2],
+  labels = zones$zone_id,
+  cex = 0.9,
+  font = 2,
+  col = "#17323a"
+)
+```
+
+:::
+:::
+<!-- end columns -->
+
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+aoi <- vect("data/polygons.gpkg", layer = "study_area")
+zones <- vect("data/polygons.gpkg", layer = "zones")
+aoi
+zones
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(terra_aoi)
+head(terra_zones)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  terra_aoi,
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2.5,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  terra_zones,
+  add = TRUE,
+  col = c("#9ecae1aa", "#fdae6baa", "#a1d99baa", "#fdd0a2aa"),
+  border = "#264653",
+  lwd = 1.2
+)
+zone_centers <- terra::crds(terra::centroids(terra_zones))
+text(
+  zone_centers[, 1],
+  zone_centers[, 2],
+  labels = terra_zones$zone_id,
+  cex = 0.9,
+  font = 2,
+  col = "#17323a"
+)
+```
+
+:::
+:::
+<!-- end columns -->
+:::
 
 ## Create Points From A Table
 
@@ -350,200 +629,1117 @@ CO2 |>
 ##### `sf`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-stations <- read.csv("stations.csv") |>
-  st_as_sf(coords = c("lon", "lat"),
-           crs = 4326,
-           remove = FALSE)
+stations <- read.csv("data/points.csv") |>
+  st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(points_sf)
+```
+:::
+::: {.column width="35%"}
+<br>
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  st_geometry(aoi),
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  st_geometry(zones),
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  st_geometry(points_sf),
+  add = TRUE,
+  pch = 21,
+  bg = "#c44e5288",
+  col = "#7f1d1d",
+  cex = 1.1
+)
+```
+
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+stations <- read.csv("data/points.csv") |>
+  vect(geom = c("lon", "lat"), crs = "EPSG:4326")
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(terra_points)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  terra_aoi,
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  terra_zones,
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  terra_points,
+  add = TRUE,
+  pch = 21,
+  bg = "#c44e5288",
+  col = "#7f1d1d",
+  cex = 1.1
+)
+```
+
+:::
+:::
+<!-- end columns -->
+:::
+
+
+## Inspect Vector Data
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+st_geometry_type(zones)
+st_crs(zones)$input
+st_bbox(zones)
+```
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+st_geometry_type(zones)
+st_crs(zones)$input
+st_bbox(zones)
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+geomtype(terra_zones)
+crs(terra_zones, proj = TRUE)
+ext(terra_zones)
+```
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+geomtype(terra_zones)
+crs(terra_zones, proj = TRUE)
+ext(terra_zones)
+```
+:::
+
+<br> 
+
+::: {.callout-note}
+### Spatial projections
+CRS information tells you how coordinates are referenced on the Earth. When you need to inspect or identify a projection, [epsg.io](https://epsg.io/) is a useful lookup tool.
+:::
+
+## Transform CRS
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+zones_qc <- st_transform(zones, 32198)
+points_qc <- st_transform(points_sf, 32198)
+st_crs(points_qc)$input
+st_bbox(points_qc)
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+st_crs(points_sf_qc)$input
+st_bbox(points_sf_qc)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  st_geometry(aoi_qc),
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  st_geometry(zones_qc),
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  st_geometry(points_sf_qc),
+  add = TRUE,
+  pch = 21,
+  bg = "#c44e5288",
+  col = "#7f1d1d",
+  cex = 1.1
+)
+```
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+zones_qc <- project(terra_zones, "EPSG:32198")
+points_qc <- project(terra_points, "EPSG:32198")
+crs(points_qc, proj = TRUE)
+ext(points_qc)
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+crs(terra_points_qc, proj = TRUE)
+ext(terra_points_qc)
+```
+:::
+::: {.column width="35%"}
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  terra_aoi_qc,
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  terra_zones_qc,
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  terra_points_qc,
+  add = TRUE,
+  pch = 21,
+  bg = "#c44e5288",
+  col = "#7f1d1d",
+  cex = 1.1
+)
+```
+:::
+:::
+<!-- end columns -->
+:::
+
+::: {.callout-warning}
+## Measurements 
+Use a suitable projected CRS when you need interpretable distances, lengths, or areas.
+:::
+
+## Export Vector Outputs
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+st_write(points_sf_qc, "outputs/points_projected.gpkg")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+sf_export <- tempfile(fileext = ".gpkg")
+st_write(points_sf_qc, sf_export, quiet = TRUE)
+data.frame(
+  object = "points_sf_qc",
+  file = basename(sf_export),
+  exists = file.exists(sf_export),
+  features = nrow(points_sf_qc)
+)
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+writeVector(terra_points_qc, "outputs/points_projected.gpkg")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+terra_export <- tempfile(fileext = ".gpkg")
+writeVector(terra_points_qc, terra_export, overwrite = TRUE)
+data.frame(
+  object = "terra_points_qc",
+  file = basename(terra_export),
+  exists = file.exists(terra_export),
+  features = nrow(terra_points_qc)
+)
+```
+:::
+
+## Exercise 1 {.exercise-break .center}
+
+### Vector Foundations
+
+Import, inspect, transform, export
+
+<br>
+
+*Bonus: use R as a converter*
+
+## Build Lines From Ordered Points
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+tracks <- points_sf |>
+  dplyr::arrange(track_id, timestamp) |>
+  dplyr::group_by(track_id) |>
+  dplyr::summarise(do_union = FALSE) |>
+  st_cast("LINESTRING")
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(tracks_sf)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  st_geometry(aoi),
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  st_geometry(zones),
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  st_geometry(tracks_sf),
+  add = TRUE,
+  col = "#7f1d1d",
+  lwd = 2.3
+)
+plot(
+  st_geometry(points_sf),
+  add = TRUE,
+  pch = 16,
+  col = "#7f1d1daa",
+  cex = 0.65
+)
+```
+
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+tracks_tbl <- points_tbl |>
+  dplyr::arrange(track_id, timestamp) |>
+  dplyr::summarise(
+    wkt = paste0(
+      "LINESTRING (",
+      paste(paste(lon, lat), collapse = ", "),
+      ")"
+    ),
+    .by = track_id
+  ) |>
+  terra::vect(geom = "wkt", crs = "EPSG:4326")
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(terra_tracks)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  terra_aoi,
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  terra_zones,
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  terra_tracks,
+  add = TRUE,
+  col = "#7f1d1d",
+  lwd = 2.3
+)
+plot(
+  terra_points,
+  add = TRUE,
+  pch = 16,
+  col = "#7f1d1daa",
+  cex = 0.65
+)
+```
+
+:::
+:::
+<!-- end columns -->
+:::
+
+## Quick Static Mapping
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| eval: false
+plot(st_geometry(aoi), col = "#f7fbfc", border = "#355c67")
+plot(st_geometry(zones), add = TRUE, border = "#264653")
+plot(st_geometry(stations), pch = 16, col = "#7f1d1d", add = TRUE)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| fig-align: center
+#| out-width: 60%
+par(mar = c(0, 0, 0, 0))
+plot(
+  st_geometry(aoi),
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  st_geometry(zones),
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  st_geometry(points_sf),
+  add = TRUE,
+  pch = 16,
+  col = "#7f1d1d",
+  cex = 0.9
+)
 ```
 
 ##### `terra`
 
 ```{r}
 #| eval: false
-stations_tbl <- read.csv("stations.csv")
-stations <- vect(stations_tbl,
-                 geom = c("lon", "lat"),
-                 crs = "EPSG:4326")
+plot(aoi, col = "#f7fbfc", border = "#355c67")
+plot(zones, add = TRUE, border = "#264653")
+plot(stations, pch = 16, col = "#7f1d1d", add = TRUE)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| fig-align: center
+#| out-width: 60%
+par(mar = c(0, 0, 0, 0))
+plot(
+  terra_aoi,
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(
+  terra_zones,
+  add = TRUE,
+  col = c("#9ecae144", "#fdae6b44", "#a1d99b44", "#fdd0a244"),
+  border = "#264653",
+  lwd = 1
+)
+plot(
+  terra_points,
+  add = TRUE,
+  pch = 16,
+  col = "#7f1d1d",
+  cex = 0.9
+)
 ```
 :::
 
-## Build Lines From Ordered Points
+## Quick Interactive Mapping
 
-- start from point observations with an ID and order variable
-- sort points
-- group them into trajectories or paths
-- convert grouped coordinates into line geometry
-
-## Read Vector Data
-
-:::: {.columns}
-::: {.column width="50%"}
-`sf`
+::: {.panel-tabset .code-tabs}
+##### `sf`
 
 ```{r}
 #| eval: false
-roads <- st_read("roads.gpkg")
-municipalities <- st_read("municipalities.gpkg")
+mapview(zones, zcol = "zone_id", layer.name = "Zones") +
+  mapview(stations, zcol = "category", layer.name = "Observations")
 ```
-:::
-::: {.column width="50%"}
-`terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+mapview(zones, zcol = "zone_id", layer.name = "Zones") +
+  mapview(points_sf, zcol = "category", layer.name = "Observations")
+```
+
+##### `terra`
 
 ```{r}
 #| eval: false
-roads <- vect("roads.gpkg")
-municipalities <- vect("municipalities.gpkg")
+mapview(zones, zcol = "zone_id", layer.name = "Zones") +
+  mapview(stations, zcol = "category", layer.name = "Observations")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+mapview(terra_zones, zcol = "zone_id", layer.name = "Zones") +
+  mapview(terra_points, zcol = "category", layer.name = "Observations")
 ```
 :::
-::::
 
-## Inspect Vector Data
+## Export Interactive Maps
 
-- geometry type
-- number of features
-- attributes
-- CRS
-- spatial extent
-
-## CRS: The Practical Questions
-
-- what CRS is this layer in?
-- are my layers using the same CRS?
-- do I need a projected CRS for measurement?
-- which CRS should I use for my study area?
-
-## Inspect And Transform CRS
-
-:::: {.columns}
-::: {.column width="50%"}
-`sf`
+::: {.panel-tabset .code-tabs}
+##### `sf`
 
 ```{r}
 #| eval: false
-st_crs(stations)
-stations_lcc <- st_transform(stations, 32198)
+m <- mapview(zones, zcol = "zone_id", layer.name = "Zones") +
+  mapview(stations, zcol = "category", layer.name = "Observations")
+
+mapview::mapshot(m, file = "outputs/interactive_map.html")
 ```
-:::
-::: {.column width="50%"}
-`terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+sf_map_file <- tempfile(fileext = ".html")
+data.frame(
+  object = "mapview sf map",
+  file = basename(sf_map_file),
+  format = "html"
+)
+```
+
+##### `terra`
 
 ```{r}
 #| eval: false
-crs(stations)
-stations_lcc <- project(stations, "EPSG:32198")
+m <- mapview(zones, zcol = "zone_id", layer.name = "Zones") +
+  mapview(stations, zcol = "category", layer.name = "Observations")
+
+mapview::mapshot(m, file = "outputs/interactive_map.html")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+terra_map_file <- tempfile(fileext = ".html")
+data.frame(
+  object = "mapview terra map",
+  file = basename(terra_map_file),
+  format = "html"
+)
 ```
 :::
-::::
 
-::: {.callout-caution}
-Spatial measurements depend on CRS. Distances and areas are easiest to interpret in an appropriate projected CRS.
+<br>
+
+::: {.callout-note}
+### Share your maps!
+Interactive `mapview` outputs can be saved as standalone HTML files and shared like any other web document.
 :::
+
+## Exercise 2 {.exercise-break .center}
+
+### Vector Foundations on Your Data
+
+Import, inspect, transform, export, visualize
+
 
 ## Subset To A Study Area
 
-- crop or filter features to a region of interest
-- reduce clutter and computation
-- align the data to the analysis question
-
-## Vector Subsetting
-
-:::: {.columns}
-::: {.column width="50%"}
-`sf`
+::: {.panel-tabset .code-tabs}
+##### `sf`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-stations_city <- st_filter(stations, city_boundary)
-roads_city <- st_crop(roads, st_bbox(city_boundary))
+focus_area <- zones |>
+  dplyr::filter(zone_id %in% c("NE", "SE")) |>
+  dplyr::summarise()
+
+points_focus <- st_filter(points_sf, focus_area)
+zones_focus <- st_crop(zones, st_bbox(focus_area))
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(points_focus_sf)
 ```
 :::
-::: {.column width="50%"}
-`terra`
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  st_geometry(aoi),
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(st_geometry(focus_area), add = TRUE, col = "#37abc833", border = "#37abc8", lwd = 2)
+plot(st_geometry(points_sf), add = TRUE, pch = 16, col = "#9aa5ab88", cex = 0.7)
+plot(st_geometry(points_focus_sf), add = TRUE, pch = 21, bg = "#c44e5288", col = "#7f1d1d", cex = 1.1)
+```
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-stations_city <- crop(stations, city_boundary)
-roads_city <- crop(roads, ext(city_boundary))
+focus_area <- terra_zones[terra_zones$zone_id %in% c("NE", "SE")]
+points_focus <- crop(terra_points, focus_area)
+zones_focus <- crop(terra_zones, ext(focus_area))
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(terra_points_focus)
 ```
 :::
-::::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(
+  terra_aoi,
+  col = "#f7fbfc",
+  border = "#355c67",
+  lwd = 2,
+  axes = FALSE,
+  main = ""
+)
+plot(terra_focus_area, add = TRUE, col = "#37abc833", border = "#37abc8", lwd = 2)
+plot(terra_points, add = TRUE, pch = 16, col = "#9aa5ab88", cex = 0.7)
+plot(terra_points_focus, add = TRUE, pch = 21, bg = "#c44e5288", col = "#7f1d1d", cex = 1.1)
+```
+:::
+:::
+<!-- end columns -->
+:::
 
 ## Measure Vector Features
 
-- area of polygons
-- length of lines
-- distance between features
-
-## Measurements In Practice
-
-:::: {.columns}
-::: {.column width="50%"}
-`sf`
+::: {.panel-tabset .code-tabs}
+##### `sf`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-lakes$area <- st_area(lakes)
-roads$length_m <- st_length(roads)
-stations$dist_to_river <- st_distance(stations, rivers)
+zone_area <- units::set_units(st_area(zones_qc), "km^2")
+track_length <- units::set_units(st_length(tracks_sf_qc), "km")
+boundary_distance <- units::set_units(st_distance(points_sf_qc, st_boundary(aoi_qc)), "km")
+zone_area
+track_length
+head(boundary_distance)
+```
+
+::: {.columns}
+::: {.column width="50%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+zone_area_sf
+track_length_sf
 ```
 :::
 ::: {.column width="50%"}
-`terra`
-
 ```{r}
-#| eval: false
-lakes$area_km2 <- expanse(lakes, unit = "km")
-roads$length_m <- perim(roads)
-stations$dist_to_river_m <- distance(stations, rivers)[, 1]
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+head(point_boundary_sf)
 ```
 :::
-::::
-
-::: {.callout-note}
-`sf` often uses `units` objects. `terra` usually returns numeric values whose meaning depends on the CRS and function used.
 :::
+<!-- end columns -->
 
-## Join And Overlay
-
-- attach polygon attributes to points
-- identify which features fall in which zones
-- summarise observations by area
-
-## Intersection
-
-- create new geometries from overlap
-- split features where geometries meet
-- useful for road segments by municipality, tracks by habitat, or rivers by watershed
-
-## Join And Intersection API Lens
-
-:::: {.columns}
-::: {.column width="50%"}
-`sf`
+##### `terra`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-stations <- st_join(stations, municipalities)
-road_segments <- st_intersection(roads, municipalities)
+zone_area <- expanse(terra_zones_qc, unit = "km")
+track_length <- perim(terra_tracks_qc) / 1000
+boundary_distance <- distance(terra_points_qc, as.lines(terra_aoi_qc))[, 1] / 1000
+zone_area
+track_length
+head(boundary_distance)
+```
+
+::: {.columns}
+::: {.column width="50%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+zone_area_terra
+track_length_terra
 ```
 :::
 ::: {.column width="50%"}
-`terra`
-
 ```{r}
-#| eval: false
-station_values <- extract(municipalities, stations)
-road_segments <- intersect(roads, municipalities)
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+head(point_boundary_terra)
 ```
 :::
-::::
+:::
+<!-- end columns -->
 
-## Quick Vector Mapping
+:::
 
-- `plot()` for fast checks
-- `mapview()` for interactive browsing
-- `ggplot2` for more controlled graphics
+<br>
+
+::: {.callout-note icon=false}
+`sf` often returns unit-aware measurements. `terra` often returns numeric values whose meaning depends on the CRS and function used.
+:::
+
+## Join Attributes To Features
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+points_joined <- st_join(points_sf, zones[, c("zone_id", "zone_type")])
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(sf::st_drop_geometry(points_joined_sf))
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+zone_cols <- c(NW = "#2c7fb8", NE = "#f03b20", SW = "#31a354", SE = "#fdae61")
+par(mar = c(0, 0, 0, 0))
+plot(st_geometry(aoi), col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(st_geometry(zones), add = TRUE, col = paste0(zone_cols[zones$zone_id], "33"), border = "#264653", lwd = 1)
+plot(st_geometry(points_joined_sf), add = TRUE, pch = 21, bg = zone_cols[points_joined_sf$zone_id], col = "#17323a", cex = 1.1)
+```
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+point_values <- extract(terra_zones, terra_points)
+points_joined <- cbind(terra_points, point_values[, c("zone_id", "zone_type")])
+```
+
+::: {.columns}
+::: {.column width="68%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(terra_points_joined)
+```
+:::
+::: {.column width="32%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+zone_cols <- c(NW = "#2c7fb8", NE = "#f03b20", SW = "#31a354", SE = "#fdae61")
+par(mar = c(0, 0, 0, 0))
+plot(terra_aoi, col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(terra_zones, add = TRUE, col = paste0(zone_cols[terra_zones$zone_id], "33"), border = "#264653", lwd = 1)
+plot(terra_points_joined, add = TRUE, pch = 21, bg = zone_cols[terra_points_joined$zone_id], col = "#17323a", cex = 1.1)
+```
+:::
+:::
+<!-- end columns -->
+:::
+
+## Intersect Geometries
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+track_segments <- st_intersection(tracks_sf_qc, zones_qc)
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(sf::st_drop_geometry(track_segments_sf))
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+zone_cols <- c(NW = "#2c7fb8", NE = "#f03b20", SW = "#31a354", SE = "#fdae61")
+par(mar = c(0, 0, 0, 0))
+plot(st_geometry(aoi_qc), col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(st_geometry(zones_qc), add = TRUE, col = paste0(zone_cols[zones_qc$zone_id], "22"), border = "#264653", lwd = 1)
+plot(st_geometry(track_segments_sf), add = TRUE, col = zone_cols[track_segments_sf$zone_id], lwd = 2.5)
+```
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+track_segments <- intersect(terra_tracks_qc, terra_zones_qc)
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(terra_track_segments)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+zone_cols <- c(NW = "#2c7fb8", NE = "#f03b20", SW = "#31a354", SE = "#fdae61")
+par(mar = c(0, 0, 0, 0))
+plot(terra_aoi_qc, col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(terra_zones_qc, add = TRUE, col = paste0(zone_cols[terra_zones_qc$zone_id], "22"), border = "#264653", lwd = 1)
+plot(terra_track_segments, add = TRUE, col = zone_cols[terra_track_segments$zone_id], lwd = 2.5)
+```
+:::
+:::
+<!-- end columns -->
+:::
+
+::: {.callout-note icon=false}
+Use a join when you want to attach attributes. Use an intersection when you want overlap to create new geometries.
+:::
+
+## Buffers
+
+::: {.panel-tabset .code-tabs}
+##### `sf`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+point_buffers <- st_buffer(points_sf_qc, dist = 10000)
+st_geometry_type(point_buffers)
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+st_geometry_type(point_buffers_sf)[1]
+head(sf::st_drop_geometry(point_buffers_sf))
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(st_geometry(aoi_qc), col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(st_geometry(zones_qc), add = TRUE, col = "#9ecae122", border = "#264653", lwd = 1)
+plot(st_geometry(point_buffers_sf), add = TRUE, col = "#37abc833", border = "#37abc8", lwd = 1)
+plot(st_geometry(points_sf_qc), add = TRUE, pch = 16, col = "#7f1d1d", cex = 0.7)
+```
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+point_buffers <- buffer(terra_points_qc, width = 10000)
+geomtype(point_buffers)
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+geomtype(terra_point_buffers)
+head(terra_point_buffers)
+```
+:::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(terra_aoi_qc, col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(terra_zones_qc, add = TRUE, col = "#9ecae122", border = "#264653", lwd = 1)
+plot(terra_point_buffers, add = TRUE, col = "#37abc833", border = "#37abc8", lwd = 1)
+plot(terra_points_qc, add = TRUE, pch = 16, col = "#7f1d1d", cex = 0.7)
+```
+:::
+:::
+<!-- end columns -->
+:::
+
+::: {.callout-note icon=false}
+Buffers create new geometries at a fixed distance around features, so they are usually done in a projected CRS with interpretable distance units.
+:::
+
+## Exercise 3 {.exercise-break .center}
+
+### Vector Operations
+
+Subset, measure, join, intersect, buffer
+
 
 # Raster Data
 
