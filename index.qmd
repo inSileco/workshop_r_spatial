@@ -25,80 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #| message: false
 #| warning: false
 #| echo: false
-library(sf)
-library(terra)
-library(stars)
-library(mapview)
-aoi <- st_read("data/polygons.gpkg", layer = "study_area", quiet = TRUE)
-zones <- st_read("data/polygons.gpkg", layer = "zones", quiet = TRUE)
-terra_aoi <- terra::vect("data/polygons.gpkg", layer = "study_area")
-terra_zones <- terra::vect("data/polygons.gpkg", layer = "zones")
-points_tbl <- read.csv("data/points.csv")
-points_sf <- st_as_sf(points_tbl, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
-terra_points <- terra::vect(points_tbl, geom = c("lon", "lat"), crs = "EPSG:4326")
-tracks_sf <- points_sf |>
-  dplyr::arrange(track_id, timestamp) |>
-  dplyr::group_by(track_id) |>
-  dplyr::summarise(do_union = FALSE) |>
-  st_cast("LINESTRING")
-tracks_tbl <- points_tbl |>
-  dplyr::arrange(track_id, timestamp) |>
-  dplyr::summarise(
-    wkt = paste0(
-      "LINESTRING (",
-      paste(paste(lon, lat), collapse = ", "),
-      ")"
-    ),
-    .by = track_id
-  )
-terra_tracks <- terra::vect(tracks_tbl, geom = "wkt", crs = "EPSG:4326")
-aoi_qc <- st_transform(aoi, 32198)
-zones_qc <- st_transform(zones, 32198)
-points_sf_qc <- st_transform(points_sf, 32198)
-tracks_sf_qc <- st_transform(tracks_sf, 32198)
-terra_aoi_qc <- terra::project(terra_aoi, "EPSG:32198")
-terra_zones_qc <- terra::project(terra_zones, "EPSG:32198")
-terra_points_qc <- terra::project(terra_points, "EPSG:32198")
-terra_tracks_qc <- terra::project(terra_tracks, "EPSG:32198")
-focus_area <- zones |>
-  dplyr::filter(zone_id %in% c("NE", "SE")) |>
-  dplyr::summarise()
-points_focus_sf <- st_filter(points_sf, focus_area)
-zones_focus_sf <- st_crop(zones, st_bbox(focus_area))
-terra_focus_area <- terra_zones[terra_zones$zone_id %in% c("NE", "SE")]
-terra_points_focus <- crop(terra_points, terra_focus_area)
-terra_zones_focus <- crop(terra_zones, ext(terra_focus_area))
-zone_area_sf <- data.frame(
-  zone_id = zones_qc$zone_id,
-  area_km2 = round(as.numeric(units::set_units(st_area(zones_qc), "km^2")), 1)
-)
-track_length_sf <- data.frame(
-  track_id = tracks_sf_qc$track_id,
-  length_km = round(as.numeric(units::set_units(st_length(tracks_sf_qc), "km")), 1)
-)
-point_boundary_sf <- data.frame(
-  obs_id = points_sf_qc$obs_id,
-  boundary_km = round(as.numeric(units::set_units(st_distance(points_sf_qc, st_boundary(aoi_qc)), "km")), 1)
-)
-zone_area_terra <- data.frame(
-  zone_id = terra_zones_qc$zone_id,
-  area_km2 = round(expanse(terra_zones_qc, unit = "km"), 1)
-)
-track_length_terra <- data.frame(
-  track_id = terra_tracks_qc$track_id,
-  length_km = round(perim(terra_tracks_qc) / 1000, 1)
-)
-point_boundary_terra <- data.frame(
-  obs_id = terra_points_qc$obs_id,
-  boundary_km = round(distance(terra_points_qc, as.lines(terra_aoi_qc))[, 1] / 1000, 1)
-)
-points_joined_sf <- st_join(points_sf, zones[, c("zone_id", "zone_type")])
-terra_point_attrs <- terra::extract(terra_zones, terra_points)
-terra_points_joined <- cbind(terra_points, terra_point_attrs[, c("zone_id", "zone_type")])
-track_segments_sf <- suppressWarnings(st_intersection(tracks_sf_qc, zones_qc))
-terra_track_segments <- intersect(terra_tracks_qc, terra_zones_qc)
-point_buffers_sf <- st_buffer(points_sf_qc, dist = 10000)
-terra_point_buffers <- buffer(terra_points_qc, width = 10000)
+source("setup_slide_data.R", local = knitr::knit_global())
 ```
 
 
@@ -452,7 +379,7 @@ CO2 |>
 ***Choose Your Tool(s)***
 
 ::: {.panel-tabset .code-tabs}
-##### `sf`
+##### `sf/stars`
 
 ```{r}
 #| eval: false
@@ -1741,171 +1668,1238 @@ Buffers create new geometries at a fixed distance around features, so they are u
 Subset, measure, join, intersect, buffer
 
 
-# Raster Data
+# Raster Data in R
+
+***stars*** & ***terra***
+
 
 ## Read Raster Data
 
-:::: {.columns}
-::: {.column width="50%"}
-`stars`
+::: {.panel-tabset .code-tabs}
+##### `stars`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-elevation <- read_stars("elevation.tif")
+surface <- read_stars("data/surface.tif")
+surface
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+surface_stars
 ```
 :::
-::: {.column width="50%"}
-`terra`
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+plot(surface_stars, reset = FALSE, axes = FALSE, main = "")
+plot(st_geometry(aoi), add = TRUE, border = "#355c67", lwd = 2)
+```
+:::
+:::
+<!-- end columns -->
+
+##### `terra`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-elevation <- rast("elevation.tif")
+surface <- rast("data/surface.tif")
+surface
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+surface_terra
 ```
 :::
-::::
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(surface_terra, axes = FALSE, main = "")
+plot(terra_aoi, add = TRUE, border = "#355c67", lwd = 2)
+```
+:::
+:::
+<!-- end columns -->
+:::
 
 ## Inspect Raster Data
 
-- how many layers?
-- what is the resolution?
-- what is the extent?
-- what CRS is it in?
-- what do the values represent?
+::: {.panel-tabset .code-tabs}
+##### `stars`
 
-## Basic Raster Plotting
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+st_dimensions(surface)
+st_bbox(surface)
+st_crs(surface)$input
+```
 
-- use `plot()` for a quick check
-- inspect the color scale and coverage
-- compare raster extent to vector layers
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+st_dimensions(surface_stars)
+st_bbox(surface_stars)
+st_crs(surface_stars)$input
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+dim(surface)
+res(surface)
+ext(surface)
+crs(surface, proj = TRUE)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+dim(surface_terra)
+res(surface_terra)
+ext(surface_terra)
+crs(surface_terra, proj = TRUE)
+```
+:::
+
+## Export Raster Outputs
+
+::: {.panel-tabset .code-tabs}
+##### `stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+write_stars(surface_mask, "outputs/surface_focus.tif")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+stars_export <- tempfile(fileext = ".tif")
+write_stars(surface_stars_mask, stars_export)
+data.frame(
+  object = "surface_stars_mask",
+  file = basename(stars_export),
+  exists = file.exists(stars_export)
+)
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+writeRaster(surface_mask, "outputs/surface_focus.tif", overwrite = TRUE)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+terra_raster_export <- tempfile(fileext = ".tif")
+writeRaster(surface_terra_mask, terra_raster_export, overwrite = TRUE)
+data.frame(
+  object = "surface_terra_mask",
+  file = basename(terra_raster_export),
+  exists = file.exists(terra_raster_export)
+)
+```
+:::
+
+## Quick Static Raster Plotting
+
+::: {.panel-tabset .code-tabs}
+##### `stars`
+
+```{r}
+#| eval: false
+plot(surface, col = viridis::viridis(100))
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| fig-align: center
+#| out-width: 60%
+plot(surface_stars, reset = FALSE, axes = FALSE, main = "", col = viridis::viridis(100))
+```
+
+##### `terra`
+
+```{r}
+#| eval: false
+plot(surface)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| fig-align: center
+#| out-width: 65%
+par(mar = c(0, 0, 0, 0))
+plot(surface_terra, axes = FALSE, main = "")
+plot(terra_aoi, add = TRUE, border = "#355c67", lwd = 2)
+```
+:::
+
+## Quick Interactive Raster Mapping
+
+::: {.panel-tabset .code-tabs}
+##### `stars`
+
+```{r}
+#| eval: false
+mapview(surface) + mapview(aoi)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+mapview(surface_stars) + mapview(aoi)
+```
+
+##### `terra`
+
+```{r}
+#| eval: false
+mapview(surface) + mapview(aoi)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+mapview(surface_terra) + mapview(terra_aoi)
+```
+:::
+
+
+## Exercise 4 {.exercise-break .center}
+
+### Raster Foundations
+
+Import, inspect, transform, export, visualize
+
 
 ## Crop, Mask, Project
 
-:::: {.columns}
-::: {.column width="33%"}
-`Crop`
-
-- reduce the spatial extent
-- keep a window of interest
-:::
-::: {.column width="33%"}
-`Mask`
-
-- keep cells only inside a geometry
-- remove cells outside a polygon
-:::
-::: {.column width="33%"}
-`Project`
-
-- change CRS
-- usually implies resampling
-:::
-::::
-
-## Raster Transformation API Lens
-
-:::: {.columns}
-::: {.column width="50%"}
-`sf/stars`
+::: {.panel-tabset .code-tabs}
+##### `stars`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-elevation_lcc <- st_warp(elevation, crs = st_crs(city_boundary))
-elevation_city <- st_crop(elevation_lcc, st_bbox(city_boundary))
+crop_zone <- zones |> dplyr::filter(zone_id == "NE")
+buffer_one <- st_transform(point_buffers[1, ], st_crs(surface))
+surface_qc <- st_warp(surface, crs = st_crs(aoi_qc))
+surface_crop <- st_crop(surface, st_bbox(crop_zone))
+surface_mask <- surface[buffer_one]
+```
+
+::: {.columns}
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+#| out-width: 100%
+plot(surface_stars_qc, reset = FALSE, axes = FALSE, main = "Project")
+plot(st_geometry(aoi_qc), add = TRUE, border = "#355c67", lwd = 2)
 ```
 :::
-::: {.column width="50%"}
-`terra`
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+#| out-width: 100%
+plot(surface_stars_crop_demo, reset = FALSE, axes = FALSE, main = "Crop")
+plot(st_geometry(crop_zone_sf), add = TRUE, border = "#355c67", lwd = 2)
+```
+:::
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+#| out-width: 100%
+plot(surface_stars_mask_demo, reset = FALSE, axes = FALSE, main = "Mask")
+plot(st_geometry(single_buffer_sf), add = TRUE, border = "#355c67", lwd = 1.5)
+```
+:::
+:::
+
+##### `terra`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-elevation_lcc <- project(elevation, "EPSG:32198")
-elevation_city <- crop(elevation_lcc, ext(city_boundary))
+crop_zone <- zones[zones$zone_id == "NE"]
+buffer_one <- project(point_buffers[1], crs(surface))
+surface_qc <- project(surface, "EPSG:32198")
+surface_crop <- crop(surface, crop_zone)
+surface_mask <- mask(surface, buffer_one)
+```
+
+::: {.columns}
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+#| out-width: 100%
+par(mar = c(0, 0, 1, 0))
+plot(surface_terra_qc, axes = FALSE, main = "Project")
+plot(terra_aoi_qc, add = TRUE, border = "#355c67", lwd = 2)
 ```
 :::
-::::
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+#| out-width: 100%
+par(mar = c(0, 0, 1, 0))
+plot(surface_terra_crop_demo, axes = FALSE, main = "Crop")
+plot(crop_zone_terra, add = TRUE, border = "#355c67", lwd = 2)
+```
+:::
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4
+#| out-width: 100%
+par(mar = c(0, 0, 1, 0))
+plot(surface_terra_mask_demo, axes = FALSE, main = "Mask")
+plot(single_buffer_terra, add = TRUE, border = "#355c67", lwd = 1.2)
+```
+:::
+:::
+:::
 
-## Raster Questions To Ask
+::: {.callout-note}
+### Raster manipulations
+Here the three operations are shown independently: `project` changes CRS, `crop` uses one zone as the target extent, and `mask` keeps cells only inside a single buffer geometry.
+:::
 
-- do I need to reproject this raster?
-- should I crop first or project first?
-- does the current resolution fit my question?
-- am I using this raster for display or analysis?
+## Resampling
+
+::: {.panel-tabset .code-tabs}
+##### `stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+template <- st_as_stars(st_bbox(surface), dx = 0.05, dy = 0.05)
+st_crs(template) <- st_crs(surface)
+surface_near <- st_warp(surface, dest = template, method = "near", use_gdal = TRUE)
+surface_bilinear <- st_warp(surface, dest = template, method = "bilinear", use_gdal = TRUE)
+```
+
+::: {.columns}
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.5
+#| out-width: 100%
+plot(surface_stars, reset = FALSE, axes = FALSE, main = "Original")
+```
+:::
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.5
+#| out-width: 100%
+plot(surface_stars_near, reset = FALSE, axes = FALSE, main = "Near")
+```
+:::
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.5
+#| out-width: 100%
+plot(surface_stars_bilinear, reset = FALSE, axes = FALSE, main = "Bilinear")
+```
+:::
+:::
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+template <- rast(ext(surface), resolution = 0.05, crs = crs(surface))
+surface_near <- resample(surface, template, method = "near")
+surface_bilinear <- resample(surface, template, method = "bilinear")
+```
+
+::: {.columns}
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.5
+#| out-width: 100%
+par(mar = c(0, 0, 1, 0))
+plot(surface_terra, axes = FALSE, main = "Original")
+```
+:::
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.5
+#| out-width: 100%
+par(mar = c(0, 0, 1, 0))
+plot(surface_terra_near, axes = FALSE, main = "Near")
+```
+:::
+::: {.column width="33%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.5
+#| out-width: 100%
+par(mar = c(0, 0, 1, 0))
+plot(surface_terra_bilinear, axes = FALSE, main = "Bilinear")
+```
+:::
+:::
+:::
+
+::: {.callout-note}
+### Resampling changes the cell grid
+`Near` is common for categorical rasters, while `bilinear` is common for continuous surfaces.
+:::
+
+## Multiple Raster Layers
+
+::: {.panel-tabset .code-tabs}
+##### `stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+surface2 <- surface * 1.1
+names(surface2) <- "surface2"
+surface_stack <- c(surface, surface2)
+surface_mean <- st_apply(surface_stack, MARGIN = c("x", "y"), FUN = mean)
+```
+
+::: {.columns}
+::: {.column width="45%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+names(surface_stars_stack)
+length(names(surface_stars_stack))
+```
+:::
+::: {.column width="55%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+#| out-width: 70%
+plot(surface_stars_mean, reset = FALSE, axes = FALSE, main = "Cell-wise mean")
+```
+:::
+:::
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+surface2 <- surface * 1.1
+names(surface2) <- "surface2"
+surface_stack <- c(surface, surface2)
+surface_mean <- app(surface_stack, mean)
+```
+
+::: {.columns}
+::: {.column width="45%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| results: markup
+names(surface_terra_stack)
+nlyr(surface_terra_stack)
+```
+:::
+::: {.column width="55%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5
+#| out-width: 70%
+par(mar = c(0, 0, 1, 0))
+plot(surface_terra_mean, axes = FALSE, main = "Cell-wise mean")
+```
+:::
+:::
+:::
+
+::: {.callout-note}
+### Multi-layer rasters
+Can represent bands, variables, or time steps. Cell-wise functions combine information across layers.
+:::
+
+
+## Exercise 5 {.exercise-break .center}
+
+### Raster Operations
+
+Project, crop, mask, resample, layer operations
+
+
 
 # Integrated Workflows
 
-## Why Integration Matters
+## Working with Vectors & Rasters
 
-- vector features define locations, paths, and areas
-- rasters provide continuous environmental context
-- many analyses require combining both
+![](img/integration_workflow.svg){width=92% fig-align="center"}
 
-## Extract Raster Values To Vectors
 
-- points: value at each location
-- polygons: mean, min, max, or sum within each area
-- lines: summaries along roads, rivers, or tracks
+## Extract Raster Values To Points
 
-## Extraction API Lens
-
-:::: {.columns}
-::: {.column width="50%"}
-`sf/stars`
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-stations$temp <- st_extract(temperature, stations)[[1]][, 1]
-zones$mean_elev <- st_extract(elevation, zones, FUN = mean)[[1]]
+points_surface <- st_extract(surface, points_joined)
+names(points_surface)[1] <- "surface_value"
+```
+
+::: {.columns}
+::: {.column width="65%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(sf::st_drop_geometry(points_surface_sf))
 ```
 :::
-::: {.column width="50%"}
-`terra`
+::: {.column width="35%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+plot(surface_stars, reset = FALSE, axes = FALSE, main = "")
+plot(st_geometry(points_surface_sf), add = TRUE, pch = 21, bg = hcl.colors(nrow(points_surface_sf), "YlOrRd")[rank(points_surface_sf$surface_value)], col = "#17323a", cex = 1)
+```
+:::
+:::
+
+##### `terra`
 
 ```{r}
+#| message: false
+#| warning: false
 #| eval: false
-station_vals <- extract(temperature, stations)
-zone_vals <- extract(elevation, zones, fun = mean)
+point_vals <- extract(surface, points_joined)
+points_surface <- cbind(points_joined, point_vals[, "surface_value", drop = FALSE])
+```
+
+::: {.columns}
+::: {.column width="60%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(as.data.frame(terra_points_surface)[, c("obs_id", "zone_id", "zone_type", "surface_value")])
 ```
 :::
-::::
+::: {.column width="40%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+par(mar = c(0, 0, 0, 0))
+plot(surface_terra, axes = FALSE, main = "")
+plot(terra_points_surface, add = TRUE, pch = 21, bg = hcl.colors(nrow(terra_points_surface), "YlOrRd")[rank(terra_points_surface$surface_value)], col = "#17323a", cex = 1)
+```
+:::
+:::
+:::
+
+## Extract Raster Values To Lines
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+tracks_surface <- st_extract(surface, tracks, FUN = function(x) mean(x, na.rm = TRUE))
+```
+
+::: {.columns}
+::: {.column width="60%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(sf::st_drop_geometry(tracks_surface_sf))
+```
+:::
+::: {.column width="40%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+line_cols <- hcl.colors(nrow(tracks_surface_sf), "TealGrn")[rank(tracks_surface_sf$surface_value)]
+plot(surface_stars, reset = FALSE, axes = FALSE, main = "")
+plot(st_geometry(tracks_surface_sf), add = TRUE, col = line_cols, lwd = 2.5)
+```
+:::
+:::
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+track_vals <- extract(surface, tracks, fun = mean, na.rm = TRUE)
+tracks_surface <- cbind(tracks, track_vals[, "surface_value", drop = FALSE])
+```
+
+::: {.columns}
+::: {.column width="60%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(as.data.frame(terra_tracks_surface)[, c("track_id", "surface_value")])
+```
+:::
+::: {.column width="40%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+line_cols <- hcl.colors(nrow(terra_tracks_surface), "TealGrn")[rank(terra_tracks_surface$surface_value)]
+par(mar = c(0, 0, 0, 0))
+plot(surface_terra, axes = FALSE, main = "")
+plot(terra_tracks_surface, add = TRUE, col = line_cols, lwd = 2.5)
+```
+:::
+:::
+:::
+
+## Extract Raster Values To Polygons
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+zones_surface <- st_extract(surface, zones, FUN = function(x) mean(x, na.rm = TRUE))
+```
+
+::: {.columns}
+::: {.column width="60%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(sf::st_drop_geometry(zones_surface_sf))
+```
+:::
+::: {.column width="40%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+poly_cols <- hcl.colors(nrow(zones_surface_sf), "Sunset")[rank(zones_surface_sf$surface_value)]
+plot(st_geometry(zones_surface_sf), col = poly_cols, border = "#264653", lwd = 1, axes = FALSE, main = "")
+```
+:::
+:::
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+zone_vals <- extract(surface, zones, fun = mean, na.rm = TRUE)
+zones_surface <- cbind(zones, zone_vals[, "surface_value", drop = FALSE])
+```
+
+::: {.columns}
+::: {.column width="60%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(as.data.frame(terra_zones_surface)[, c("zone_id", "zone_type", "surface_value")])
+```
+:::
+::: {.column width="40%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+poly_cols <- hcl.colors(nrow(terra_zones_surface), "Sunset")[rank(terra_zones_surface$surface_value)]
+par(mar = c(0, 0, 0, 0))
+plot(terra_zones_surface, col = poly_cols, border = "#264653", lwd = 1, axes = FALSE, main = "")
+```
+:::
+:::
+:::
+
+## Summarise Extracted Values
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+point_zone_summary <- points_surface |>
+  st_drop_geometry() |>
+  group_by(zone_id, zone_type) |>
+  summarise(
+    point_n = n(),
+    mean_surface = mean(surface_value, na.rm = TRUE),
+    mean_value = mean(value, na.rm = TRUE)
+  )
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+point_zone_summary_sf
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+point_zone_summary <- as.data.frame(points_surface) |>
+  group_by(zone_id, zone_type) |>
+  summarise(
+    point_n = n(),
+    mean_surface = mean(surface_value, na.rm = TRUE),
+    mean_value = mean(value, na.rm = TRUE)
+  )
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+point_zone_summary_terra
+```
+:::
 
 ## Build Analysis Tables
 
-- drop geometry when the spatial step is complete
-- keep only variables needed for analysis
-- summarise by feature, zone, or category
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
 
-## Table-Building Verbs
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+analysis_table <- point_zone_summary |>
+  left_join(zone_area, by = "zone_id") |>
+  select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)
+```
 
-- `select()`
-- `mutate()`
-- `group_by()`
-- `summarise()`
-- `count()`
-- `left_join()`
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+analysis_table_sf
+```
 
-## From Spatial Data To Models
+##### `terra`
 
-- count events by area
-- compare mean raster values across zones
-- model a response as a function of spatial predictors
-- use spatial outputs as inputs to standard statistical tools
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+analysis_table <- point_zone_summary |>
+  left_join(zone_area, by = "zone_id") |>
+  select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)
+```
 
-## A Simple Analysis Pattern
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+analysis_table_terra
+```
+:::
 
-1. create or import features
-2. align CRS
-3. subset to a study area
-4. measure or overlay vectors
-5. extract raster values
-6. summarise into a clean table
-7. analyse or visualize
+## Exercise 6 {.exercise-break .center}
 
-## KDE As An Exploratory Tool
+### Integrated Workflows
+
+Extract, summarise, build analysis tables
+
+# Spatial Analytics
+
+## Spatial Analytics In This Workshop
+
+- spatial analytics is a very broad field
+- this workshop does not aim to cover that full breadth
+- our emphasis is on getting spatial data ready for analysis
+- we use simple GLMs and KDEs as illustrative examples of what can follow
+
+::: {.callout-note}
+### The point here is not the analyses themselves. The point is the workflow that gets you from spatial data to analysis-ready inputs.
+:::
+
+## Prepare Data For Analysis
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+analysis_data <- points_surface |>
+  st_drop_geometry() |>
+  select(obs_id, track_id, zone_id, zone_type, category, value, surface_value) |>
+  filter(!is.na(zone_id), !is.na(surface_value))
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(analysis_data_sf)
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+analysis_data <- as.data.frame(points_surface) |>
+  select(obs_id, track_id, zone_id, zone_type, category, value, surface_value) |>
+  filter(!is.na(zone_id), !is.na(surface_value))
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+head(analysis_data_terra)
+```
+:::
+
+## A Simple GLM
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+glm_fit <- glm(
+  value ~ surface_value + zone_type,
+  family = poisson(),
+  data = analysis_data
+)
+summary(glm_fit)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+glm_coef_sf
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+glm_fit <- glm(
+  value ~ surface_value + zone_type,
+  family = poisson(),
+  data = analysis_data
+)
+summary(glm_fit)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+glm_coef_terra
+```
+:::
+
+## Bonus: Advanced GLM
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+pseudo_points <- st_sample(aoi_qc, size = nrow(points_qc), exact = TRUE) |>
+  st_as_sf() |>
+  st_join(zones_qc[, c("zone_id", "zone_type")])
+
+pseudo_points$surface_value <- st_extract(surface_qc, pseudo_points)[[1]]
+pseudo_points$presence <- 0
+points_qc$presence <- 1
+
+pa_data <- bind_rows(points_qc, pseudo_points) |>
+  st_drop_geometry() |>
+  filter(!is.na(zone_id), !is.na(surface_value))
+
+glm_pa <- glm(presence ~ surface_value + zone_type, family = binomial(), data = pa_data)
+```
+
+::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+glm_pa_coef_sf
+```
+:::
+::: {.column width="45%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 70%
+par(mar = c(0, 0, 0, 0))
+plot(st_geometry(aoi_qc), col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(st_geometry(pseudo_points_sf), add = TRUE, pch = 1, col = "#7aa6c2", cex = 0.9)
+plot(st_geometry(presence_points_sf), add = TRUE, pch = 16, col = "#7f1d1d", cex = 0.8)
+```
+:::
+:::
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+pseudo_points <- spatSample(aoi_qc, size = nrow(points_qc), method = "random", as.points = TRUE)
+pseudo_zone <- extract(zones_qc, pseudo_points)
+pseudo_surface <- extract(surface_qc, pseudo_points)
+pseudo_points <- cbind(pseudo_points, pseudo_zone[, c("zone_id", "zone_type")], pseudo_surface[, "surface_value", drop = FALSE])
+pseudo_points$presence <- 0
+points_qc$presence <- 1
+
+pa_data <- bind_rows(as.data.frame(points_qc), as.data.frame(pseudo_points)) |>
+  filter(!is.na(zone_id), !is.na(surface_value))
+
+glm_pa <- glm(presence ~ surface_value + zone_type, family = binomial(), data = pa_data)
+```
+
+::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+glm_pa_coef_terra
+```
+:::
+::: {.column width="45%"}
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 70%
+par(mar = c(0, 0, 0, 0))
+plot(terra_aoi_qc, col = "#f7fbfc", border = "#355c67", lwd = 2, axes = FALSE, main = "")
+plot(pseudo_points_terra, add = TRUE, pch = 1, col = "#7aa6c2", cex = 0.9)
+plot(presence_points_terra, add = TRUE, pch = 16, col = "#7f1d1d", cex = 0.8)
+```
+:::
+:::
+:::
+
+## Exercise 7 {.exercise-break .center}
+
+### Spatial Analytics
+
+Prepare data, fit simple GLMs
+
+<br>
+
+*Bonus: generate pseudo-absences for your GLM with points data*
+
+## Kernel Density Estimation (KDE) 
+
+***Use as an exploratory tools***
 
 - useful for point patterns
 - produces a smooth intensity surface
 - helps visualize concentration or hotspots
 - often used for exploration rather than formal inference
+
+## Kernel Density Estimation (KDE) 
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+pts_xy <- st_coordinates(points_qc)
+bbox <- st_bbox(aoi_qc)
+points_kde <- MASS::kde2d(
+  pts_xy[, 1], pts_xy[, 2],
+  n = 80,
+  h = c(10000, 10000),
+  lims = c(bbox["xmin"], bbox["xmax"], bbox["ymin"], bbox["ymax"])
+)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+list(
+  x_head = round(head(points_kde_sf_raw$x), 1),
+  y_head = round(head(points_kde_sf_raw$y), 1),
+  z_dim = dim(points_kde_sf_raw$z)
+)
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+pts_xy <- crds(points_qc)
+bbox <- ext(aoi_qc)
+points_kde <- MASS::kde2d(
+  pts_xy[, 1], pts_xy[, 2],
+  n = 80,
+  h = c(10000, 10000),
+  lims = c(bbox$xmin, bbox$xmax, bbox$ymin, bbox$ymax)
+)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+list(
+  x_head = round(head(points_kde_terra_raw$x), 1),
+  y_head = round(head(points_kde_terra_raw$y), 1),
+  z_dim = dim(points_kde_terra_raw$z)
+)
+```
+:::
+
+## Kernel Density Estimation (KDE) 
+
+::: {.panel-tabset .code-tabs}
+##### `sf/stars`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+points_kde <- st_as_stars(
+  list(kde = points_kde$z),
+  dimensions = st_dimensions(x = points_kde$x, y = points_kde$y)
+) |>
+  st_set_crs(32198)
+
+points_kde <- points_kde[aoi_qc]
+points_kde_plot <- points_kde
+points_kde_plot[[1]] <- points_kde_plot[[1]] / max(points_kde_plot[[1]], na.rm = TRUE)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 50%
+#| fig-align: center
+kde_breaks <- seq(0, 1, by = 0.1)
+kde_cols <- viridis::viridis(length(kde_breaks) - 1)
+plot(st_geometry(aoi_qc), border = "#355c67", col = "#f7fbfc")
+plot(points_kde_sf_plot, breaks = kde_breaks, col = kde_cols, add = TRUE)
+plot(st_geometry(points_sf_qc), pch = 16, col = "#7f1d1d", cex = 0.55, add = TRUE)
+plot(st_geometry(aoi_qc), border = "#355c67", col = NA, add = TRUE)
+```
+
+##### `terra`
+
+```{r}
+#| message: false
+#| warning: false
+#| eval: false
+points_kde <- rast(
+  t(points_kde$z)[nrow(t(points_kde$z)):1, ],
+  extent = ext(min(points_kde$x), max(points_kde$x), min(points_kde$y), max(points_kde$y)),
+  crs = "EPSG:32198"
+)
+
+points_kde <- mask(points_kde, aoi_qc)
+points_kde_plot <- points_kde / global(points_kde, "max", na.rm = TRUE)[1, 1]
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 50%
+#| fig-align: center
+kde_breaks <- seq(0, 1, by = 0.1)
+kde_cols <- viridis::viridis(length(kde_breaks) - 1)
+plot(terra_aoi_qc, border = "#355c67", col = NA)
+plot(points_kde_terra_plot, breaks = kde_breaks, col = kde_cols, add = TRUE)
+points(terra_points_qc, pch = 16, cex = 0.55, col = "#7f1d1d")
+plot(terra_aoi_qc, border = "#355c67", col = NA, add = TRUE)
+```
+:::
+
+## Exercise 8 {.exercise-break .center}
+
+### Spatial Analytics
+
+Fit KDEs and explore surfaces
+
+# Advanced Mapping
 
 ## Static And Interactive Mapping
 
