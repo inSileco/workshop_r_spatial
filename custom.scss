@@ -25,3 +25,12 @@ $presentation-heading-color: #383d3d !default;
 .reveal a {
     line-height: 1.2em;
 }
+
+.reveal .slides section p,
+.reveal .slides section li,
+.reveal .slides section td,
+.reveal .slides section th,
+.reveal .slides section blockquote,
+.reveal .slides section .callout-body {
+    font-size: 0.75em;
+}

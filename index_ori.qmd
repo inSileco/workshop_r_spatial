@@ -1,0 +1,625 @@
+---
+title: "Workshop R spatial"
+author: "Team inSileco"
+date: "2026-03-25"
+from: markdown+emoji
+---
+
+```{=html}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var logo = document.querySelector('.slide-logo');
+  if (logo) {
+    var link = document.createElement('a');
+    link.href = 'https://www.insileco.io';
+    link.target = '_blank';
+    logo.parentNode.insertBefore(link, logo);
+    link.appendChild(logo);
+  }
+});
+</script>
+```
+
+# Day 1
+
+
+# Welcome 
+
+<!-- Go around the table + slide insileco? -->
+<!-- Why do you expect  -->
+
+
+# R as a GIS: Why? 
+
+<!-- Discuss why it makes sense to use R -->
+
+
+
+## R to build reproducible pipelines
+
+![](img/flow.svg)
+
+::: {.notes}
+Could be python etc...
+Similar as QGIS for C libraries
+:::
+
+
+## A note about geocomputation 
+
+- General introduction 
+  - https://r.geocompx.org/
+  - https://sci1031.github.io/sci1031/
+
+
+::: {.callout-caution}
+We won't cover general 'what's the best projection for that' we will cover 'how I can change the projection withR'
+:::
+
+
+
+
+## A note about IDEs
+
+<!-- show them? -->
+
+- RStudio 
+- VSCode 
+- Positron 
+
+
+## A note about pipes 
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+### `%>%`
+
+- pipe from maggritr
+
+```R
+CO2 %>%
+  dplyr::filter(Type == "Quebec")
+```
+:::
+
+::: {.column width="50%"}
+
+### `|>` 
+
+- native pipe 
+
+```R
+CO2 |>
+  dplyr::filter(Type == "Quebec")
+```
+
+:::
+
+::::
+
+
+
+
+
+
+## Main packages
+
+- Before `sp` + `raster`
+- Now
+  - `sf` + `stars`
+  - `terra` (+ tidyterra)
+
+## Main packages 
+
+- A nice level of abstraction to work with spatial data 
+
+- `sf` GEOS and GDAL PROJ, S2Geometry for spherical operations (on longitude/latitude data).
+
+- `terra` does planar geometry using GEOS and GDAL.
+
+For raster operations, terra relies on PROJ and GDAL rather than S2.
+
+
+:::footer
+[r-spatial](https://github.com/r-spatial)
+&nbsp; ***·*** &nbsp;
+[Geocomputation with R](https://r.geocompx.org/)
+:::
+
+
+# `sf`
+
+## Simple features 
+
+> Simple features or simple feature access refers to a formal standard (ISO 19125-1:2004) that describes how objects in the real world can be represented in computers, with emphasis on the spatial geometry of these objects. It also describes how such objects can be stored in and retrieved from databases, and which geometrical operations should be defined for them.
+
+> The standard is widely implemented in spatial databases (such as PostGIS), commercial GIS (e.g., ESRI ArcGIS) and forms the vector data basis for libraries such as GDAL. A subset of simple features forms the GeoJSON standard.
+
+:::footer
+[Simple features for R](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html)
+:::
+
+
+## Simple features from scratch
+
+<!-- do we want to go there?? -->
+
+- One point
+
+```{R}
+#| echo: true
+library(sf)
+st_point(c(-71.2080, 46.8139))
+```
+
+
+## Simple features from scratch
+
+- 3 points within a collection 
+
+
+```{R}
+geom <- st_sfc(
+  st_point(c(-71.2080, 46.8139)),  # Québec
+  st_point(c(-71.2500, 46.8200)),
+  st_point(c(-71.1800, 46.8000)),
+  crs = 4326
+)
+geom
+```
+
+
+## Simple features from scratch
+
+A data frame with attributes
+
+```{R}
+df <- data.frame(
+  bird = c("Snow Goose", "Common Eider", "Herring Gull"),
+  date = as.Date(c("2025-04-12", "2025-04-13", "2025-04-14"))
+)
+
+# 3. Combine attributes and geometry into an sf object
+birds_sf <- st_sf(df, geometry = geom)
+
+birds_sf
+```
+
+
+## Reading and writting vector files
+
+- `st_read()`
+- `st_write()`
+
+```{R}
+#| echo: true
+library(sf)
+nc <- st_read(system.file("shape/nc.shp", package = "sf"))
+nc
+```
+
+```{R}
+#| echo: true
+#| eval: false
+st_write(nc, "nc.geojson", driver = "GeoJSON")
+```
+
+
+## Projection
+
+- `st_crs()`
+- `st_transform()`
+
+```{R}
+#| echo: true
+st_crs(nc)
+```
+
+```{R}
+#| echo: true
+nc_lcc <- st_transform(nc, crs = 32198) # NAD83 / Quebec Lambert
+st_crs(nc_lcc)$input
+```
+
+
+
+## Exercise 1: R as a converter 
+
+Create a function that 
+- read different files 
+- write in geojson in 4326
+
+- advanced? conversion using crs and format of a second file
+
+
+
+## Visualisation 
+
+- `plot()`
+- `mapview()`
+
+
+## Buffer
+
+- `st_buffer()`
+
+```{R}
+#| echo: true
+# Buffer of 10 km around the first 3 counties
+nc_sub <- nc[1:3, ]
+nc_buf <- st_buffer(nc_sub, dist = 10000) # distance in meters (after transform)
+plot(st_geometry(nc_buf), col = "lightblue", border = "blue")
+plot(st_geometry(nc_sub), col = "salmon", border = "red", add = TRUE)
+```
+
+
+## Distance
+
+- `st_distance()`
+- `st_length()`
+
+```{R}
+#| echo: true
+# Distance between the first 3 counties (centroids)
+centroids <- st_centroid(nc[1:3, ])
+st_distance(centroids)
+```
+
+
+## Overalap and co 
+
+- `st_union()`
+- `st_within()`
+- `st_crosses()`
+
+
+## simplify
+
+```{R}
+#| echo: true
+nc_simple <- st_simplify(nc[1, ], dTolerance = 5000)
+par(mfrow = c(1, 2))
+plot(st_geometry(nc[1, ]), main = "Original")
+plot(st_geometry(nc_simple), main = "Simplified")
+```
+
+
+## tidyverse flow
+
+```{R}
+#| echo: true
+library(dplyr)
+
+nc |>
+  mutate(area_km2 = as.numeric(st_area(geometry)) / 1e6) |>
+  filter(area_km2 > 1000) |>
+  select(NAME, area_km2) |>
+  arrange(desc(area_km2))
+```
+
+## tidyverse flow: group_by + summarise
+
+```{R}
+#| echo: true
+# group_by dissolves geometries via st_union under the hood
+nc |>
+  mutate(region = ifelse(CNTY_ID <= 50, "West", "East")) |>
+  group_by(region) |>
+  summarise(n_counties = n()) |>
+  plot()
+```
+
+
+## Exercise 2 
+
+- read this 
+- do that manip 
+- save as this csv and or geospatial file
+
+
+# `stars`
+
+
+## `stars` 
+
+Spatiotemporal Arrays: Raster and Vector Datacubes
+
+
+## Example 
+
+```{R}
+library(dplyr)
+library(stars)
+tif = system.file("tif/L7_ETMs.tif", package = "stars")
+read_stars(tif) |>
+  slice(index = 1, along = "band") |>
+  plot()
+```
+
+
+## read and write
+
+```{R}
+#| echo: true
+library(stars)
+tif <- system.file("tif/L7_ETMs.tif", package = "stars")
+r <- read_stars(tif)
+r
+```
+
+```{R}
+#| echo: true
+#| eval: false
+write_stars(r, "output.tif")
+```
+
+## rewarp
+
+```{R}
+#| echo: true
+r_warped <- st_warp(r, crs = st_crs(32198)) # reproject raster
+r_warped
+```
+
+## extract
+
+```{R}
+#| echo: true
+# Extract raster values at point locations
+pts <- st_sfc(
+  st_point(c(288776, 9120761)),
+  st_point(c(291776, 9122761)),
+  crs = st_crs(r)
+)
+st_extract(r, pts)
+```
+
+## crop
+
+```{R}
+#| echo: true
+# Crop raster to a bounding box
+bbox <- st_bbox(c(xmin = 288776, ymin = 9120000, xmax = 292000, ymax = 9123000),
+                crs = st_crs(r))
+r_crop <- r[bbox]
+plot(r_crop[,,,1])
+```
+
+
+
+# `terra`
+
+
+## `terra`
+
+- `terra` replaces the older `raster` package
+- Handles both vector and raster data
+- Fast, memory-efficient (C++ backend)
+
+
+## Simple features with `terra`
+
+```{R}
+#| echo: true
+library(terra)
+# Create vector points
+pts <- vect(
+  data.frame(
+    bird = c("Snow Goose", "Common Eider", "Herring Gull"),
+    date = as.Date(c("2025-04-12", "2025-04-13", "2025-04-14")),
+    lon = c(-71.2080, -71.2500, -71.1800),
+    lat = c(46.8139, 46.8200, 46.8000)
+  ),
+  geom = c("lon", "lat"), crs = "EPSG:4326"
+)
+pts
+```
+
+
+## Reading and writing vector files
+
+- `vect()`
+- `writeVector()`
+
+```{R}
+#| echo: true
+nc_terra <- vect(system.file("shape/nc.shp", package = "sf"))
+nc_terra
+```
+
+```{R}
+#| echo: true
+#| eval: false
+writeVector(nc_terra, "nc.geojson", filetype = "GeoJSON")
+```
+
+
+## Projection
+
+- `crs()`
+- `project()`
+
+```{R}
+#| echo: true
+crs(nc_terra, describe = TRUE)
+```
+
+```{R}
+#| echo: true
+nc_lcc <- project(nc_terra, "EPSG:32198")
+crs(nc_lcc, describe = TRUE)
+```
+
+
+## Visualisation
+
+```{R}
+#| echo: true
+plot(nc_terra, "AREA")
+```
+
+
+## Buffer
+
+- `buffer()`
+
+```{R}
+#| echo: true
+nc_sub <- nc_terra[1:3, ]
+nc_buf <- buffer(nc_sub, width = 10000)
+plot(nc_buf, col = "lightblue", border = "blue")
+plot(nc_sub, col = "salmon", border = "red", add = TRUE)
+```
+
+
+## Distance
+
+- `distance()`
+
+```{R}
+#| echo: true
+centroids <- centroids(nc_terra[1:3, ])
+distance(centroids)
+```
+
+
+## Overlap and co
+
+- `union()`
+- `intersect()`
+- `erase()`
+
+
+## Simplify
+
+```{R}
+#| echo: true
+nc_simple <- simplifyGeom(nc_terra[1, ], tolerance = 5000)
+par(mfrow = c(1, 2))
+plot(nc_terra[1, ], main = "Original")
+plot(nc_simple, main = "Simplified")
+```
+
+
+## Raster: read and write
+
+```{R}
+#| echo: true
+tif <- system.file("tif/L7_ETMs.tif", package = "stars")
+r <- rast(tif)
+r
+```
+
+```{R}
+#| echo: true
+#| eval: false
+writeRaster(r, "output.tif")
+```
+
+
+## Raster: reproject
+
+```{R}
+#| echo: true
+r_proj <- project(r, "EPSG:32198")
+r_proj
+```
+
+
+## Raster: extract
+
+```{R}
+#| echo: true
+pts <- vect(
+  data.frame(x = c(288776, 291776), y = c(9120761, 9122761)),
+  geom = c("x", "y"), crs = crs(r)
+)
+extract(r, pts)
+```
+
+
+## Raster: crop
+
+```{R}
+#| echo: true
+e <- ext(288776, 292000, 9120000, 9123000)
+r_crop <- crop(r, e)
+plot(r_crop[[1]])
+```
+
+
+# Exercise 4
+
+<!-- Main exercise, we go over it the day after -->
+
+
+## Exercise 4
+
+
+
+
+
+
+
+
+# Day 2
+
+# Exercise 4
+
+## Exercise 4
+
+
+## Function and parallel computation
+
+
+:::footer
+[Parallel raster processing in stars](https://r-spatial.org/r/2023/09/21/stars-parallel.html)
+:::
+
+
+
+## Modeling 1
+
+<!-- create a dataframe based on spatial manipulation -->
+<!-- do we want to do an exercise here? -->
+
+
+## Modeling 2
+
+<!-- use directly spatial objects to do stat -->
+
+
+
+# Advanced mapping
+
+## tmap
+
+## leaflet 
+
+
+# Do more 
+
+
+## Use R package 
+
+## Shiny App Assistant 
+
+- <https://gallery.shinyapps.io/assistant>
+
+- Create an app that allows users to upload GeoJSON files and visualize them using Leaflet.
+- Modify the app to compute the total area when polygons are uploaded and display it in the card header.
+- Modify the app to also compute the total length for line geometries and display it in the card header.
+
+
+## Codex, claude and others
+
+
+
+## Using recent technos
+
+- <https://github.com/geoarrow/geoarrow-r>
+- <https://cran.r-project.org/web/packages/rpostgis/index.html>
+- <https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html>

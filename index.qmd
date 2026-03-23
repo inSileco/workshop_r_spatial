@@ -1,6 +1,6 @@
 ---
-title: "Workshop R spatial"
-author: "Team inSileco"
+title: "R in Space"
+author: "*inSileco*"
 date: "2026-03-25"
 from: markdown+emoji
 ---
@@ -20,20 +20,60 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 ```
 
-# Day 1
-
-
 # Welcome 
 
 <!-- Go around the table + slide insileco? -->
-<!-- Why do you expect  -->
+<!-- What do you expect  -->
+
+# Objectives
+
+## What To Expect
+
+:::: {.columns}
+::: {.column width="50%"}
+::: {.callout-note}
+## What This Workshop Is
+
+- a practical introduction to spatial workflows in R
+- a workshop about using R operationally as a GIS
+- focused on common manipulations you will reuse in real projects
+:::
+:::
+::: {.column width="50%"}
+::: {.callout-warning}
+## What This Workshop Is Not
+
+- not a full course in geodesy, cartography, or remote sensing
+- not a survey of every spatial package or method
+- not a theory-first geocomputation course
+:::
+:::
+::::
 
 
-# R as a GIS: Why? 
+## Resources
+
+- [Visualisation et analyse de données spatiales sous R (FR)](https://sci1031.github.io/sci1031/)
+- [Geocomputation with R](https://r.geocompx.org/)
+- [Spatial Data Science](https://r-spatial.org/book/)
+
+## Workshop Objective
+
+By the end of the workshop, participants should be able to use R as a GIS, work operationally with common spatial data manipulations, and have the right tools in hand to keep learning.
+
+## Our Focus
+
+- import spatial data
+- inspect geometry and CRS
+- transform and subset data
+- measure distance, area, and length
+- combine layers through joins and overlays
+- extract raster values to vector features
+- build summaries, analyses, and maps
+
+# R as a GIS
 
 <!-- Discuss why it makes sense to use R -->
-
-
 
 ## R to build reproducible pipelines
 
@@ -45,39 +85,238 @@ Similar as QGIS for C libraries
 :::
 
 
-## A note about geocomputation 
+## Spatial Data
 
-- General introduction 
-  - https://r.geocompx.org/
-  - https://sci1031.github.io/sci1031/
+<table class="spatial-objects-table">
+  <thead>
+    <tr>
+      <th>Object type</th>
+      <th>Description</th>
+      <th><code>sf</code></th>
+      <th><code>stars</code></th>
+      <th><code>terra</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="family-row">
+      <td>Vector</td>
+      <td class="family-note"><em>Where are the features?</em></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><img src="img/point.svg" class="obj-icon" alt="Point icon"> Points</td>
+      <td>Discrete locations with coordinates and attributes.</td>
+      <td><span class="pkg-check">&#10003;</span></td>
+      <td></td>
+      <td><span class="pkg-check">&#10003;</span></td>
+    </tr>
+    <tr>
+      <td><img src="img/line.svg" class="obj-icon" alt="Line icon"> Lines</td>
+      <td>Linear features such as roads, rivers, or tracks.</td>
+      <td><span class="pkg-check">&#10003;</span></td>
+      <td></td>
+      <td><span class="pkg-check">&#10003;</span></td>
+    </tr>
+    <tr>
+      <td><img src="img/polygon.svg" class="obj-icon" alt="Polygon icon"> Polygons</td>
+      <td>Areas such as lakes, study zones, or administrative boundaries.</td>
+      <td><span class="pkg-check">&#10003;</span></td>
+      <td></td>
+      <td><span class="pkg-check">&#10003;</span></td>
+    </tr>
+    <tr class="family-row">
+      <td>Raster</td>
+      <td class="family-note"><em>What is the value across space?</em></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><img src="img/grid.svg" class="obj-icon" alt="Raster grid icon"> Rasters</td>
+      <td>Gridded surfaces with values stored in cells.</td>
+      <td></td>
+      <td><span class="pkg-check">&#10003;</span></td>
+      <td><span class="pkg-check">&#10003;</span></td>
+    </tr>
+  </tbody>
+</table>
 
+## Main Spatial R Packages
 
-::: {.callout-caution}
-We won't cover general 'what's the best projection for that' we will cover 'how I can change the projection withR'
+***New ecosystem***
+
+:::: {.columns}
+::: {.column width="33%"}
+
+::: {.callout-tip icon=false}
+### `sf` <span class="pkg-link-wrap"><a href="https://r-spatial.github.io/sf/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="sf documentation">&#127760;</a></span>
+
+- *simple features* [standard](https://www.iso.org/standard/40114.html)
+- vector data
+- tidy friendly
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `stars` <span class="pkg-link-wrap"><a href="https://r-spatial.github.io/stars/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="stars documentation">&#127760;</a></span>
+
+- spatiotemporal arrays
+- raster and datacubes
+- strong companion to `sf`
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `terra` <span class="pkg-link-wrap"><a href="https://rspatial.github.io/terra/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="terra documentation">&#127760;</a></span>
+
+- vector and raster support
+- strong raster tooling
+- full GIS-style workflow
+:::
+:::
+::::
+
+***Old ecosystem***
+
+:::: {.columns}
+::: {.column width="33%"}
+
+::: {.callout-important icon=false}
+### `sp` <span class="pkg-link-wrap"><a href="https://cran.r-project.org/web/packages/sp/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="sp documentation">&#127760;</a></span>
+
+- vector data
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-important icon=false}
+### `raster` <span class="pkg-link-wrap"><a href="https://cran.r-project.org/web/packages/raster/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="raster documentation">&#127760;</a></span>
+
+- rasters
+:::
+:::
+::: {.column width="33%"}
+:::
+::::
+
+## Accompanying Packages
+
+***Data manipulation and measurements***
+
+:::: {.columns}
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `tidyverse` <span class="pkg-link-wrap"><a href="https://www.tidyverse.org/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="tidyverse website">&#127760;</a></span>
+
+- tabular workflows around spatial objects
+- filtering, joining, grouping, summarising
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `tidyterra` <span class="pkg-link-wrap"><a href="https://dieghernan.github.io/tidyterra/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="tidyterra documentation">&#127760;</a></span>
+
+- tidy verbs and plotting helpers for `terra`
+- a useful extension, not a replacement for `terra`
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `units` <span class="pkg-link-wrap"><a href="https://r-quantities.github.io/units/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="units documentation">&#127760;</a></span>
+
+- explicit lengths, areas, and distances in `sf`
+- contrasts `terra`, returns numeric measurements
+:::
+:::
+::::
+
+***Visualization***
+
+:::: {.columns}
+::: {.column width="33%"}
+::: {.callout-note icon=false}
+### `ggplot2` <span class="pkg-link-wrap"><a href="https://ggplot2.tidyverse.org/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="ggplot2 website">&#127760;</a></span>
+
+- communication-quality static graphics
+- flexible layered maps
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-note icon=false}
+### `mapview` <span class="pkg-link-wrap"><a href="https://r-spatial.github.io/mapview/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="mapview documentation">&#127760;</a></span>
+
+- fast interactive exploration
+- quick visual checks of spatial layers
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-note icon=false}
+### `tmap` <span class="pkg-link-wrap"><a href="https://r-tmap.github.io/tmap/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="tmap website">&#127760;</a></span>
+
+- thematic mapping workflows
+- static and interactive map support
+:::
+:::
+::::
+
+::: {.callout-warning}
+#### These are examples of particularly relevant accompanying packages. The spatial ecosystem in R is broad and active, and is not limited to the packages shown here.
 :::
 
+## A Note on IDEs
 
+*What are IDEs? Integrated Development Environments*
 
+:::: {.columns}
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `RStudio` <span class="pkg-link-wrap"><a href="https://posit.co/products/open-source/rstudio/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="RStudio website">&#127760;</a></span>
 
-## A note about IDEs
+- long-standing default environment for R
+- integrated console, editor, plots, files, and packages
+- a strong starting point for most R users
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `VS Code` <span class="pkg-link-wrap"><a href="https://code.visualstudio.com/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="VS Code website">&#127760;</a></span>
 
-<!-- show them? -->
+- general-purpose editor with R support through extensions
+- suited for mixed workflows across R, Python, Quarto, Git
+- a good option for multi-language projects
+:::
+:::
+::: {.column width="33%"}
+::: {.callout-tip icon=false}
+### `Positron` <span class="pkg-link-wrap"><a href="https://positron.posit.co/" target="_blank" rel="noopener noreferrer" class="pkg-link" aria-label="Positron website">&#127760;</a></span>
 
-- RStudio 
-- VSCode 
-- Positron 
+- newer data-science IDE from Posit, VS Code-like
+- combines scripting, notebooks, and IDE features
+- worth watching as the ecosystem evolves
+:::
+:::
+::::
 
+::: {.callout-warning}
+### The goal of this workshop is not to teach a specific IDE. Use the environment that lets you work comfortably with scripts, objects, plots, and spatial outputs.
+:::
 
-## A note about pipes 
+## A note on pipes 
 
+::: {.callout-note}
+### What are pipes?
+
+Pipes pass the output of one step into the next, making multi-step workflows easier to read and write. We mention them explicitly because they are used throughout the workshop.
+:::
+
+<br>
 
 :::: {.columns}
 
 ::: {.column width="50%"}
 
-### `%>%`
-
-- pipe from maggritr
+`magrittr` ***pipes:*** `%>%`
 
 ```R
 CO2 %>%
@@ -87,9 +326,7 @@ CO2 %>%
 
 ::: {.column width="50%"}
 
-### `|>` 
-
-- native pipe 
+***native pipes:*** `|>`
 
 ```R
 CO2 |>
@@ -103,523 +340,430 @@ CO2 |>
 
 
 
+# Vector Data in R
 
+***sf*** & ***terra***
 
-## Main packages
+## Create Points From A Table
 
-- Before `sp` + `raster`
-- Now
-  - `sf` + `stars`
-  - `terra` (+ tidyterra)
+::: {.panel-tabset .code-tabs}
+##### `sf`
 
-## Main packages 
-
-- A nice level of abstraction to work with spatial data 
-
-- `sf` GEOS and GDAL PROJ, S2Geometry for spherical operations (on longitude/latitude data).
-
-- `terra` does planar geometry using GEOS and GDAL.
-
-For raster operations, terra relies on PROJ and GDAL rather than S2.
-
-
-:::footer
-[r-spatial](https://github.com/r-spatial)
-&nbsp; ***·*** &nbsp;
-[Geocomputation with R](https://r.geocompx.org/)
-:::
-
-
-# `sf`
-
-## Simple features 
-
-> Simple features or simple feature access refers to a formal standard (ISO 19125-1:2004) that describes how objects in the real world can be represented in computers, with emphasis on the spatial geometry of these objects. It also describes how such objects can be stored in and retrieved from databases, and which geometrical operations should be defined for them.
-
-> The standard is widely implemented in spatial databases (such as PostGIS), commercial GIS (e.g., ESRI ArcGIS) and forms the vector data basis for libraries such as GDAL. A subset of simple features forms the GeoJSON standard.
-
-:::footer
-[Simple features for R](https://cran.r-project.org/web/packages/sf/vignettes/sf1.html)
-:::
-
-
-## Simple features from scratch
-
-<!-- do we want to go there?? -->
-
-- One point
-
-```{R}
-#| echo: true
-library(sf)
-st_point(c(-71.2080, 46.8139))
-```
-
-
-## Simple features from scratch
-
-- 3 points within a collection 
-
-
-```{R}
-geom <- st_sfc(
-  st_point(c(-71.2080, 46.8139)),  # Québec
-  st_point(c(-71.2500, 46.8200)),
-  st_point(c(-71.1800, 46.8000)),
-  crs = 4326
-)
-geom
-```
-
-
-## Simple features from scratch
-
-A data frame with attributes
-
-```{R}
-df <- data.frame(
-  bird = c("Snow Goose", "Common Eider", "Herring Gull"),
-  date = as.Date(c("2025-04-12", "2025-04-13", "2025-04-14"))
-)
-
-# 3. Combine attributes and geometry into an sf object
-birds_sf <- st_sf(df, geometry = geom)
-
-birds_sf
-```
-
-
-## Reading and writting vector files
-
-- `st_read()`
-- `st_write()`
-
-```{R}
-#| echo: true
-library(sf)
-nc <- st_read(system.file("shape/nc.shp", package = "sf"))
-nc
-```
-
-```{R}
-#| echo: true
+```{r}
 #| eval: false
-st_write(nc, "nc.geojson", driver = "GeoJSON")
+stations <- read.csv("stations.csv") |>
+  st_as_sf(coords = c("lon", "lat"),
+           crs = 4326,
+           remove = FALSE)
 ```
 
+##### `terra`
 
-## Projection
-
-- `st_crs()`
-- `st_transform()`
-
-```{R}
-#| echo: true
-st_crs(nc)
+```{r}
+#| eval: false
+stations_tbl <- read.csv("stations.csv")
+stations <- vect(stations_tbl,
+                 geom = c("lon", "lat"),
+                 crs = "EPSG:4326")
 ```
+:::
 
-```{R}
-#| echo: true
-nc_lcc <- st_transform(nc, crs = 32198) # NAD83 / Quebec Lambert
-st_crs(nc_lcc)$input
+## Build Lines From Ordered Points
+
+- start from point observations with an ID and order variable
+- sort points
+- group them into trajectories or paths
+- convert grouped coordinates into line geometry
+
+## Read Vector Data
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+roads <- st_read("roads.gpkg")
+municipalities <- st_read("municipalities.gpkg")
 ```
+:::
+::: {.column width="50%"}
+`terra`
 
+```{r}
+#| eval: false
+roads <- vect("roads.gpkg")
+municipalities <- vect("municipalities.gpkg")
+```
+:::
+::::
 
+## Inspect Vector Data
 
-## Exercise 1: R as a converter 
+- geometry type
+- number of features
+- attributes
+- CRS
+- spatial extent
 
-Create a function that 
-- read different files 
-- write in geojson in 4326
+## CRS: The Practical Questions
 
-- advanced? conversion using crs and format of a second file
+- what CRS is this layer in?
+- are my layers using the same CRS?
+- do I need a projected CRS for measurement?
+- which CRS should I use for my study area?
 
+## Inspect And Transform CRS
 
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
 
-## Visualisation 
+```{r}
+#| eval: false
+st_crs(stations)
+stations_lcc <- st_transform(stations, 32198)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+crs(stations)
+stations_lcc <- project(stations, "EPSG:32198")
+```
+:::
+::::
+
+::: {.callout-caution}
+Spatial measurements depend on CRS. Distances and areas are easiest to interpret in an appropriate projected CRS.
+:::
+
+## Subset To A Study Area
+
+- crop or filter features to a region of interest
+- reduce clutter and computation
+- align the data to the analysis question
+
+## Vector Subsetting
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+stations_city <- st_filter(stations, city_boundary)
+roads_city <- st_crop(roads, st_bbox(city_boundary))
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+stations_city <- crop(stations, city_boundary)
+roads_city <- crop(roads, ext(city_boundary))
+```
+:::
+::::
+
+## Measure Vector Features
+
+- area of polygons
+- length of lines
+- distance between features
+
+## Measurements In Practice
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+lakes$area <- st_area(lakes)
+roads$length_m <- st_length(roads)
+stations$dist_to_river <- st_distance(stations, rivers)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+lakes$area_km2 <- expanse(lakes, unit = "km")
+roads$length_m <- perim(roads)
+stations$dist_to_river_m <- distance(stations, rivers)[, 1]
+```
+:::
+::::
+
+::: {.callout-note}
+`sf` often uses `units` objects. `terra` usually returns numeric values whose meaning depends on the CRS and function used.
+:::
+
+## Join And Overlay
+
+- attach polygon attributes to points
+- identify which features fall in which zones
+- summarise observations by area
+
+## Intersection
+
+- create new geometries from overlap
+- split features where geometries meet
+- useful for road segments by municipality, tracks by habitat, or rivers by watershed
+
+## Join And Intersection API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf`
+
+```{r}
+#| eval: false
+stations <- st_join(stations, municipalities)
+road_segments <- st_intersection(roads, municipalities)
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+station_values <- extract(municipalities, stations)
+road_segments <- intersect(roads, municipalities)
+```
+:::
+::::
+
+## Quick Vector Mapping
+
+- `plot()` for fast checks
+- `mapview()` for interactive browsing
+- `ggplot2` for more controlled graphics
+
+# Raster Data
+
+## Read Raster Data
+
+:::: {.columns}
+::: {.column width="50%"}
+`stars`
+
+```{r}
+#| eval: false
+elevation <- read_stars("elevation.tif")
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+elevation <- rast("elevation.tif")
+```
+:::
+::::
+
+## Inspect Raster Data
+
+- how many layers?
+- what is the resolution?
+- what is the extent?
+- what CRS is it in?
+- what do the values represent?
+
+## Basic Raster Plotting
+
+- use `plot()` for a quick check
+- inspect the color scale and coverage
+- compare raster extent to vector layers
+
+## Crop, Mask, Project
+
+:::: {.columns}
+::: {.column width="33%"}
+`Crop`
+
+- reduce the spatial extent
+- keep a window of interest
+:::
+::: {.column width="33%"}
+`Mask`
+
+- keep cells only inside a geometry
+- remove cells outside a polygon
+:::
+::: {.column width="33%"}
+`Project`
+
+- change CRS
+- usually implies resampling
+:::
+::::
+
+## Raster Transformation API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf/stars`
+
+```{r}
+#| eval: false
+elevation_lcc <- st_warp(elevation, crs = st_crs(city_boundary))
+elevation_city <- st_crop(elevation_lcc, st_bbox(city_boundary))
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+elevation_lcc <- project(elevation, "EPSG:32198")
+elevation_city <- crop(elevation_lcc, ext(city_boundary))
+```
+:::
+::::
+
+## Raster Questions To Ask
+
+- do I need to reproject this raster?
+- should I crop first or project first?
+- does the current resolution fit my question?
+- am I using this raster for display or analysis?
+
+# Integrated Workflows
+
+## Why Integration Matters
+
+- vector features define locations, paths, and areas
+- rasters provide continuous environmental context
+- many analyses require combining both
+
+## Extract Raster Values To Vectors
+
+- points: value at each location
+- polygons: mean, min, max, or sum within each area
+- lines: summaries along roads, rivers, or tracks
+
+## Extraction API Lens
+
+:::: {.columns}
+::: {.column width="50%"}
+`sf/stars`
+
+```{r}
+#| eval: false
+stations$temp <- st_extract(temperature, stations)[[1]][, 1]
+zones$mean_elev <- st_extract(elevation, zones, FUN = mean)[[1]]
+```
+:::
+::: {.column width="50%"}
+`terra`
+
+```{r}
+#| eval: false
+station_vals <- extract(temperature, stations)
+zone_vals <- extract(elevation, zones, fun = mean)
+```
+:::
+::::
+
+## Build Analysis Tables
+
+- drop geometry when the spatial step is complete
+- keep only variables needed for analysis
+- summarise by feature, zone, or category
+
+## Table-Building Verbs
+
+- `select()`
+- `mutate()`
+- `group_by()`
+- `summarise()`
+- `count()`
+- `left_join()`
+
+## From Spatial Data To Models
+
+- count events by area
+- compare mean raster values across zones
+- model a response as a function of spatial predictors
+- use spatial outputs as inputs to standard statistical tools
+
+## A Simple Analysis Pattern
+
+1. create or import features
+2. align CRS
+3. subset to a study area
+4. measure or overlay vectors
+5. extract raster values
+6. summarise into a clean table
+7. analyse or visualize
+
+## KDE As An Exploratory Tool
+
+- useful for point patterns
+- produces a smooth intensity surface
+- helps visualize concentration or hotspots
+- often used for exploration rather than formal inference
+
+## Static And Interactive Mapping
+
+:::: {.columns}
+::: {.column width="50%"}
+`Quick exploration`
 
 - `plot()`
 - `mapview()`
-
-
-## Buffer
-
-- `st_buffer()`
-
-```{R}
-#| echo: true
-# Buffer of 10 km around the first 3 counties
-nc_sub <- nc[1:3, ]
-nc_buf <- st_buffer(nc_sub, dist = 10000) # distance in meters (after transform)
-plot(st_geometry(nc_buf), col = "lightblue", border = "blue")
-plot(st_geometry(nc_sub), col = "salmon", border = "red", add = TRUE)
-```
-
-
-## Distance
-
-- `st_distance()`
-- `st_length()`
-
-```{R}
-#| echo: true
-# Distance between the first 3 counties (centroids)
-centroids <- st_centroid(nc[1:3, ])
-st_distance(centroids)
-```
-
-
-## Overalap and co 
-
-- `st_union()`
-- `st_within()`
-- `st_crosses()`
-
-
-## simplify
-
-```{R}
-#| echo: true
-nc_simple <- st_simplify(nc[1, ], dTolerance = 5000)
-par(mfrow = c(1, 2))
-plot(st_geometry(nc[1, ]), main = "Original")
-plot(st_geometry(nc_simple), main = "Simplified")
-```
-
-
-## tidyverse flow
-
-```{R}
-#| echo: true
-library(dplyr)
-
-nc |>
-  mutate(area_km2 = as.numeric(st_area(geometry)) / 1e6) |>
-  filter(area_km2 > 1000) |>
-  select(NAME, area_km2) |>
-  arrange(desc(area_km2))
-```
-
-## tidyverse flow: group_by + summarise
-
-```{R}
-#| echo: true
-# group_by dissolves geometries via st_union under the hood
-nc |>
-  mutate(region = ifelse(CNTY_ID <= 50, "West", "East")) |>
-  group_by(region) |>
-  summarise(n_counties = n()) |>
-  plot()
-```
-
-
-## Exercise 2 
-
-- read this 
-- do that manip 
-- save as this csv and or geospatial file
-
-
-# `stars`
-
-
-## `stars` 
-
-Spatiotemporal Arrays: Raster and Vector Datacubes
-
-
-## Example 
-
-```{R}
-library(dplyr)
-library(stars)
-tif = system.file("tif/L7_ETMs.tif", package = "stars")
-read_stars(tif) |>
-  slice(index = 1, along = "band") |>
-  plot()
-```
-
-
-## read and write
-
-```{R}
-#| echo: true
-library(stars)
-tif <- system.file("tif/L7_ETMs.tif", package = "stars")
-r <- read_stars(tif)
-r
-```
-
-```{R}
-#| echo: true
-#| eval: false
-write_stars(r, "output.tif")
-```
-
-## rewarp
-
-```{R}
-#| echo: true
-r_warped <- st_warp(r, crs = st_crs(32198)) # reproject raster
-r_warped
-```
-
-## extract
-
-```{R}
-#| echo: true
-# Extract raster values at point locations
-pts <- st_sfc(
-  st_point(c(288776, 9120761)),
-  st_point(c(291776, 9122761)),
-  crs = st_crs(r)
-)
-st_extract(r, pts)
-```
-
-## crop
-
-```{R}
-#| echo: true
-# Crop raster to a bounding box
-bbox <- st_bbox(c(xmin = 288776, ymin = 9120000, xmax = 292000, ymax = 9123000),
-                crs = st_crs(r))
-r_crop <- r[bbox]
-plot(r_crop[,,,1])
-```
-
-
-
-# `terra`
-
-
-## `terra`
-
-- `terra` replaces the older `raster` package
-- Handles both vector and raster data
-- Fast, memory-efficient (C++ backend)
-
-
-## Simple features with `terra`
-
-```{R}
-#| echo: true
-library(terra)
-# Create vector points
-pts <- vect(
-  data.frame(
-    bird = c("Snow Goose", "Common Eider", "Herring Gull"),
-    date = as.Date(c("2025-04-12", "2025-04-13", "2025-04-14")),
-    lon = c(-71.2080, -71.2500, -71.1800),
-    lat = c(46.8139, 46.8200, 46.8000)
-  ),
-  geom = c("lon", "lat"), crs = "EPSG:4326"
-)
-pts
-```
-
-
-## Reading and writing vector files
-
-- `vect()`
-- `writeVector()`
-
-```{R}
-#| echo: true
-nc_terra <- vect(system.file("shape/nc.shp", package = "sf"))
-nc_terra
-```
-
-```{R}
-#| echo: true
-#| eval: false
-writeVector(nc_terra, "nc.geojson", filetype = "GeoJSON")
-```
-
-
-## Projection
-
-- `crs()`
-- `project()`
-
-```{R}
-#| echo: true
-crs(nc_terra, describe = TRUE)
-```
-
-```{R}
-#| echo: true
-nc_lcc <- project(nc_terra, "EPSG:32198")
-crs(nc_lcc, describe = TRUE)
-```
-
-
-## Visualisation
-
-```{R}
-#| echo: true
-plot(nc_terra, "AREA")
-```
-
-
-## Buffer
-
-- `buffer()`
-
-```{R}
-#| echo: true
-nc_sub <- nc_terra[1:3, ]
-nc_buf <- buffer(nc_sub, width = 10000)
-plot(nc_buf, col = "lightblue", border = "blue")
-plot(nc_sub, col = "salmon", border = "red", add = TRUE)
-```
-
-
-## Distance
-
-- `distance()`
-
-```{R}
-#| echo: true
-centroids <- centroids(nc_terra[1:3, ])
-distance(centroids)
-```
-
-
-## Overlap and co
-
-- `union()`
-- `intersect()`
-- `erase()`
-
-
-## Simplify
-
-```{R}
-#| echo: true
-nc_simple <- simplifyGeom(nc_terra[1, ], tolerance = 5000)
-par(mfrow = c(1, 2))
-plot(nc_terra[1, ], main = "Original")
-plot(nc_simple, main = "Simplified")
-```
-
-
-## Raster: read and write
-
-```{R}
-#| echo: true
-tif <- system.file("tif/L7_ETMs.tif", package = "stars")
-r <- rast(tif)
-r
-```
-
-```{R}
-#| echo: true
-#| eval: false
-writeRaster(r, "output.tif")
-```
-
-
-## Raster: reproject
-
-```{R}
-#| echo: true
-r_proj <- project(r, "EPSG:32198")
-r_proj
-```
-
-
-## Raster: extract
-
-```{R}
-#| echo: true
-pts <- vect(
-  data.frame(x = c(288776, 291776), y = c(9120761, 9122761)),
-  geom = c("x", "y"), crs = crs(r)
-)
-extract(r, pts)
-```
-
-
-## Raster: crop
-
-```{R}
-#| echo: true
-e <- ext(288776, 292000, 9120000, 9123000)
-r_crop <- crop(r, e)
-plot(r_crop[[1]])
-```
-
-
-# Exercise 4
-
-<!-- Main exercise, we go over it the day after -->
-
-
-## Exercise 4
-
-
-
-
-
-
-
-
-# Day 2
-
-# Exercise 4
-
-## Exercise 4
-
-
-## Function and parallel computation
-
-
-:::footer
-[Parallel raster processing in stars](https://r-spatial.org/r/2023/09/21/stars-parallel.html)
 :::
+::: {.column width="50%"}
+`Communication`
 
+- `ggplot2`
+- careful legends, colors, labels, and layers
+:::
+::::
 
+## Export Outputs
 
-## Modeling 1
+:::: {.columns}
+::: {.column width="50%"}
+`Vector`
 
-<!-- create a dataframe based on spatial manipulation -->
-<!-- do we want to do an exercise here? -->
+- `st_write()`
+- `writeVector()`
+:::
+::: {.column width="50%"}
+`Tables`
 
+- `write.csv()`
+- `readr::write_csv()`
+:::
+::::
 
-## Modeling 2
+## A Practical Workflow Mindset
 
-<!-- use directly spatial objects to do stat -->
+- inspect early
+- transform deliberately
+- keep data in compatible CRS
+- separate exploratory maps from final figures
+- move to plain tables when the spatial step is done
 
+## Takeaways
 
+- vector and raster are different data models
+- `sf`, `stars`, and `terra` cover most common spatial workflows in R
+- CRS decisions affect measurements and overlays
+- joins, intersections, crops, masks, and extraction are core operations
+- spatial analysis in R is often a bridge between GIS tasks and standard statistical workflows
 
-# Advanced mapping
+## Closing
 
-## tmap
-
-## leaflet 
-
-
-# Do more 
-
-
-## Use R package 
-
-## Shiny App Assistant 
-
-- <https://gallery.shinyapps.io/assistant>
-
-- Create an app that allows users to upload GeoJSON files and visualize them using Leaflet.
-- Modify the app to compute the total area when polygons are uploaded and display it in the card header.
-- Modify the app to also compute the total length for line geometries and display it in the card header.
-
-
-## Codex, claude and others
-
-
-
-## Using recent technos
-
-- <https://github.com/geoarrow/geoarrow-r>
-- <https://cran.r-project.org/web/packages/rpostgis/index.html>
-- <https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html>
+- start simple
+- verify geometry and CRS often
+- build reusable workflows
+- treat R as both an analysis environment and a GIS
