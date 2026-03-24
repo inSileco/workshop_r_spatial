@@ -38,6 +38,20 @@
   max-height: none !important;
 }
 
+/* global code block sizing */
+.reveal div.sourceCode,
+.reveal div.sourceCode pre,
+.reveal pre code {
+  font-size: 0.65em;
+}
+
+.reveal .cell-output,
+.reveal .cell-output pre,
+.reveal .cell-output-stdout pre,
+.reveal .cell-output-display {
+  font-size: 0.8em;
+}
+
 
 
 
@@ -68,4 +82,223 @@
 
 .fz200 {
   font-size: 200% !important;
+}
+
+/* tabbed code blocks */
+.reveal .code-tabs {
+  width: 100%;
+  margin-top: 0.1rem;
+}
+
+.reveal .code-tabs [role="tablist"] {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  margin: 0 0 0.45rem 0;
+  padding: 0;
+  border-bottom: 0;
+}
+
+.reveal .code-tabs [role="tab"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.14rem 0.65rem;
+  border: 1px solid #37abc8;
+  border-radius: 999px;
+  background: #eef8fb;
+  color: #383d3d;
+  font-size: 0.68em;
+  line-height: 1.1;
+  box-shadow: none;
+}
+
+.reveal .code-tabs [role="tab"][aria-selected="true"] {
+  background: #37abc8;
+  color: #fff;
+}
+
+.reveal .code-tabs [role="tabpanel"] {
+  padding-top: 0.2rem;
+  text-align: left;
+}
+
+.reveal .code-tabs .cell,
+.reveal .code-tabs .sourceCode,
+.reveal .code-tabs pre {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+
+.reveal .code-tabs pre {
+  font-size: 0.72em;
+}
+
+/* spatial object table */
+.reveal .spatial-objects-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82em;
+  margin-top: 0.2rem;
+}
+
+.reveal .spatial-objects-table th,
+.reveal .spatial-objects-table td {
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #d8e5ea;
+}
+
+.reveal .spatial-objects-table thead th {
+  color: #383d3d;
+  font-weight: 700;
+  border-bottom: 2px solid #37abc8;
+}
+
+.reveal .spatial-objects-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.reveal .spatial-objects-table .family-row td {
+  padding: 0.35rem 0.65rem 0.25rem 0.65rem;
+  border-bottom: 0;
+  color: #2b5964;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #eef8fb;
+}
+
+.reveal .spatial-objects-table .family-row .family-note {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: #4d636a;
+}
+
+.reveal .spatial-objects-table td:first-child {
+  white-space: nowrap;
+}
+
+.reveal .spatial-objects-table th:nth-child(n+3),
+.reveal .spatial-objects-table td:nth-child(n+3) {
+  text-align: center;
+}
+
+.reveal .obj-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 0.45rem;
+  vertical-align: -1em;
+}
+
+.reveal .pkg-check {
+  color: #37abc8;
+  font-size: 1.05em;
+  font-weight: 700;
+}
+
+.reveal .pkg-link-wrap {
+  float: right;
+  margin-left: 0.45rem;
+}
+
+.reveal .pkg-link {
+  text-decoration: none;
+  color: #37abc8;
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+.reveal .pkg-link:hover {
+  color: #2b5964;
+}
+
+.reveal .slide.exercise-break h2 {
+  font-size: 1.7em;
+  margin-bottom: 0.35em;
+}
+
+.reveal .slide.exercise-break h2::after {
+  content: "";
+  display: block;
+  width: 66%;
+  max-width: 12em;
+  height: 4px;
+  margin-top: 0.35em;
+  background: #37abc8;
+}
+
+.reveal .slide.exercise-break h3 {
+  font-size: 1em;
+  font-weight: 400;
+  color: #355c67;
+  margin-top: 0.2em;
+  margin-bottom: 0.4em;
+}
+
+.reveal .slide.exercise-break p {
+  font-size: 0.85em;
+  color: #4d636a;
+}
+
+.reveal .route-diagram {
+  margin-top: 0.5rem;
+}
+
+.reveal .route-step {
+  margin-bottom: 0.35rem;
+}
+
+.reveal .route-label {
+  font-size: 0.82em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #2b5964;
+  margin-bottom: 0.45rem;
+}
+
+.reveal .route-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.reveal .route-card {
+  flex: 1 1 0;
+  background: #eef8fb;
+  border: 1px solid #cfe9f0;
+  border-left: 5px solid #37abc8;
+  border-radius: 10px;
+  padding: 0.8rem 0.95rem;
+  box-sizing: border-box;
+}
+
+.reveal .route-title {
+  font-size: 1.02em;
+  font-weight: 700;
+  color: #383d3d;
+  margin-bottom: 0.15rem;
+}
+
+.reveal .route-text {
+  font-size: 0.8em;
+  color: #4d636a;
+}
+
+.reveal .route-arrow {
+  font-size: 1.2em;
+  line-height: 1;
+  color: #37abc8;
+  margin: 0.1rem 0 0.45rem 0;
+}
+
+.reveal .route-note {
+  margin-top: 0.65rem;
+  font-size: 0.8em;
+  color: #4d636a;
 }
