@@ -5,6 +5,8 @@ date: "2026-03-25"
 from: markdown+emoji
 ---
 
+# Welcome 
+
 ```{=html}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -30,7 +32,7 @@ source("setup_slide_data.R", local = knitr::knit_global())
 
 
 
-# Welcome 
+
 
 <!-- Go around the table + slide insileco? -->
 <!-- What do you expect  -->
@@ -69,7 +71,14 @@ source("setup_slide_data.R", local = knitr::knit_global())
 
 ## Workshop Objective
 
+<br>
+
+::: {.fz125}
+
 By the end of the workshop, participants should be able to use R as a GIS, work operationally with common spatial data manipulations, and have the right tools in hand to keep learning.
+
+:::
+
 
 ## Our Focus
 
@@ -373,6 +382,12 @@ CO2 |>
 :::
 
 ::::
+
+
+::: {.footer}
+[The tidy tools manifesto](https://tidyverse.tidyverse.org/articles/manifesto.html)
+:::
+
 
 ## A Note on Code
 
@@ -3103,6 +3118,36 @@ Build, export, and share maps
 - joins, intersections, crops, masks, and extraction are core operations
 - spatial analysis in R is often a bridge between GIS tasks and standard statistical workflows
 - treat R as both an analysis environment and a GIS
+
+
+
+## Using recent technos for spatial data 
+
+- <https://github.com/geoarrow/geoarrow-r>
+- <https://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html>
+- <https://cidree.github.io/duckspatial/>
+- <https://r-cf.github.io/zarr/>
+- <https://stacspec.org/en>
+
+
+## Shiny App Assistant 
+
+- <https://gallery.shinyapps.io/assistant>
+
+
+- prompts: 
+
+  - Create an app that allows users to upload GeoJSON files and visualize them using Leaflet.
+  - Modify the app to compute the total area when polygons are uploaded and display it in the card header.
+  - Modify the app to also compute the total length for line geometries and display it in the card header.
+
+::: {.notes}
+2 topics here AI + Shiny 
+do claude and package after?
+:::
+
+
+
 
 ## Closing
 
