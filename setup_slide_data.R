@@ -2,6 +2,8 @@ library(sf)
 library(terra)
 library(stars)
 library(mapview)
+library(ggplot2)
+library(tmap)
 
 aoi <- st_read("data/polygons.gpkg", layer = "study_area", quiet = TRUE)
 zones <- st_read("data/polygons.gpkg", layer = "zones", quiet = TRUE)
@@ -321,3 +323,30 @@ points_kde_terra <- rast(
 )
 points_kde_terra <- mask(points_kde_terra, terra_aoi_qc)
 points_kde_terra_plot <- points_kde_terra / global(points_kde_terra, "max", na.rm = TRUE)[1, 1]
+
+
+advanced_map_gg <- ggplot() +
+  geom_stars(data = points_kde_sf_plot) +
+  scale_fill_viridis_c(name = "KDE") +
+  geom_sf(data = zones_qc, fill = NA, color = "#355c67") +
+  geom_sf(data = aoi_qc, fill = NA, color = "#17313b") +
+  geom_sf(
+    data = points_sf_qc,
+    aes(color = category),
+    size = 1.7
+  ) +
+  coord_sf(expand = FALSE) +
+  theme_minimal()
+
+tm <- tm_shape(points_kde_sf_plot) +
+  tm_raster(col.scale = tm_scale_continuous(values = "viridis")) +
+  tm_shape(zones_qc) +
+  tm_borders(col = "#355c67") +
+  tm_shape(points_sf_qc) +
+  tm_symbols(fill = "category", size = 0.5) +
+  tm_shape(aoi_qc) +
+  tm_borders(col = "#17313b") +
+  tm_layout(frame = FALSE, legend.outside = TRUE)
+
+advanced_map_tmap <- tm
+advanced_map_tmap_view <- tmap::tmap_leaflet(advanced_map_tmap)

@@ -2555,7 +2555,7 @@ Extract, summarise, build analysis tables
 
 # Spatial Analytics
 
-## Spatial Analytics In This Workshop
+## Spatial Analytics
 
 - spatial analytics is a very broad field
 - this workshop does not aim to cover that full breadth
@@ -2901,7 +2901,7 @@ Fit KDEs and explore surfaces
 
 # Advanced Mapping
 
-## Static And Interactive Mapping
+## Advanced Mapping
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -2909,39 +2909,184 @@ Fit KDEs and explore surfaces
 
 - `plot()`
 - `mapview()`
+- fast QA/QC and data inspection
 :::
 ::: {.column width="50%"}
 `Communication`
 
 - `ggplot2`
-- careful legends, colors, labels, and layers
+- `tmap`
+- more deliberate legends, palettes, labels, and layout
 :::
 ::::
 
-## Export Outputs
+::: {.callout-note icon=false}
+### Use exploratory maps to inspect data quickly, then move to more deliberate mapping tools when the goal is communication or sharing.
+:::
 
-:::: {.columns}
+## Advanced Mapping with `ggplot2`
+
+`ggplot2` works especially well for polished static maps, particularly with `sf` and `stars` objects.
+
+::: {.columns}
 ::: {.column width="50%"}
-`Vector`
-
-- `st_write()`
-- `writeVector()`
+```{r}
+#| eval: false
+gg <- ggplot() +
+  geom_stars(
+    data = points_kde_sf_plot
+  ) +
+  scale_fill_viridis_c(name = "KDE") +
+  geom_sf(
+    data = zones_qc, 
+    fill = NA, 
+    color = "#355c67"
+  ) +
+  geom_sf(
+    data = aoi_qc, 
+    fill = NA, 
+    color = "#17313b"
+  ) +
+  geom_sf(
+    data = points_sf_qc, 
+    aes(color = category), 
+    size = 1.7
+   ) +
+  coord_sf(expand = FALSE) +
+  theme_minimal()
+```
 :::
 ::: {.column width="50%"}
-`Tables`
-
-- `write.csv()`
-- `readr::write_csv()`
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 9
+#| out-width: 100%
+gg
+```
 :::
-::::
+:::
 
-## A Practical Workflow Mindset
+<!-- end columns -->
 
-- inspect early
-- transform deliberately
-- keep data in compatible CRS
-- separate exploratory maps from final figures
-- move to plain tables when the spatial step is done
+## Advanced Mapping with `tmap`
+
+`tmap` is built for thematic mapping and works well when you want a more map-focused grammar than `ggplot2`.
+
+::: {.columns}
+::: {.column}
+```{r}
+#| eval: false
+tm <- tm_shape(points_kde_sf_plot) +
+  tm_raster(col.scale = tm_scale_continuous(
+    values = "viridis"
+  )) +
+  tm_shape(zones_qc) +
+  tm_borders(col = "#355c67") +
+  tm_shape(points_sf_qc) +
+  tm_symbols(
+    fill = "category", 
+    size = 0.5
+  ) +
+  tm_shape(aoi_qc) +
+  tm_borders(col = "#17313b") +
+  tm_layout(
+    frame = FALSE, 
+    legend.outside = TRUE
+  )
+tm
+```
+:::
+::: {.column}
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 9
+#| out-width: 100%
+tm
+```
+:::
+:::
+<!-- end columns -->
+
+
+
+## Advanced Mapping with `tmap`
+
+One advantage of `tmap` is that the same map logic can often be used for static output or for an interactive shared map.
+
+```{r}
+#| eval: false
+tm_html <- tmap_leaflet(tm)
+tm_html
+```
+```{r}
+#| echo: false
+#| warning: false
+advanced_map_tmap_view
+```
+
+## Export And Share Maps
+
+::: {.panel-tabset .code-tabs}
+## `ggplot2`
+
+```{r}
+#| eval: false
+ggsave(
+  filename = "outputs/advanced_map.png",
+  plot = gg,
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+
+ggsave(
+  filename = "outputs/advanced_map.pdf",
+  plot = gg,
+  width = 8,
+  height = 6
+)
+```
+
+```{r}
+#| echo: false
+data.frame(
+  output = c("presentation figure", "publication-ready figure"),
+  file = c("advanced_map.png", "advanced_map.pdf"),
+  tool = c("ggsave(..., dpi = 300)", "ggsave(...)")
+)
+```
+
+## `tmap`
+
+```{r}
+#| eval: false
+tmap_save(
+  tm = tm,
+  filename = "outputs/advanced_map.png",
+  width = 8,
+  height = 6,
+  dpi = 300
+)
+
+tmap_mode("view")
+tmap_save(
+  tm = tm,
+  filename = "outputs/advanced_map.html"
+)
+tmap_mode("plot")
+```
+
+```{r}
+#| echo: false
+data.frame(
+  output = c("static thematic map", "interactive shared map"),
+  file = c("advanced_map.png", "advanced_map.html"),
+  tool = c("tmap_save(...)", "tmap_mode(\"view\") + tmap_save(...)")
+)
+```
+:::
 
 ## Takeaways
 
@@ -2950,10 +3095,4 @@ Fit KDEs and explore surfaces
 - CRS decisions affect measurements and overlays
 - joins, intersections, crops, masks, and extraction are core operations
 - spatial analysis in R is often a bridge between GIS tasks and standard statistical workflows
-
-## Closing
-
-- start simple
-- verify geometry and CRS often
-- build reusable workflows
 - treat R as both an analysis environment and a GIS
