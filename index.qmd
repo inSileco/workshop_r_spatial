@@ -2954,6 +2954,7 @@ gg <- ggplot() +
    ) +
   coord_sf(expand = FALSE) +
   theme_minimal()
+gg
 ```
 :::
 ::: {.column width="50%"}
@@ -2962,7 +2963,7 @@ gg <- ggplot() +
 #| fig-width: 9
 #| fig-height: 9
 #| out-width: 100%
-gg
+advanced_map_gg
 ```
 :::
 :::
@@ -3088,6 +3089,12 @@ data.frame(
 ```
 :::
 
+## Exercise 9 {.exercise-break .center}
+
+### Advanced Mapping
+
+Build, export, and share maps
+
 ## Takeaways
 
 - vector and raster are different data models
@@ -3096,3 +3103,10 @@ data.frame(
 - joins, intersections, crops, masks, and extraction are core operations
 - spatial analysis in R is often a bridge between GIS tasks and standard statistical workflows
 - treat R as both an analysis environment and a GIS
+
+## Closing
+
+- start with clear spatial objects and clear CRS
+- inspect and map early, then analyse
+- move from spatial objects to clean analysis tables
+- keep building reusable workflows as your analyses grow

@@ -5,15 +5,24 @@ library(mapview)
 library(ggplot2)
 library(tmap)
 
+# Base vector layers.
+# First used in:
+# - Read Vector Data
 aoi <- st_read("data/polygons.gpkg", layer = "study_area", quiet = TRUE)
 zones <- st_read("data/polygons.gpkg", layer = "zones", quiet = TRUE)
 terra_aoi <- terra::vect("data/polygons.gpkg", layer = "study_area")
 terra_zones <- terra::vect("data/polygons.gpkg", layer = "zones")
 
+# Tabular point data converted to spatial points.
+# First used in:
+# - Create Points From A Table
 points_tbl <- read.csv("data/points.csv")
 points_sf <- st_as_sf(points_tbl, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
 terra_points <- terra::vect(points_tbl, geom = c("lon", "lat"), crs = "EPSG:4326")
 
+# Tracks rebuilt from ordered points.
+# First used in:
+# - Build Lines From Ordered Points
 tracks_sf <- points_sf |>
   dplyr::arrange(track_id, timestamp) |>
   dplyr::group_by(track_id) |>
@@ -33,6 +42,10 @@ tracks_tbl <- points_tbl |>
 
 terra_tracks <- terra::vect(tracks_tbl, geom = "wkt", crs = "EPSG:4326")
 
+# Projected vector layers for inspection, transformation, measurements, and overlays.
+# First used in:
+# - Inspect Vector Data
+# - Transform CRS
 aoi_qc <- st_transform(aoi, 32198)
 zones_qc <- st_transform(zones, 32198)
 points_sf_qc <- st_transform(points_sf, 32198)
@@ -43,6 +56,9 @@ terra_zones_qc <- terra::project(terra_zones, "EPSG:32198")
 terra_points_qc <- terra::project(terra_points, "EPSG:32198")
 terra_tracks_qc <- terra::project(terra_tracks, "EPSG:32198")
 
+# Study-area subset example.
+# First used in:
+# - Subset To A Study Area
 focus_area <- zones |>
   dplyr::filter(zone_id %in% c("NE", "SE")) |>
   dplyr::summarise()
@@ -54,6 +70,9 @@ terra_focus_area <- terra_zones[terra_zones$zone_id %in% c("NE", "SE")]
 terra_points_focus <- crop(terra_points, terra_focus_area)
 terra_zones_focus <- crop(terra_zones, ext(terra_focus_area))
 
+# Precomputed measurement tables.
+# First used in:
+# - Measure Vector Features
 zone_area_sf <- data.frame(
   zone_id = zones_qc$zone_id,
   area_km2 = round(as.numeric(units::set_units(st_area(zones_qc), "km^2")), 1)
@@ -84,16 +103,30 @@ point_boundary_terra <- data.frame(
   boundary_km = round(distance(terra_points_qc, as.lines(terra_aoi_qc))[, 1] / 1000, 1)
 )
 
+# Point-to-polygon joins.
+# First used in:
+# - Join Attributes To Features
 points_joined_sf <- st_join(points_sf, zones[, c("zone_id", "zone_type")])
 terra_point_attrs <- terra::extract(terra_zones, terra_points)
 terra_points_joined <- cbind(terra_points, terra_point_attrs[, c("zone_id", "zone_type")])
 
+# Track-by-polygon intersections.
+# First used in:
+# - Intersect Geometries
 track_segments_sf <- suppressWarnings(st_intersection(tracks_sf_qc, zones_qc))
 terra_track_segments <- intersect(terra_tracks_qc, terra_zones_qc)
 
+# Point buffers in projected CRS.
+# First used in:
+# - Buffers
 point_buffers_sf <- st_buffer(points_sf_qc, dist = 10000)
 terra_point_buffers <- buffer(terra_points_qc, width = 10000)
 
+# Raster imports and core derived versions.
+# First used in:
+# - Read Raster Data
+# - Inspect Raster Data
+# - Export Raster Outputs
 surface_stars <- read_stars("data/surface.tif")
 surface_terra <- rast("data/surface.tif")
 surface_stars_qc <- st_warp(surface_stars, crs = st_crs(aoi_qc))
@@ -103,6 +136,9 @@ surface_terra_qc <- project(surface_terra, "EPSG:32198")
 surface_terra_crop <- crop(surface_terra_qc, ext(terra_aoi_qc))
 surface_terra_mask <- mask(surface_terra_crop, terra_aoi_qc)
 
+# Distinct crop and mask demo geometries.
+# First used in:
+# - Crop, Mask, Project
 crop_zone_sf <- zones[zones$zone_id == "NE", ]
 crop_zone_terra <- terra_zones[terra_zones$zone_id == "NE"]
 single_buffer_sf <- st_transform(point_buffers_sf[2, ], st_crs(surface_stars))
@@ -114,6 +150,9 @@ surface_stars_mask_demo <- surface_stars[single_buffer_sf]
 surface_terra_crop_demo <- crop(surface_terra, crop_zone_terra)
 surface_terra_mask_demo <- mask(surface_terra, single_buffer_terra)
 
+# Resampling demo objects.
+# First used in:
+# - Resampling
 surface_stars_template <- st_as_stars(st_bbox(surface_stars), dx = 0.05, dy = 0.05)
 st_crs(surface_stars_template) <- st_crs(surface_stars)
 surface_stars_near <- suppressWarnings(
@@ -127,6 +166,9 @@ surface_terra_template <- rast(ext(surface_terra), resolution = 0.05, crs = crs(
 surface_terra_near <- resample(surface_terra, surface_terra_template, method = "near")
 surface_terra_bilinear <- resample(surface_terra, surface_terra_template, method = "bilinear")
 
+# Multi-layer raster demo objects.
+# First used in:
+# - Multiple Raster Layers
 surface_stars_alt <- surface_stars * 1.1
 names(surface_stars_alt) <- "surface_alt"
 surface_stars_stack <- c(surface_stars, surface_stars_alt)
@@ -137,6 +179,11 @@ names(surface_terra_alt) <- "surface_alt"
 surface_terra_stack <- c(surface_terra, surface_terra_alt)
 surface_terra_mean <- app(surface_terra_stack, mean)
 
+# Raster extraction to vector geometries.
+# First used in:
+# - Extract Raster Values To Points
+# - Extract Raster Values To Lines
+# - Extract Raster Values To Polygons
 points_surface_vals_sf <- st_extract(surface_stars, points_joined_sf)
 points_surface_sf <- points_joined_sf
 points_surface_sf$surface_value <- points_surface_vals_sf[[1]]
@@ -157,6 +204,10 @@ zones_surface_vals_sf <- st_extract(
 zones_surface_sf <- zones
 zones_surface_sf$surface_value <- as.numeric(zones_surface_vals_sf[[1]])
 
+# Summaries and analysis tables derived from extracted values.
+# First used in:
+# - Summarise Extracted Values
+# - Build Analysis Tables
 point_zone_summary_sf <- points_surface_sf |>
   st_drop_geometry() |>
   dplyr::group_by(zone_id, zone_type) |>
@@ -171,6 +222,7 @@ analysis_table_sf <- point_zone_summary_sf |>
   dplyr::left_join(zone_area_sf, by = "zone_id") |>
   dplyr::select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)
 
+# Terra counterparts for extraction summaries and analysis tables.
 terra_points_surface_vals <- terra::extract(surface_terra, terra_points_joined)
 terra_points_surface <- cbind(
   terra_points_joined,
@@ -202,6 +254,9 @@ analysis_table_terra <- point_zone_summary_terra |>
   dplyr::left_join(zone_area_terra, by = "zone_id") |>
   dplyr::select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)
 
+# Model-ready point-level tables.
+# First used in:
+# - Prepare Data For Analysis
 analysis_data_sf <- points_surface_sf |>
   st_drop_geometry() |>
   dplyr::select(obs_id, track_id, zone_id, zone_type, category, value, surface_value) |>
@@ -213,6 +268,9 @@ analysis_data_terra <- as.data.frame(terra_points_surface) |>
   dplyr::filter(!is.na(zone_id), !is.na(surface_value)) |>
   dplyr::mutate(zone_type = factor(zone_type))
 
+# Simple GLM outputs.
+# First used in:
+# - A Simple GLM
 glm_sf <- glm(value ~ surface_value + zone_type, family = poisson(), data = analysis_data_sf)
 glm_terra <- glm(value ~ surface_value + zone_type, family = poisson(), data = analysis_data_terra)
 
@@ -228,6 +286,9 @@ glm_coef_terra <- data.frame(
   row.names = NULL
 )
 
+# Pseudo-absence workflow for the bonus GLM slide.
+# First used in:
+# - Bonus: Advanced GLM
 set.seed(42)
 pseudo_points_sf <- st_as_sf(st_sample(aoi_qc, size = nrow(points_sf_qc), type = "random", exact = TRUE))
 pseudo_points_sf$pseudo_id <- paste0("PA", sprintf("%02d", seq_len(nrow(pseudo_points_sf))))
@@ -284,6 +345,10 @@ glm_pa_coef_terra <- data.frame(
   row.names = NULL
 )
 
+# KDE inputs, raw outputs, and spatialized surfaces.
+# First used in:
+# - Compute A KDE
+# - Turn A KDE Into A Spatial Object
 points_xy_sf <- st_coordinates(points_sf_qc)
 aoi_bbox_qc <- st_bbox(aoi_qc)
 points_kde_sf_raw <- MASS::kde2d(
@@ -325,6 +390,9 @@ points_kde_terra <- mask(points_kde_terra, terra_aoi_qc)
 points_kde_terra_plot <- points_kde_terra / global(points_kde_terra, "max", na.rm = TRUE)[1, 1]
 
 
+# Advanced mapping objects used at the end of the deck.
+# First used in:
+# - Advanced Mapping with `ggplot2`
 advanced_map_gg <- ggplot() +
   geom_stars(data = points_kde_sf_plot) +
   scale_fill_viridis_c(name = "KDE") +
@@ -338,6 +406,8 @@ advanced_map_gg <- ggplot() +
   coord_sf(expand = FALSE) +
   theme_minimal()
 
+# First used in:
+# - Advanced Mapping with `tmap`
 tm <- tm_shape(points_kde_sf_plot) +
   tm_raster(col.scale = tm_scale_continuous(values = "viridis")) +
   tm_shape(zones_qc) +
@@ -349,4 +419,7 @@ tm <- tm_shape(points_kde_sf_plot) +
   tm_layout(frame = FALSE, legend.outside = TRUE)
 
 advanced_map_tmap <- tm
+
+# First used in:
+# - Advanced Mapping with `tmap` (interactive)
 advanced_map_tmap_view <- tmap::tmap_leaflet(advanced_map_tmap)
