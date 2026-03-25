@@ -1,0 +1,933 @@
+[
+  {
+    "objectID": "index_fr.html#a-quoi-sattendre",
+    "href": "index_fr.html#a-quoi-sattendre",
+    "title": "R et espace",
+    "section": "A quoi s’attendre",
+    "text": "A quoi s’attendre\n\n\n\n\n\n\n\n\nCe que cet atelier est\n\n\n\nune introduction pratique aux flux de travail spatiaux dans R\nun atelier sur l’utilisation opérationnelle de R comme SIG\naxé sur les manipulations courantes que vous réutiliserez dans vos projets\n\n\n\n\n\n\n\n\n\n\n\nCe que cet atelier n’est pas\n\n\n\npas un cours complet de géodésie, cartographie ou télédétection\npas un survol de chaque paquet ou méthode spatiale\npas un cours de géocalcul axé sur la théorie"
+  },
+  {
+    "objectID": "index_fr.html#ressources",
+    "href": "index_fr.html#ressources",
+    "title": "R et espace",
+    "section": "Ressources",
+    "text": "Ressources\n\nVisualisation et analyse de données spatiales sous R (FR)\nGeocomputation with R\nSpatial Data Science"
+  },
+  {
+    "objectID": "index_fr.html#objectif-de-latelier",
+    "href": "index_fr.html#objectif-de-latelier",
+    "title": "R et espace",
+    "section": "Objectif de l’atelier",
+    "text": "Objectif de l’atelier\n\n\nÀ la fin de l’atelier, les participants devraient être capables d’utiliser R comme SIG, de travailler de manière opérationnelle avec les manipulations spatiales courantes, et d’avoir les bons outils en main pour continuer à apprendre."
+  },
+  {
+    "objectID": "index_fr.html#notre-focus",
+    "href": "index_fr.html#notre-focus",
+    "title": "R et espace",
+    "section": "Notre focus",
+    "text": "Notre focus\n\nimporter des données spatiales\ninspecter la géométrie et le CRS\ntransformer et filtrer les données\nmesurer des distances, surfaces et longueurs\ncombiner des couches par jointures et superpositions\nextraire des valeurs raster vers des entités vectorielles\nconstruire des résumés, analyses et cartes"
+  },
+  {
+    "objectID": "index_fr.html#structure-de-latelier",
+    "href": "index_fr.html#structure-de-latelier",
+    "title": "R et espace",
+    "section": "Structure de l’atelier",
+    "text": "Structure de l’atelier\n\n\n\n\n\n\n\n\nMatériel\n\n\n\ndiapositives courtes axées sur les concepts\nexemples en direct dans R\nscripts et ressources réutilisables pour révision ultérieure\n\n\n\n\n\n\n\n\n\n\n\nExercices\n\n\n\nexercices pratiques ciblés\nconçus spécifiquement pour les participants de l’atelier\nbasés sur les données partagées avant l’événement\n\n\n\n\n\n\n\n\nL’atelier alterne entre du matériel pédagogique concis et des exercices appliqués, afin que les participants puissent passer directement des concepts à la pratique."
+  },
+  {
+    "objectID": "index_fr.html#construire-des-pipelines-reproductibles",
+    "href": "index_fr.html#construire-des-pipelines-reproductibles",
+    "title": "R et espace",
+    "section": "Construire des pipelines reproductibles",
+    "text": "Construire des pipelines reproductibles\n\n\nPourrait être python etc… Similaire à QGIS pour les bibliothèques C"
+  },
+  {
+    "objectID": "index_fr.html#données-spatiales",
+    "href": "index_fr.html#données-spatiales",
+    "title": "R et espace",
+    "section": "Données spatiales",
+    "text": "Données spatiales\n\n\n\n\nType d’objet\n\n\nDescription\n\n\nsf\n\n\nstars\n\n\nterra\n\n\n\n\n\n\nVecteur\n\n\nOù sont les entités?\n\n\n\n\n\n\n\n\n\n\n Points\n\n\nEmplacements discrets avec coordonnées et attributs.\n\n\n✓\n\n\n\n\n✓\n\n\n\n\n Lignes\n\n\nEntités linéaires comme les routes, rivières ou tracés.\n\n\n✓\n\n\n\n\n✓\n\n\n\n\n Polygones\n\n\nSurfaces comme les lacs, zones d’étude ou limites administratives.\n\n\n✓\n\n\n\n\n✓\n\n\n\n\nRaster\n\n\nQuelle est la valeur à travers l’espace?\n\n\n\n\n\n\n\n\n\n\n Rasters\n\n\nSurfaces quadrillées avec des valeurs stockées dans des cellules.\n\n\n\n\n✓\n\n\n✓"
+  },
+  {
+    "objectID": "index_fr.html#principaux-paquets-spatiaux-r",
+    "href": "index_fr.html#principaux-paquets-spatiaux-r",
+    "title": "R et espace",
+    "section": "Principaux paquets spatiaux R",
+    "text": "Principaux paquets spatiaux R\nNouvel écosystème\n\n\n\n\n\nsf 🌐\n\n\n\nstandard simple features\ndonnées vectorielles\ncompatible tidyverse\n\n\n\n\n\n\n\n\nstars 🌐\n\n\n\ntableaux spatio-temporels\nrasters et datacubes\ncompagnon solide de sf\n\n\n\n\n\n\n\n\nterra 🌐\n\n\n\nsupport vecteur et raster\noutils raster puissants\nflux de travail SIG complet\n\n\n\n\n\nAncien écosystème\n\n\n\n\n\nsp 🌐\n\n\n\ndonnées vectorielles\n\n\n\n\n\n\n\n\nraster 🌐\n\n\n\nrasters"
+  },
+  {
+    "objectID": "index_fr.html#paquets-accompagnateurs",
+    "href": "index_fr.html#paquets-accompagnateurs",
+    "title": "R et espace",
+    "section": "Paquets accompagnateurs",
+    "text": "Paquets accompagnateurs\nManipulation de données et mesures\n\n\n\n\n\ntidyverse 🌐\n\n\n\nflux de travail tabulaires autour des objets spatiaux\nfiltrage, jointure, regroupement, résumé\n\n\n\n\n\n\n\n\ntidyterra 🌐\n\n\n\nverbes tidy et fonctions de visualisation pour terra\nune extension utile, pas un remplacement de terra\n\n\n\n\n\n\n\n\nunits 🌐\n\n\n\nlongueurs, surfaces et distances explicites dans sf\ncontraste avec terra =&gt; mesures numériques\n\n\n\n\n\nVisualisation\n\n\n\n\n\nggplot2 🌐\n\n\n\ngraphiques statiques de qualité pour communication\ncartes en couches flexibles\n\n\n\n\n\n\n\n\nmapview 🌐\n\n\n\nexploration interactive rapide\nvérifications visuelles rapides des couches spatiales\n\n\n\n\n\n\n\n\ntmap 🌐\n\n\n\nflux de travail de cartographie\ncartes statiques et interactives\n\n\n\n\n\n\n\n\n\n\n\nCe sont des exemples de paquets accompagnateurs particulièrement pertinents. L’écosystème spatial de R est vaste et actif, et ne se limite pas aux paquets présentés ici."
+  },
+  {
+    "objectID": "index_fr.html#une-note-sur-les-ide",
+    "href": "index_fr.html#une-note-sur-les-ide",
+    "title": "R et espace",
+    "section": "Une note sur les IDE",
+    "text": "Une note sur les IDE\nQue sont les IDE? Environnements de développement intégrés\n\n\n\n\n\nRStudio 🌐\n\n\n\nenvironnement par défaut de longue date pour R\nconsole, éditeur, graphiques, fichiers et paquets intégrés\nun bon point de départ pour la plupart des utilisateurs de R\n\n\n\n\n\n\n\n\nVS Code 🌐\n\n\n\néditeur généraliste avec support R via des extensions\nadapté aux flux de travail mixtes R, Python, Quarto, Git\nune bonne option pour les projets multilingues\n\n\n\n\n\n\n\n\nPositron 🌐\n\n\n\nnouvel IDE de science des données de Posit, similaire à VS Code\ncombine scripts, notebooks et fonctionnalités IDE\nà suivre au fur et à mesure que l’écosystème évolue\n\n\n\n\n\n\n\n\n\n\n\nL’objectif de cet atelier n’est pas d’enseigner un IDE spécifique. Utilisez l’environnement qui vous permet de travailler confortablement avec des scripts, objets, graphiques et sorties spatiales."
+  },
+  {
+    "objectID": "index_fr.html#une-note-sur-les-pipes",
+    "href": "index_fr.html#une-note-sur-les-pipes",
+    "title": "R et espace",
+    "section": "Une note sur les pipes",
+    "text": "Une note sur les pipes\n\n\n\n\n\n\nQue sont les pipes?\n\n\nLes pipes transmettent la sortie d’une étape à la suivante, rendant les flux de travail à plusieurs étapes plus faciles à lire et à écrire. Nous les mentionnons explicitement car ils sont utilisés tout au long de l’atelier.\n\n\n\n\n\n\nmagrittr pipes : %&gt;%\nCO2 %&gt;%\n  dplyr::filter(Type == \"Quebec\")\n\npipes natifs : |&gt;\nCO2 |&gt;\n  dplyr::filter(Type == \"Quebec\")\n\n\nThe tidy tools manifesto"
+  },
+  {
+    "objectID": "index_fr.html#une-note-sur-le-code",
+    "href": "index_fr.html#une-note-sur-le-code",
+    "title": "R et espace",
+    "section": "Une note sur le code",
+    "text": "Une note sur le code\nChoisissez vos outils\n\nsf/starsterra\n\n\n\nsf_object &lt;- sf::function(...)\nstars_object &lt;- stars::function(...)\n\n\n\n\nterra_object &lt;- terra::function(...)\n\n\n\n\n\n\n\n\n\n\n\nNaviguer dans le code de la présentation\n\n\nLes diapositives montrent souvent la même opération deux fois : une fois avec sf/stars, et une fois avec terra.\nVous n’avez pas besoin de suivre les deux versions en même temps. Utilisez les onglets pour rester dans l’écosystème que vous avez choisi pour l’atelier."
+  },
+  {
+    "objectID": "index_fr.html#une-note-sur-les-exercices",
+    "href": "index_fr.html#une-note-sur-les-exercices",
+    "title": "R et espace",
+    "section": "Une note sur les exercices",
+    "text": "Une note sur les exercices\nChoisissez votre parcours\n\n\n\n\n\n\n\nFaites les deux niveaux!\n\n\nLes participants plus avancés peuvent compléter les deux parcours, car il y aura des flux de travail avancés disponibles avec les points et les lignes."
+  },
+  {
+    "objectID": "index_fr.html#lire-des-données-vectorielles",
+    "href": "index_fr.html#lire-des-données-vectorielles",
+    "title": "R et espace",
+    "section": "Lire des données vectorielles",
+    "text": "Lire des données vectorielles\n\nsfterra\n\n\n\naoi &lt;- st_read(\"data/polygons.gpkg\", layer = \"study_area\")\nzones &lt;- st_read(\"data/polygons.gpkg\", layer = \"zones\")\naoi\nzones\n\n\n\n\n\nSimple feature collection with 1 feature and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -73 ymin: 46.55 xmax: -72.6 ymax: 47\nGeodetic CRS:  WGS 84\n        name                           geom\n1 study_area POLYGON ((-73 46.55, -72.6 ...\n\n\nSimple feature collection with 4 features and 2 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -73 ymin: 46.55 xmax: -72.6 ymax: 47\nGeodetic CRS:  WGS 84\n  zone_id   zone_type                           geom\n1      NW      forest POLYGON ((-73 46.775, -72.8...\n2      NE       urban POLYGON ((-72.8 46.775, -72...\n3      SW     wetland POLYGON ((-73 46.55, -72.8 ...\n4      SE agriculture POLYGON ((-72.8 46.55, -72....\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naoi &lt;- vect(\"data/polygons.gpkg\", layer = \"study_area\")\nzones &lt;- vect(\"data/polygons.gpkg\", layer = \"zones\")\naoi\nzones\n\n\n\n\n\n        name\n1 study_area\n\n\n  zone_id   zone_type\n1      NW      forest\n2      NE       urban\n3      SW     wetland\n4      SE agriculture"
+  },
+  {
+    "objectID": "index_fr.html#créer-des-points-à-partir-dun-tableau",
+    "href": "index_fr.html#créer-des-points-à-partir-dun-tableau",
+    "title": "R et espace",
+    "section": "Créer des points à partir d’un tableau",
+    "text": "Créer des points à partir d’un tableau\n\nsfterra\n\n\n\nstations &lt;- read.csv(\"data/points.csv\") |&gt;\n  st_as_sf(coords = c(\"lon\", \"lat\"), crs = 4326, remove = FALSE)\n\n\n\n\n\nSimple feature collection with 6 features and 8 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -72.92 ymin: 46.7 xmax: -72.72 ymax: 46.94\nGeodetic CRS:  WGS 84\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n              geometry\n1 POINT (-72.92 46.78)\n2 POINT (-72.86 46.83)\n3 POINT (-72.79 46.88)\n4 POINT (-72.72 46.94)\n5  POINT (-72.88 46.7)\n6 POINT (-72.83 46.76)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nstations &lt;- read.csv(\"data/points.csv\") |&gt;\n  vect(geom = c(\"lon\", \"lat\"), crs = \"EPSG:4326\")\n\n\n\n\n\n  obs_id track_id seq           timestamp    category value\n1  OBS01        A   1 2026-03-01 08:00:00       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 agriculture    13"
+  },
+  {
+    "objectID": "index_fr.html#inspecter-les-données-vectorielles",
+    "href": "index_fr.html#inspecter-les-données-vectorielles",
+    "title": "R et espace",
+    "section": "Inspecter les données vectorielles",
+    "text": "Inspecter les données vectorielles\n\nsfterra\n\n\n\nst_geometry_type(zones)\nst_crs(zones)$input\nst_bbox(zones)\n\n\n\n[1] POLYGON POLYGON POLYGON POLYGON\n18 Levels: GEOMETRY POINT LINESTRING POLYGON MULTIPOINT ... TRIANGLE\n\n\n[1] \"WGS 84\"\n\n\n  xmin   ymin   xmax   ymax \n-73.00  46.55 -72.60  47.00 \n\n\n\n\n\ngeomtype(terra_zones)\ncrs(terra_zones, proj = TRUE)\next(terra_zones)\n\n\n\n[1] \"polygons\"\n\n\n[1] \"+proj=longlat +datum=WGS84 +no_defs\"\n\n\nSpatExtent : -73, -72.6, 46.55, 47 (xmin, xmax, ymin, ymax)\n\n\n\n\n\n\n\n\n\n\n\n\nProjections spatiales\n\n\nL’information CRS vous indique comment les coordonnées sont référencées sur la Terre. Quand vous avez besoin d’inspecter ou d’identifier une projection, epsg.io est un outil de recherche utile."
+  },
+  {
+    "objectID": "index_fr.html#transformer-le-crs",
+    "href": "index_fr.html#transformer-le-crs",
+    "title": "R et espace",
+    "section": "Transformer le CRS",
+    "text": "Transformer le CRS\n\nsfterra\n\n\n\nzones_qc &lt;- st_transform(zones, 32198)\npoints_qc &lt;- st_transform(points_sf, 32198)\nst_crs(points_qc)$input\nst_bbox(points_qc)\n\n\n\n\n\n[1] \"EPSG:32198\"\n\n\n     xmin      ymin      xmax      ymax \n-340347.3  299996.6 -318731.3  336605.7 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nzones_qc &lt;- project(terra_zones, \"EPSG:32198\")\npoints_qc &lt;- project(terra_points, \"EPSG:32198\")\ncrs(points_qc, proj = TRUE)\next(points_qc)\n\n\n\n\n\n[1] \"+proj=lcc +lat_0=44 +lon_0=-68.5 +lat_1=60 +lat_2=46 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs\"\n\n\nSpatExtent : -340347.271129903, -318731.322956473, 299996.592973116, 336605.692155159 (xmin, xmax, ymin, ymax)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMesures\n\n\nUtilisez un CRS adapté lorsque vous avez besoin de distances, longueurs ou surfaces interprétables."
+  },
+  {
+    "objectID": "index_fr.html#exporter-les-sorties-vectorielles",
+    "href": "index_fr.html#exporter-les-sorties-vectorielles",
+    "title": "R et espace",
+    "section": "Exporter les sorties vectorielles",
+    "text": "Exporter les sorties vectorielles\n\nsfterra\n\n\n\nst_write(points_sf_qc, \"outputs/points_projected.gpkg\")\n\n\n\n        object                    file exists features\n1 points_sf_qc file11919c6358ebff.gpkg   TRUE       12\n\n\n\n\n\nwriteVector(terra_points_qc, \"outputs/points_projected.gpkg\")\n\n\n\n           object                    file exists features\n1 terra_points_qc file11919c417a9daa.gpkg   TRUE       12"
+  },
+  {
+    "objectID": "index_fr.html#exercice-1",
+    "href": "index_fr.html#exercice-1",
+    "title": "R et espace",
+    "section": "Exercice 1",
+    "text": "Exercice 1\nFondements vectoriels\nImporter, inspecter, transformer, exporter\n\nBonus : utiliser R comme un convertisseur de fichiers spatiaux"
+  },
+  {
+    "objectID": "index_fr.html#construire-des-lignes-à-partir-de-points-ordonnés",
+    "href": "index_fr.html#construire-des-lignes-à-partir-de-points-ordonnés",
+    "title": "R et espace",
+    "section": "Construire des lignes à partir de points ordonnés",
+    "text": "Construire des lignes à partir de points ordonnés\n\nsfterra\n\n\n\ntracks &lt;- points_sf |&gt;\n  dplyr::arrange(track_id, timestamp) |&gt;\n  dplyr::group_by(track_id) |&gt;\n  dplyr::summarise(do_union = FALSE) |&gt;\n  st_cast(\"LINESTRING\")\n\n\n\n\n\nSimple feature collection with 3 features and 1 field\nGeometry type: LINESTRING\nDimension:     XY\nBounding box:  xmin: -72.95 ymin: 46.6 xmax: -72.69 ymax: 46.94\nGeodetic CRS:  WGS 84\n# A tibble: 3 × 2\n  track_id                                                 geometry\n  &lt;chr&gt;                                            &lt;LINESTRING [°]&gt;\n1 A        (-72.92 46.78, -72.86 46.83, -72.79 46.88, -72.72 46.94)\n2 B         (-72.88 46.7, -72.83 46.76, -72.76 46.82, -72.69 46.87)\n3 C         (-72.95 46.6, -72.89 46.66, -72.82 46.73, -72.75 46.79)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntracks_tbl &lt;- points_tbl |&gt;\n  dplyr::arrange(track_id, timestamp) |&gt;\n  dplyr::summarise(\n    wkt = paste0(\n      \"LINESTRING (\",\n      paste(paste(lon, lat), collapse = \", \"),\n      \")\"\n    ),\n    .by = track_id\n  ) |&gt;\n  terra::vect(geom = \"wkt\", crs = \"EPSG:4326\")\n\n\n\n\n\n  track_id\n1        A\n2        B\n3        C"
+  },
+  {
+    "objectID": "index_fr.html#cartographie-statique-rapide",
+    "href": "index_fr.html#cartographie-statique-rapide",
+    "title": "R et espace",
+    "section": "Cartographie statique rapide",
+    "text": "Cartographie statique rapide\n\nsfterra\n\n\n\nplot(st_geometry(aoi), col = \"#f7fbfc\", border = \"#355c67\")\nplot(st_geometry(zones), add = TRUE, border = \"#264653\")\nplot(st_geometry(stations), pch = 16, col = \"#7f1d1d\", add = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\nplot(aoi, col = \"#f7fbfc\", border = \"#355c67\")\nplot(zones, add = TRUE, border = \"#264653\")\nplot(stations, pch = 16, col = \"#7f1d1d\", add = TRUE)"
+  },
+  {
+    "objectID": "index_fr.html#cartographie-interactive-rapide",
+    "href": "index_fr.html#cartographie-interactive-rapide",
+    "title": "R et espace",
+    "section": "Cartographie interactive rapide",
+    "text": "Cartographie interactive rapide\n\nsfterra\n\n\n\nmapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")\n\n\n\n\n\n\n\n\n\n\nmapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")"
+  },
+  {
+    "objectID": "index_fr.html#exporter-des-cartes-interactives",
+    "href": "index_fr.html#exporter-des-cartes-interactives",
+    "title": "R et espace",
+    "section": "Exporter des cartes interactives",
+    "text": "Exporter des cartes interactives\n\nsfterra\n\n\n\nm &lt;- mapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")\n\nmapview::mapshot(m, file = \"outputs/interactive_map.html\")\n\n\n\n          object                    file format\n1 mapview sf map file11919c630dc688.html   html\n\n\n\n\n\nm &lt;- mapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")\n\nmapview::mapshot(m, file = \"outputs/interactive_map.html\")\n\n\n\n             object                    file format\n1 mapview terra map file11919c18ea446e.html   html\n\n\n\n\n\n\n\n\n\n\n\n\nPartagez vos cartes!\n\n\nLes sorties interactives mapview peuvent être sauvegardées comme fichiers HTML autonomes et partagées comme n’importe quel document web."
+  },
+  {
+    "objectID": "index_fr.html#exercice-2",
+    "href": "index_fr.html#exercice-2",
+    "title": "R et espace",
+    "section": "Exercice 2",
+    "text": "Exercice 2\nFondements vectoriels appliqués à vos données\nImporter, inspecter, transformer, exporter, visualiser"
+  },
+  {
+    "objectID": "index_fr.html#filtrer-vers-une-zone-détude",
+    "href": "index_fr.html#filtrer-vers-une-zone-détude",
+    "title": "R et espace",
+    "section": "Filtrer vers une zone d’étude",
+    "text": "Filtrer vers une zone d’étude\n\nsfterra\n\n\n\nfocus_area &lt;- zones |&gt;\n  dplyr::filter(zone_id %in% c(\"NE\", \"SE\")) |&gt;\n  dplyr::summarise()\n\npoints_focus &lt;- st_filter(points_sf, focus_area)\nzones_focus &lt;- st_crop(zones, st_bbox(focus_area))\n\n\n\n\n\nSimple feature collection with 5 features and 8 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -72.79 ymin: 46.79 xmax: -72.69 ymax: 46.94\nGeodetic CRS:  WGS 84\n  obs_id track_id seq           timestamp    lon   lat category value\n1  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88   forest    21\n2  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94   forest    24\n3  OBS07        B   3 2026-03-02 10:00:00 -72.76 46.82  wetland    17\n4  OBS08        B   4 2026-03-02 11:00:00 -72.69 46.87  wetland    18\n5  OBS12        C   4 2026-03-03 11:00:00 -72.75 46.79    urban    19\n              geometry\n1 POINT (-72.79 46.88)\n2 POINT (-72.72 46.94)\n3 POINT (-72.76 46.82)\n4 POINT (-72.69 46.87)\n5 POINT (-72.75 46.79)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nfocus_area &lt;- terra_zones[terra_zones$zone_id %in% c(\"NE\", \"SE\")]\npoints_focus &lt;- crop(terra_points, focus_area)\nzones_focus &lt;- crop(terra_zones, ext(focus_area))\n\n\n\n\n\n  obs_id track_id seq           timestamp category value\n1  OBS03        A   3 2026-03-01 10:00:00   forest    21\n2  OBS04        A   4 2026-03-01 11:00:00   forest    24\n3  OBS07        B   3 2026-03-02 10:00:00  wetland    17\n4  OBS08        B   4 2026-03-02 11:00:00  wetland    18\n5  OBS12        C   4 2026-03-03 11:00:00    urban    19"
+  },
+  {
+    "objectID": "index_fr.html#mesurer-les-entités-vectorielles",
+    "href": "index_fr.html#mesurer-les-entités-vectorielles",
+    "title": "R et espace",
+    "section": "Mesurer les entités vectorielles",
+    "text": "Mesurer les entités vectorielles\n\nsfterra\n\n\n\nzone_area &lt;- units::set_units(st_area(zones_qc), \"km^2\")\ntrack_length &lt;- units::set_units(st_length(tracks_sf_qc), \"km\")\nboundary_distance &lt;- units::set_units(st_distance(points_sf_qc, st_boundary(aoi_qc)), \"km\")\nzone_area\ntrack_length\nhead(boundary_distance)\n\n\n\n\n\n  zone_id area_km2\n1      NW    380.0\n2      NE    380.0\n3      SW    381.9\n4      SE    381.9\n\n\n  track_id length_km\n1        A      23.4\n2        B      23.9\n3        C      26.1\n\n\n\n\n\n  obs_id boundary_km\n1  OBS01         6.1\n2  OBS02        10.7\n3  OBS03        13.3\n4  OBS04         6.7\n5  OBS05         9.2\n6  OBS06        13.0\n\n\n\n\n\n\n\nzone_area &lt;- expanse(terra_zones_qc, unit = \"km\")\ntrack_length &lt;- perim(terra_tracks_qc) / 1000\nboundary_distance &lt;- distance(terra_points_qc, as.lines(terra_aoi_qc))[, 1] / 1000\nzone_area\ntrack_length\nhead(boundary_distance)\n\n\n\n\n\n  zone_id area_km2\n1      NW    381.3\n2      NE    381.3\n3      SW    382.9\n4      SE    382.9\n\n\n  track_id length_km\n1        A      23.4\n2        B      23.9\n3        C      26.1\n\n\n\n\n\n  obs_id boundary_km\n1  OBS01         6.1\n2  OBS02        10.7\n3  OBS03        13.3\n4  OBS04         6.7\n5  OBS05         9.2\n6  OBS06        13.0\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nsf retourne des mesures avec unités. terra retourne des valeurs numériques dont la signification depend du CRS et de la fonction utilisée."
+  },
+  {
+    "objectID": "index_fr.html#joindre-des-attributs-aux-entités",
+    "href": "index_fr.html#joindre-des-attributs-aux-entités",
+    "title": "R et espace",
+    "section": "Joindre des attributs aux entités",
+    "text": "Joindre des attributs aux entités\n\nsfterra\n\n\n\npoints_joined &lt;- st_join(points_sf, zones[, c(\"zone_id\", \"zone_type\")])\n\n\n\n\n\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n  zone_id zone_type\n1      NW    forest\n2      NW    forest\n3      NE     urban\n4      NE     urban\n5      SW   wetland\n6      SW   wetland\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npoint_values &lt;- extract(terra_zones, terra_points)\npoints_joined &lt;- cbind(terra_points, point_values[, c(\"zone_id\", \"zone_type\")])\n\n\n\n\n\n  obs_id track_id seq           timestamp    category value zone_id zone_type\n1  OBS01        A   1 2026-03-01 08:00:00       urban    14      NW    forest\n2  OBS02        A   2 2026-03-01 09:00:00       urban    16      NW    forest\n3  OBS03        A   3 2026-03-01 10:00:00      forest    21      NE     urban\n4  OBS04        A   4 2026-03-01 11:00:00      forest    24      NE     urban\n5  OBS05        B   1 2026-03-02 08:00:00 agriculture    11      SW   wetland\n6  OBS06        B   2 2026-03-02 09:00:00 agriculture    13      SW   wetland"
+  },
+  {
+    "objectID": "index_fr.html#intersecter-les-géométries",
+    "href": "index_fr.html#intersecter-les-géométries",
+    "title": "R et espace",
+    "section": "Intersecter les géométries",
+    "text": "Intersecter les géométries\n\nsfterra\n\n\n\ntrack_segments &lt;- st_intersection(tracks_sf_qc, zones_qc)\n\n\n\n\n\n# A tibble: 6 × 3\n  track_id zone_id zone_type\n  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    \n1 A        NW      forest   \n2 B        NW      forest   \n3 A        NE      urban    \n4 B        NE      urban    \n5 C        NE      urban    \n6 B        SW      wetland  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntrack_segments &lt;- intersect(terra_tracks_qc, terra_zones_qc)\n\n\n\n\n\n  track_id zone_id   zone_type\n1        A      NE       urban\n2        A      NW      forest\n3        B      SW     wetland\n4        B      NE       urban\n5        B      NW      forest\n6        C      SE agriculture\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nUtilisez une jointure quand vous voulez attacher des attributs. Utilisez une intersection quand vous voulez que le chevauchement crée de nouvelles géométries."
+  },
+  {
+    "objectID": "index_fr.html#zones-tampon",
+    "href": "index_fr.html#zones-tampon",
+    "title": "R et espace",
+    "section": "Zones tampon",
+    "text": "Zones tampon\n\nsfterra\n\n\n\npoint_buffers &lt;- st_buffer(points_sf_qc, dist = 10000)\nst_geometry_type(point_buffers)\n\n\n\n\n\n[1] POLYGON\n18 Levels: GEOMETRY POINT LINESTRING POLYGON MULTIPOINT ... TRIANGLE\n\n\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npoint_buffers &lt;- buffer(terra_points_qc, width = 10000)\ngeomtype(point_buffers)\n\n\n\n\n\n[1] \"polygons\"\n\n\n  obs_id track_id seq           timestamp    category value\n1  OBS01        A   1 2026-03-01 08:00:00       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 agriculture    13\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nLes zones tampon créent de nouvelles géométries à une distance fixe autour des entités, elles sont donc généralement réalisées dans un CRS projeté avec des unités de distance interprétables."
+  },
+  {
+    "objectID": "index_fr.html#exercice-3",
+    "href": "index_fr.html#exercice-3",
+    "title": "R et espace",
+    "section": "Exercice 3",
+    "text": "Exercice 3\nOpérations vectorielles\nFiltrer, mesurer, joindre, intersecter, zone tampon"
+  },
+  {
+    "objectID": "index_fr.html#lire-des-données-raster",
+    "href": "index_fr.html#lire-des-données-raster",
+    "title": "R et espace",
+    "section": "Lire des données raster",
+    "text": "Lire des données raster\n\nstarsterra\n\n\n\nsurface &lt;- read_stars(\"data/surface.tif\")\nsurface\n\n\n\n\n\nstars object with 2 dimensions and 1 attribute\nattribute(s):\n             Min. 1st Qu. Median     Mean 3rd Qu.   Max.\nsurface.tif   9.6 40.8325   48.5 50.00007  59.805 100.32\ndimension(s):\n  from to offset    delta refsys point x/y\nx    1 40    -73     0.01 WGS 84 FALSE [x]\ny    1 40     47 -0.01125 WGS 84 FALSE [y]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nsurface &lt;- rast(\"data/surface.tif\")\nsurface\n\n\n\n\n\nclass       : SpatRaster \nsize        : 40, 40, 1  (nrow, ncol, nlyr)\nresolution  : 0.01, 0.01125  (x, y)\nextent      : -73, -72.6, 46.55, 47  (xmin, xmax, ymin, ymax)\ncoord. ref. : lon/lat WGS 84 (EPSG:4326) \nsource      : surface.tif \nname        : surface_value \nmin value   :          9.60 \nmax value   :        100.32"
+  },
+  {
+    "objectID": "index_fr.html#inspecter-les-données-raster",
+    "href": "index_fr.html#inspecter-les-données-raster",
+    "title": "R et espace",
+    "section": "Inspecter les données raster",
+    "text": "Inspecter les données raster\n\nstarsterra\n\n\n\nst_dimensions(surface)\nst_bbox(surface)\nst_crs(surface)$input\n\n\n\n  from to offset    delta refsys point x/y\nx    1 40    -73     0.01 WGS 84 FALSE [x]\ny    1 40     47 -0.01125 WGS 84 FALSE [y]\n\n\n  xmin   ymin   xmax   ymax \n-73.00  46.55 -72.60  47.00 \n\n\n[1] \"WGS 84\"\n\n\n\n\n\ndim(surface)\nres(surface)\next(surface)\ncrs(surface, proj = TRUE)\n\n\n\n[1] 40 40  1\n\n\n[1] 0.01000 0.01125\n\n\nSpatExtent : -73, -72.6, 46.55, 47 (xmin, xmax, ymin, ymax)\n\n\n[1] \"+proj=longlat +datum=WGS84 +no_defs\""
+  },
+  {
+    "objectID": "index_fr.html#exporter-les-sorties-raster",
+    "href": "index_fr.html#exporter-les-sorties-raster",
+    "title": "R et espace",
+    "section": "Exporter les sorties raster",
+    "text": "Exporter les sorties raster\n\nstarsterra\n\n\n\nwrite_stars(surface_mask, \"outputs/surface_focus.tif\")\n\n\n\n              object                   file exists\n1 surface_stars_mask file11919c7d9a557b.tif   TRUE\n\n\n\n\n\nwriteRaster(surface_mask, \"outputs/surface_focus.tif\", overwrite = TRUE)\n\n\n\n              object                   file exists\n1 surface_terra_mask file11919c67f736cb.tif   TRUE"
+  },
+  {
+    "objectID": "index_fr.html#visualisation-statique-de-rasters",
+    "href": "index_fr.html#visualisation-statique-de-rasters",
+    "title": "R et espace",
+    "section": "Visualisation statique de rasters",
+    "text": "Visualisation statique de rasters\n\nstarsterra\n\n\n\nplot(surface, col = viridis::viridis(100))\n\n\n\n\n\n\n\n\n\n\n\n\n\nplot(surface)"
+  },
+  {
+    "objectID": "index_fr.html#cartographie-interactive-de-rasters",
+    "href": "index_fr.html#cartographie-interactive-de-rasters",
+    "title": "R et espace",
+    "section": "Cartographie interactive de rasters",
+    "text": "Cartographie interactive de rasters\n\nstarsterra\n\n\n\nmapview(surface) + mapview(aoi)\n\n\n\n\n\n\n\n\n\n\nmapview(surface) + mapview(aoi)"
+  },
+  {
+    "objectID": "index_fr.html#exercice-4",
+    "href": "index_fr.html#exercice-4",
+    "title": "R et espace",
+    "section": "Exercice 4",
+    "text": "Exercice 4\nFondements raster\nImporter, inspecter, transformer, exporter, visualiser"
+  },
+  {
+    "objectID": "index_fr.html#découper-masquer-projeter",
+    "href": "index_fr.html#découper-masquer-projeter",
+    "title": "R et espace",
+    "section": "Découper, masquer, projeter",
+    "text": "Découper, masquer, projeter\n\nstarsterra\n\n\n\ncrop_zone &lt;- zones |&gt; dplyr::filter(zone_id == \"NE\")\nbuffer_one &lt;- st_transform(point_buffers[1, ], st_crs(surface))\nsurface_qc &lt;- st_warp(surface, crs = st_crs(aoi_qc))\nsurface_crop &lt;- st_crop(surface, st_bbox(crop_zone))\nsurface_mask &lt;- surface[buffer_one]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ncrop_zone &lt;- zones[zones$zone_id == \"NE\"]\nbuffer_one &lt;- project(point_buffers[1], crs(surface))\nsurface_qc &lt;- project(surface, \"EPSG:32198\")\nsurface_crop &lt;- crop(surface, crop_zone)\nsurface_mask &lt;- mask(surface, buffer_one)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nManipulations raster\n\n\nIci les trois opérations sont présentées indépendamment : project change le CRS, crop utilisé une zone comme étendue cible, et mask conserve les cellules uniquement à l’intérieur d’une géométrie tampon."
+  },
+  {
+    "objectID": "index_fr.html#rééchantillonnage",
+    "href": "index_fr.html#rééchantillonnage",
+    "title": "R et espace",
+    "section": "Rééchantillonnage",
+    "text": "Rééchantillonnage\n\nstarsterra\n\n\n\ntemplate &lt;- st_as_stars(st_bbox(surface), dx = 0.05, dy = 0.05)\nst_crs(template) &lt;- st_crs(surface)\nsurface_near &lt;- st_warp(surface, dest = template, method = \"near\", use_gdal = TRUE)\nsurface_bilinear &lt;- st_warp(surface, dest = template, method = \"bilinear\", use_gdal = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntemplate &lt;- rast(ext(surface), resolution = 0.05, crs = crs(surface))\nsurface_near &lt;- resample(surface, template, method = \"near\")\nsurface_bilinear &lt;- resample(surface, template, method = \"bilinear\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLe rééchantillonnage modifie la grille de cellules\n\n\nNear est courant pour les rasters categoriques, tandis que bilinear est courant pour les surfaces continues."
+  },
+  {
+    "objectID": "index_fr.html#couches-raster-multiples",
+    "href": "index_fr.html#couches-raster-multiples",
+    "title": "R et espace",
+    "section": "Couches raster multiples",
+    "text": "Couches raster multiples\n\nstarsterra\n\n\n\nsurface2 &lt;- surface * 1.1\nnames(surface2) &lt;- \"surface2\"\nsurface_stack &lt;- c(surface, surface2)\nsurface_mean &lt;- st_apply(surface_stack, MARGIN = c(\"x\", \"y\"), FUN = mean)\n\n\n\n\n\n[1] \"surface.tif\" \"surface_alt\"\n\n\n[1] 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nsurface2 &lt;- surface * 1.1\nnames(surface2) &lt;- \"surface2\"\nsurface_stack &lt;- c(surface, surface2)\nsurface_mean &lt;- app(surface_stack, mean)\n\n\n\n\n\n[1] \"surface_value\" \"surface_alt\"  \n\n\n[1] 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRasters multi-couches\n\n\nPeuvent représenter des bandes, variables ou pas de temps. Les fonctions par cellule combinent l’information à travers les couches."
+  },
+  {
+    "objectID": "index_fr.html#exercice-5",
+    "href": "index_fr.html#exercice-5",
+    "title": "R et espace",
+    "section": "Exercice 5",
+    "text": "Exercice 5\nOpérations raster\nProjeter, découper, masquer, rééchantillonner, opérations sur les couches"
+  },
+  {
+    "objectID": "index_fr.html#travailler-avec-vecteurs-et-rasters",
+    "href": "index_fr.html#travailler-avec-vecteurs-et-rasters",
+    "title": "R et espace",
+    "section": "Travailler avec vecteurs et rasters",
+    "text": "Travailler avec vecteurs et rasters"
+  },
+  {
+    "objectID": "index_fr.html#extraire-des-valeurs-raster-avec-des-points",
+    "href": "index_fr.html#extraire-des-valeurs-raster-avec-des-points",
+    "title": "R et espace",
+    "section": "Extraire des valeurs raster avec des points",
+    "text": "Extraire des valeurs raster avec des points\n\nsf/starsterra\n\n\n\npoints_surface &lt;- st_extract(surface, points_joined)\nnames(points_surface)[1] &lt;- \"surface_value\"\n\n\n\n\n\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n  zone_id zone_type surface_value\n1      NW    forest         49.71\n2      NW    forest         48.70\n3      NE     urban         47.72\n4      NE     urban         61.39\n5      SW   wetland         51.67\n6      SW   wetland         45.88\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npoint_vals &lt;- extract(surface, points_joined)\npoints_surface &lt;- cbind(points_joined, point_vals[, \"surface_value\", drop = FALSE])\n\n\n\n\n\n  obs_id zone_id zone_type surface_value\n1  OBS01      NW    forest         48.69\n2  OBS02      NW    forest         49.60\n3  OBS03      NE     urban         47.72\n4  OBS04      NE     urban         59.98\n5  OBS05      SW   wetland         51.67\n6  OBS06      SW   wetland         47.16"
+  },
+  {
+    "objectID": "index_fr.html#extraire-des-valeurs-raster-avec-des-lignes",
+    "href": "index_fr.html#extraire-des-valeurs-raster-avec-des-lignes",
+    "title": "R et espace",
+    "section": "Extraire des valeurs raster avec des lignes",
+    "text": "Extraire des valeurs raster avec des lignes\n\nsf/starsterra\n\n\n\ntracks_surface &lt;- st_extract(surface, tracks, FUN = function(x) mean(x, na.rm = TRUE))\n\n\n\n\n\n# A tibble: 3 × 2\n  track_id surface_value\n  &lt;chr&gt;            &lt;dbl&gt;\n1 A                 50.0\n2 B                 45.0\n3 C                 44.3\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntrack_vals &lt;- extract(surface, tracks, fun = mean, na.rm = TRUE)\ntracks_surface &lt;- cbind(tracks, track_vals[, \"surface_value\", drop = FALSE])\n\n\n\n\n\n  track_id surface_value\n1        A      50.02471\n2        B      45.14939\n3        C      44.24216"
+  },
+  {
+    "objectID": "index_fr.html#extraire-des-valeurs-raster-avec-des-polygones",
+    "href": "index_fr.html#extraire-des-valeurs-raster-avec-des-polygones",
+    "title": "R et espace",
+    "section": "Extraire des valeurs raster avec des polygones",
+    "text": "Extraire des valeurs raster avec des polygones\n\nsf/starsterra\n\n\n\nzones_surface &lt;- st_extract(surface, zones, FUN = function(x) mean(x, na.rm = TRUE))\n\n\n\n\n\n  zone_id   zone_type surface_value\n1      NW      forest      55.93852\n2      NE       urban      60.33677\n3      SW     wetland      39.66305\n4      SE agriculture      44.06193\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nzone_vals &lt;- extract(surface, zones, fun = mean, na.rm = TRUE)\nzones_surface &lt;- cbind(zones, zone_vals[, \"surface_value\", drop = FALSE])\n\n\n\n\n\n  zone_id   zone_type surface_value\n1      NW      forest      55.93852\n2      NE       urban      60.33677\n3      SW     wetland      39.66305\n4      SE agriculture      44.06193"
+  },
+  {
+    "objectID": "index_fr.html#résumer-les-valeurs-extraites",
+    "href": "index_fr.html#résumer-les-valeurs-extraites",
+    "title": "R et espace",
+    "section": "Résumer les valeurs extraites",
+    "text": "Résumer les valeurs extraites\n\nsf/starsterra\n\n\n\npoint_zone_summary &lt;- points_surface |&gt;\n  st_drop_geometry() |&gt;\n  group_by(zone_id, zone_type) |&gt;\n  summarise(\n    point_n = n(),\n    mean_surface = mean(surface_value, na.rm = TRUE),\n    mean_value = mean(value, na.rm = TRUE)\n  )\n\n\n\n# A tibble: 3 × 5\n  zone_id zone_type point_n mean_surface mean_value\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;\n1 NE      urban           5         48.4       19.8\n2 NW      forest          2         49.2       15  \n3 SW      wetland         5         44.7       11.6\n\n\n\n\n\npoint_zone_summary &lt;- as.data.frame(points_surface) |&gt;\n  group_by(zone_id, zone_type) |&gt;\n  summarise(\n    point_n = n(),\n    mean_surface = mean(surface_value, na.rm = TRUE),\n    mean_value = mean(value, na.rm = TRUE)\n  )\n\n\n\n# A tibble: 3 × 5\n  zone_id zone_type point_n mean_surface mean_value\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;\n1 NE      urban           5         47.6       19.8\n2 NW      forest          2         49.1       15  \n3 SW      wetland         5         44.5       11.6"
+  },
+  {
+    "objectID": "index_fr.html#construire-des-tableaux-danalyse",
+    "href": "index_fr.html#construire-des-tableaux-danalyse",
+    "title": "R et espace",
+    "section": "Construire des tableaux d’analyse",
+    "text": "Construire des tableaux d’analyse\n\nsf/starsterra\n\n\n\nanalysis_table &lt;- point_zone_summary |&gt;\n  left_join(zone_area, by = \"zone_id\") |&gt;\n  select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)\n\n\n\n# A tibble: 3 × 6\n  zone_id zone_type point_n mean_surface mean_value area_km2\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;\n1 NE      urban           5         48.4       19.8     380 \n2 NW      forest          2         49.2       15       380 \n3 SW      wetland         5         44.7       11.6     382.\n\n\n\n\n\nanalysis_table &lt;- point_zone_summary |&gt;\n  left_join(zone_area, by = \"zone_id\") |&gt;\n  select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)\n\n\n\n# A tibble: 3 × 6\n  zone_id zone_type point_n mean_surface mean_value area_km2\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;\n1 NE      urban           5         47.6       19.8     381.\n2 NW      forest          2         49.1       15       381.\n3 SW      wetland         5         44.5       11.6     383."
+  },
+  {
+    "objectID": "index_fr.html#exercice-6",
+    "href": "index_fr.html#exercice-6",
+    "title": "R et espace",
+    "section": "Exercice 6",
+    "text": "Exercice 6\nFlux de travail intégrés\nExtraire, résumer, construire des tableaux d’analyse"
+  },
+  {
+    "objectID": "index_fr.html#analyses-spatiales-1",
+    "href": "index_fr.html#analyses-spatiales-1",
+    "title": "R et espace",
+    "section": "Analyses spatiales",
+    "text": "Analyses spatiales\n\nles analyses spatiales sont un domaine très vaste\ncet atelier ne vise pas a couvrir toute cette étendue\nnotre accent est mis sur la préparation des données spatiales pour l’analyse\nnous utilisons des GLM et des KDE simples comme exemples illustratifs de ce qui peut suivre\n\n\n\n\n\n\n\nLe point important ici n’est pas les analyses elles-mêmes. Le point est le flux de travail qui vous amène des données spatiales aux entrées prêtes pour l’analyse."
+  },
+  {
+    "objectID": "index_fr.html#préparer-les-données-pour-lanalyse",
+    "href": "index_fr.html#préparer-les-données-pour-lanalyse",
+    "title": "R et espace",
+    "section": "Préparer les données pour l’analyse",
+    "text": "Préparer les données pour l’analyse\n\nsf/starsterra\n\n\n\nanalysis_data &lt;- points_surface |&gt;\n  st_drop_geometry() |&gt;\n  select(obs_id, track_id, zone_id, zone_type, category, value, surface_value) |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\n\n\n  obs_id track_id zone_id zone_type    category value surface_value\n1  OBS01        A      NW    forest       urban    14         49.71\n2  OBS02        A      NW    forest       urban    16         48.70\n3  OBS03        A      NE     urban      forest    21         47.72\n4  OBS04        A      NE     urban      forest    24         61.39\n5  OBS05        B      SW   wetland agriculture    11         51.67\n6  OBS06        B      SW   wetland agriculture    13         45.88\n\n\n\n\n\nanalysis_data &lt;- as.data.frame(points_surface) |&gt;\n  select(obs_id, track_id, zone_id, zone_type, category, value, surface_value) |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\n\n\n  obs_id track_id zone_id zone_type    category value surface_value\n1  OBS01        A      NW    forest       urban    14         48.69\n2  OBS02        A      NW    forest       urban    16         49.60\n3  OBS03        A      NE     urban      forest    21         47.72\n4  OBS04        A      NE     urban      forest    24         59.98\n5  OBS05        B      SW   wetland agriculture    11         51.67\n6  OBS06        B      SW   wetland agriculture    13         47.16"
+  },
+  {
+    "objectID": "index_fr.html#un-glm-simple",
+    "href": "index_fr.html#un-glm-simple",
+    "title": "R et espace",
+    "section": "Un GLM simple",
+    "text": "Un GLM simple\n\nsf/starsterra\n\n\n\nglm_fit &lt;- glm(\n  value ~ surface_value + zone_type,\n  family = poisson(),\n  data = analysis_data\n)\nsummary(glm_fit)\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)    2.178      0.536   4.064    0.000\n2    surface_value    0.011      0.010   1.052    0.293\n3   zone_typeurban    0.283      0.208   1.356    0.175\n4 zone_typewetland   -0.211      0.229  -0.921    0.357\n\n\n\n\n\nglm_fit &lt;- glm(\n  value ~ surface_value + zone_type,\n  family = poisson(),\n  data = analysis_data\n)\nsummary(glm_fit)\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)    2.114      0.550   3.841    0.000\n2    surface_value    0.012      0.011   1.144    0.253\n3   zone_typeurban    0.292      0.209   1.399    0.162\n4 zone_typewetland   -0.205      0.229  -0.897    0.370"
+  },
+  {
+    "objectID": "index_fr.html#bonus-glm-avancé",
+    "href": "index_fr.html#bonus-glm-avancé",
+    "title": "R et espace",
+    "section": "Bonus : GLM avancé",
+    "text": "Bonus : GLM avancé\n\nsf/starsterra\n\n\n\npseudo_points &lt;- st_sample(aoi_qc, size = nrow(points_qc), exact = TRUE) |&gt;\n  st_as_sf() |&gt;\n  st_join(zones_qc[, c(\"zone_id\", \"zone_type\")])\n\npseudo_points$surface_value &lt;- st_extract(surface_qc, pseudo_points)[[1]]\npseudo_points$presence &lt;- 0\npoints_qc$presence &lt;- 1\n\npa_data &lt;- bind_rows(points_qc, pseudo_points) |&gt;\n  st_drop_geometry() |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\nglm_pa &lt;- glm(presence ~ surface_value + zone_type, family = binomial(), data = pa_data)\n\n\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)  -16.407   3143.229  -0.005    0.996\n2    surface_value   -0.039      0.036  -1.098    0.272\n3  zone_typeforest   19.471   3143.229   0.006    0.995\n4   zone_typeurban   18.584   3143.229   0.006    0.995\n5 zone_typewetland   18.917   3143.229   0.006    0.995\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npseudo_points &lt;- spatSample(aoi_qc, size = nrow(points_qc), method = \"random\", as.points = TRUE)\npseudo_zone &lt;- extract(zones_qc, pseudo_points)\npseudo_surface &lt;- extract(surface_qc, pseudo_points)\npseudo_points &lt;- cbind(pseudo_points, pseudo_zone[, c(\"zone_id\", \"zone_type\")], pseudo_surface[, \"surface_value\", drop = FALSE])\npseudo_points$presence &lt;- 0\npoints_qc$presence &lt;- 1\n\npa_data &lt;- bind_rows(as.data.frame(points_qc), as.data.frame(pseudo_points)) |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\nglm_pa &lt;- glm(presence ~ surface_value + zone_type, family = binomial(), data = pa_data)\n\n\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)  -15.383   4166.523  -0.004    0.997\n2    surface_value   -0.096      0.083  -1.165    0.244\n3  zone_typeforest   19.171   4166.522   0.005    0.996\n4   zone_typeurban   22.227   4166.522   0.005    0.996\n5 zone_typewetland   21.540   4166.522   0.005    0.996"
+  },
+  {
+    "objectID": "index_fr.html#exercice-7",
+    "href": "index_fr.html#exercice-7",
+    "title": "R et espace",
+    "section": "Exercice 7",
+    "text": "Exercice 7\nAnalyses spatiales\nPréparer les données, ajuster des GLM simples\n\nBonus : générer des pseudo-absences pour votre GLM avec des données de points"
+  },
+  {
+    "objectID": "index_fr.html#estimation-de-densité-par-noyau-kde",
+    "href": "index_fr.html#estimation-de-densité-par-noyau-kde",
+    "title": "R et espace",
+    "section": "Estimation de densité par noyau (KDE)",
+    "text": "Estimation de densité par noyau (KDE)\nUtiliser comme outil exploratoire\n\nutile pour les patrons de points\nproduit une surface d’intensite lissee\naide a visualiser la concentration ou les points chauds\nsouvent utilisé pour l’exploration plutôt que pour l’inférence formelle"
+  },
+  {
+    "objectID": "index_fr.html#estimation-de-densité-par-noyau-kde-1",
+    "href": "index_fr.html#estimation-de-densité-par-noyau-kde-1",
+    "title": "R et espace",
+    "section": "Estimation de densité par noyau (KDE)",
+    "text": "Estimation de densité par noyau (KDE)\n\nsf/starsterra\n\n\n\npts_xy &lt;- st_coordinates(points_qc)\nbbox &lt;- st_bbox(aoi_qc)\npoints_kde &lt;- MASS::kde2d(\n  pts_xy[, 1], pts_xy[, 2],\n  n = 80,\n  h = c(10000, 10000),\n  lims = c(bbox[\"xmin\"], bbox[\"xmax\"], bbox[\"ymin\"], bbox[\"ymax\"])\n)\n\n\n\n$x_head\n[1] -344515.3 -344091.9 -343668.5 -343245.1 -342821.7 -342398.3\n\n$y_head\n[1] 292854.6 293508.9 294163.2 294817.6 295471.9 296126.2\n\n$z_dim\n[1] 80 80\n\n\n\n\n\npts_xy &lt;- crds(points_qc)\nbbox &lt;- ext(aoi_qc)\npoints_kde &lt;- MASS::kde2d(\n  pts_xy[, 1], pts_xy[, 2],\n  n = 80,\n  h = c(10000, 10000),\n  lims = c(bbox$xmin, bbox$xmax, bbox$ymin, bbox$ymax)\n)\n\n\n\n$x_head\n[1] -344515.3 -344091.9 -343668.5 -343245.1 -342821.7 -342398.3\n\n$y_head\n[1] 292854.6 293508.9 294163.2 294817.6 295471.9 296126.2\n\n$z_dim\n[1] 80 80"
+  },
+  {
+    "objectID": "index_fr.html#estimation-de-densité-par-noyau-kde-2",
+    "href": "index_fr.html#estimation-de-densité-par-noyau-kde-2",
+    "title": "R et espace",
+    "section": "Estimation de densité par noyau (KDE)",
+    "text": "Estimation de densité par noyau (KDE)\n\nsf/starsterra\n\n\n\npoints_kde &lt;- st_as_stars(\n  list(kde = points_kde$z),\n  dimensions = st_dimensions(x = points_kde$x, y = points_kde$y)\n) |&gt;\n  st_set_crs(32198)\n\npoints_kde &lt;- points_kde[aoi_qc]\npoints_kde_plot &lt;- points_kde\npoints_kde_plot[[1]] &lt;- points_kde_plot[[1]] / max(points_kde_plot[[1]], na.rm = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\npoints_kde &lt;- rast(\n  t(points_kde$z)[nrow(t(points_kde$z)):1, ],\n  extent = ext(min(points_kde$x), max(points_kde$x), min(points_kde$y), max(points_kde$y)),\n  crs = \"EPSG:32198\"\n)\n\npoints_kde &lt;- mask(points_kde, aoi_qc)\npoints_kde_plot &lt;- points_kde / global(points_kde, \"max\", na.rm = TRUE)[1, 1]"
+  },
+  {
+    "objectID": "index_fr.html#exercice-8",
+    "href": "index_fr.html#exercice-8",
+    "title": "R et espace",
+    "section": "Exercice 8",
+    "text": "Exercice 8\nAnalyses spatiales\nAjuster des KDE et explorer les surfaces"
+  },
+  {
+    "objectID": "index_fr.html#cartographie-avancée-1",
+    "href": "index_fr.html#cartographie-avancée-1",
+    "title": "R et espace",
+    "section": "Cartographie avancée",
+    "text": "Cartographie avancée\n\n\nExploration rapide\n\nplot()\nmapview()\nQA/QC rapide et inspection des données\n\n\nCommunication\n\nggplot2\ntmap\nlégendes, palettes, étiquettes et mise en page plus soignées\n\n\n\n\n\nUtilisez des cartes exploratoires pour inspecter rapidement les données, puis passez à des outils de cartographie plus élaborés quand l’objectif est la communication ou le partage."
+  },
+  {
+    "objectID": "index_fr.html#cartographie-avancee-avec-ggplot2",
+    "href": "index_fr.html#cartographie-avancee-avec-ggplot2",
+    "title": "R et espace",
+    "section": "Cartographie avancee avec ggplot2",
+    "text": "Cartographie avancee avec ggplot2\nggplot2 fonctionne particulièrement bien pour des cartes statiques soignées, notamment avec les objets sf et stars.\n\n\n\ngg &lt;- ggplot() +\n  geom_stars(\n    data = points_kde_sf_plot\n  ) +\n  scale_fill_viridis_c(name = \"KDE\") +\n  geom_sf(\n    data = zones_qc,\n    fill = NA,\n    color = \"#355c67\"\n  ) +\n  geom_sf(\n    data = aoi_qc,\n    fill = NA,\n    color = \"#17313b\"\n  ) +\n  geom_sf(\n    data = points_sf_qc,\n    aes(color = category),\n    size = 1.7\n   ) +\n  coord_sf(expand = FALSE) +\n  theme_minimal()\ngg"
+  },
+  {
+    "objectID": "index_fr.html#cartographie-avancee-avec-tmap",
+    "href": "index_fr.html#cartographie-avancee-avec-tmap",
+    "title": "R et espace",
+    "section": "Cartographie avancee avec tmap",
+    "text": "Cartographie avancee avec tmap\ntmap est concu pour la cartographie thématique et fonctionne bien quand vous souhaitez une grammaire plus orientée cartographie que ggplot2.\n\n\n\ntm &lt;- tm_shape(points_kde_sf_plot) +\n  tm_raster(col.scale = tm_scale_continuous(\n    values = \"viridis\"\n  )) +\n  tm_shape(zones_qc) +\n  tm_borders(col = \"#355c67\") +\n  tm_shape(points_sf_qc) +\n  tm_symbols(\n    fill = \"category\",\n    size = 0.5\n  ) +\n  tm_shape(aoi_qc) +\n  tm_borders(col = \"#17313b\") +\n  tm_layout(\n    frame = FALSE,\n    legend.outside = TRUE\n  )\ntm"
+  },
+  {
+    "objectID": "index_fr.html#cartographie-avancee-avec-tmap-1",
+    "href": "index_fr.html#cartographie-avancee-avec-tmap-1",
+    "title": "R et espace",
+    "section": "Cartographie avancee avec tmap",
+    "text": "Cartographie avancee avec tmap\nUn avantage de tmap est que la même logique cartographique peut souvent être utilisée pour une sortie statique ou pour une carte interactive partagée.\n\ntm_html &lt;- tmap_leaflet(tm)\ntm_html"
+  },
+  {
+    "objectID": "index_fr.html#exporter-et-partager-des-cartes",
+    "href": "index_fr.html#exporter-et-partager-des-cartes",
+    "title": "R et espace",
+    "section": "Exporter et partager des cartes",
+    "text": "Exporter et partager des cartes\n\nggplot2tmap\n\n\n\nggsave(\n  filename = \"outputs/advanced_map.png\",\n  plot = gg,\n  width = 8,\n  height = 6,\n  dpi = 300\n)\n\nggsave(\n  filename = \"outputs/advanced_map.pdf\",\n  plot = gg,\n  width = 8,\n  height = 6\n)\n\n\n\n                         output             file                   tool\n1        figure de presentation advanced_map.png ggsave(..., dpi = 300)\n2 figure prete pour publication advanced_map.pdf            ggsave(...)\n\n\n\n\n\ntmap_save(\n  tm = tm,\n  filename = \"outputs/advanced_map.png\",\n  width = 8,\n  height = 6,\n  dpi = 300\n)\n\ntmap_mode(\"view\")\ntmap_save(\n  tm = tm,\n  filename = \"outputs/advanced_map.html\"\n)\ntmap_mode(\"plot\")\n\n\n\n                      output              file\n1  carte thematique statique  advanced_map.png\n2 carte interactive partagee advanced_map.html\n                                tool\n1                     tmap_save(...)\n2 tmap_mode(\"view\") + tmap_save(...)"
+  },
+  {
+    "objectID": "index_fr.html#exercice-9",
+    "href": "index_fr.html#exercice-9",
+    "title": "R et espace",
+    "section": "Exercice 9",
+    "text": "Exercice 9\nCartographie avancée\nConstruire, exporter et partager des cartes"
+  },
+  {
+    "objectID": "index_fr.html#points-à-retenir",
+    "href": "index_fr.html#points-à-retenir",
+    "title": "R et espace",
+    "section": "Points à retenir",
+    "text": "Points à retenir\n\nvecteur et raster sont des modèles de données différents\nsf, stars et terra couvrent la plupart des flux de travail spatiaux courants dans R\nles décisions de CRS affectent les mesures et les superpositions\nles jointures, intersections, découpages, masques et extractions sont des opérations fondamentales\nl’analyse spatiale dans R est souvent un pont entre les taches SIG et les flux de travail statistiques standards\ntraitez R à la fois comme un environnement d’analyse et un SIG"
+  },
+  {
+    "objectID": "index_fr.html#utilisation-de-technologies-récentes-pour-les-données-spatiales",
+    "href": "index_fr.html#utilisation-de-technologies-récentes-pour-les-données-spatiales",
+    "title": "R et espace",
+    "section": "Utilisation de technologies récentes pour les données spatiales",
+    "text": "Utilisation de technologies récentes pour les données spatiales\n\nhttps://github.com/geoarrow/geoarrow-r\nhttps://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html\nhttps://cidree.github.io/duckspatial/\nhttps://r-cf.github.io/zarr/\nhttps://stacspec.org/en"
+  },
+  {
+    "objectID": "index_fr.html#assistant-shiny-app",
+    "href": "index_fr.html#assistant-shiny-app",
+    "title": "R et espace",
+    "section": "Assistant Shiny App",
+    "text": "Assistant Shiny App\n\nhttps://gallery.shinyapps.io/assistant\nprompts :\n\nCreate an app that allows users to upload GeoJSON files and visualize them using Leaflet.\nModify the app to compute the total area when polygons are uploaded and display it in the card header.\nModify the app to also compute the total length for line géométries and display it in the card header.\n\n\n\n2 sujets ici IA + Shiny faire claude et les paquets apres?"
+  },
+  {
+    "objectID": "index_fr.html#conclusion",
+    "href": "index_fr.html#conclusion",
+    "title": "R et espace",
+    "section": "Conclusion",
+    "text": "Conclusion\n\ncommencez avec des objets spatiaux clairs et un CRS clair\ninspectez et cartographiez tot, puis analysez\npassez des objets spatiaux à des tableaux d’analyse propres\ncontinuez a construire des flux de travail réutilisables au fur et à mesure que vos analyses grandissent"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "R in Space / R et espace",
+    "section": "",
+    "text": "English\n      R in Space\n    \n  \n  \n    \n      Français\n      R et espace"
+  },
+  {
+    "objectID": "index_en.html#what-to-expect",
+    "href": "index_en.html#what-to-expect",
+    "title": "R in Space",
+    "section": "What To Expect",
+    "text": "What To Expect\n\n\n\n\n\n\n\n\nWhat This Workshop Is\n\n\n\na practical introduction to spatial workflows in R\na workshop about using R operationally as a GIS\nfocused on common manipulations you will reuse in real projects\n\n\n\n\n\n\n\n\n\n\n\nWhat This Workshop Is Not\n\n\n\nnot a full course in geodesy, cartography, or remote sensing\nnot a survey of every spatial package or method\nnot a theory-first geocomputation course"
+  },
+  {
+    "objectID": "index_en.html#resources",
+    "href": "index_en.html#resources",
+    "title": "R in Space",
+    "section": "Resources",
+    "text": "Resources\n\nVisualisation et analyse de données spatiales sous R (FR)\nGeocomputation with R\nSpatial Data Science"
+  },
+  {
+    "objectID": "index_en.html#workshop-objective",
+    "href": "index_en.html#workshop-objective",
+    "title": "R in Space",
+    "section": "Workshop Objective",
+    "text": "Workshop Objective\n\n\nBy the end of the workshop, participants should be able to use R as a GIS, work operationally with common spatial data manipulations, and have the right tools in hand to keep learning."
+  },
+  {
+    "objectID": "index_en.html#our-focus",
+    "href": "index_en.html#our-focus",
+    "title": "R in Space",
+    "section": "Our Focus",
+    "text": "Our Focus\n\nimport spatial data\ninspect geometry and CRS\ntransform and subset data\nmeasure distance, area, and length\ncombine layers through joins and overlays\nextract raster values to vector features\nbuild summaries, analyses, and maps"
+  },
+  {
+    "objectID": "index_en.html#workshop-structure",
+    "href": "index_en.html#workshop-structure",
+    "title": "R in Space",
+    "section": "Workshop Structure",
+    "text": "Workshop Structure\n\n\n\n\n\n\n\n\nMaterials\n\n\n\nshort concept-driven slides\nlive examples in R\nreusable scripts and resources for later review\n\n\n\n\n\n\n\n\n\n\n\nExercises\n\n\n\ntargeted hands-on exercises\ndesigned specifically for workshop participants\nbased on the data shared ahead of the event\n\n\n\n\n\n\n\n\nThe workshop alternates between concise instructional material and applied exercises, so participants can move directly from concepts to practice."
+  },
+  {
+    "objectID": "index_en.html#r-to-build-reproducible-pipelines",
+    "href": "index_en.html#r-to-build-reproducible-pipelines",
+    "title": "R in Space",
+    "section": "R to build reproducible pipelines",
+    "text": "R to build reproducible pipelines\n\n\nCould be python etc… Similar as QGIS for C libraries"
+  },
+  {
+    "objectID": "index_en.html#spatial-data",
+    "href": "index_en.html#spatial-data",
+    "title": "R in Space",
+    "section": "Spatial Data",
+    "text": "Spatial Data\n\n\n\n\nObject type\n\n\nDescription\n\n\nsf\n\n\nstars\n\n\nterra\n\n\n\n\n\n\nVector\n\n\nWhere are the features?\n\n\n\n\n\n\n\n\n\n\n Points\n\n\nDiscrete locations with coordinates and attributes.\n\n\n✓\n\n\n\n\n✓\n\n\n\n\n Lines\n\n\nLinear features such as roads, rivers, or tracks.\n\n\n✓\n\n\n\n\n✓\n\n\n\n\n Polygons\n\n\nAreas such as lakes, study zones, or administrative boundaries.\n\n\n✓\n\n\n\n\n✓\n\n\n\n\nRaster\n\n\nWhat is the value across space?\n\n\n\n\n\n\n\n\n\n\n Rasters\n\n\nGridded surfaces with values stored in cells.\n\n\n\n\n✓\n\n\n✓"
+  },
+  {
+    "objectID": "index_en.html#main-spatial-r-packages",
+    "href": "index_en.html#main-spatial-r-packages",
+    "title": "R in Space",
+    "section": "Main Spatial R Packages",
+    "text": "Main Spatial R Packages\nNew ecosystem\n\n\n\n\n\nsf 🌐\n\n\n\nsimple features standard\nvector data\ntidy friendly\n\n\n\n\n\n\n\n\nstars 🌐\n\n\n\nspatiotemporal arrays\nraster and datacubes\nstrong companion to sf\n\n\n\n\n\n\n\n\nterra 🌐\n\n\n\nvector and raster support\nstrong raster tooling\nfull GIS-style workflow\n\n\n\n\n\nOld ecosystem\n\n\n\n\n\nsp 🌐\n\n\n\nvector data\n\n\n\n\n\n\n\n\nraster 🌐\n\n\n\nrasters"
+  },
+  {
+    "objectID": "index_en.html#accompanying-packages",
+    "href": "index_en.html#accompanying-packages",
+    "title": "R in Space",
+    "section": "Accompanying Packages",
+    "text": "Accompanying Packages\nData manipulation and measurements\n\n\n\n\n\ntidyverse 🌐\n\n\n\ntabular workflows around spatial objects\nfiltering, joining, grouping, summarising\n\n\n\n\n\n\n\n\ntidyterra 🌐\n\n\n\ntidy verbs and plotting helpers for terra\na useful extension, not a replacement for terra\n\n\n\n\n\n\n\n\nunits 🌐\n\n\n\nexplicit lengths, areas, and distances in sf\ncontrasts terra, returns numeric measurements\n\n\n\n\n\nVisualization\n\n\n\n\n\nggplot2 🌐\n\n\n\ncommunication-quality static graphics\nflexible layered maps\n\n\n\n\n\n\n\n\nmapview 🌐\n\n\n\nfast interactive exploration\nquick visual checks of spatial layers\n\n\n\n\n\n\n\n\ntmap 🌐\n\n\n\nthematic mapping workflows\nstatic and interactive map support\n\n\n\n\n\n\n\n\n\n\n\nThese are examples of particularly relevant accompanying packages. The spatial ecosystem in R is broad and active, and is not limited to the packages shown here."
+  },
+  {
+    "objectID": "index_en.html#a-note-on-ides",
+    "href": "index_en.html#a-note-on-ides",
+    "title": "R in Space",
+    "section": "A Note on IDEs",
+    "text": "A Note on IDEs\nWhat are IDEs? Integrated Development Environments\n\n\n\n\n\nRStudio 🌐\n\n\n\nlong-standing default environment for R\nintegrated console, editor, plots, files, and packages\na strong starting point for most R users\n\n\n\n\n\n\n\n\nVS Code 🌐\n\n\n\ngeneral-purpose editor with R support through extensions\nsuited for mixed workflows across R, Python, Quarto, Git\na good option for multi-language projects\n\n\n\n\n\n\n\n\nPositron 🌐\n\n\n\nnewer data-science IDE from Posit, VS Code-like\ncombines scripting, notebooks, and IDE features\nworth watching as the ecosystem evolves\n\n\n\n\n\n\n\n\n\n\n\nThe goal of this workshop is not to teach a specific IDE. Use the environment that lets you work comfortably with scripts, objects, plots, and spatial outputs."
+  },
+  {
+    "objectID": "index_en.html#a-note-on-pipes",
+    "href": "index_en.html#a-note-on-pipes",
+    "title": "R in Space",
+    "section": "A Note on Pipes",
+    "text": "A Note on Pipes\n\n\n\n\n\n\nWhat are pipes?\n\n\nPipes pass the output of one step into the next, making multi-step workflows easier to read and write. We mention them explicitly because they are used throughout the workshop.\n\n\n\n\n\n\nmagrittr pipes: %&gt;%\nCO2 %&gt;%\n  dplyr::filter(Type == \"Quebec\")\n\nnative pipes: |&gt;\nCO2 |&gt;\n  dplyr::filter(Type == \"Quebec\")\n\n\nThe tidy tools manifesto"
+  },
+  {
+    "objectID": "index_en.html#a-note-on-code",
+    "href": "index_en.html#a-note-on-code",
+    "title": "R in Space",
+    "section": "A Note on Code",
+    "text": "A Note on Code\nChoose Your Tool(s)\n\nsf/starsterra\n\n\n\nsf_object &lt;- sf::function(...)\nstars_object &lt;- stars::function(...)\n\n\n\n\nterra_object &lt;- terra::function(...)\n\n\n\n\n\n\n\n\n\n\n\nNavigating through the code in the presentation\n\n\nThe slides often show the same operation twice: once with sf/stars, and once with terra.\nYou do not need to follow both versions at once. Use the tabs to stay in the ecosystem you chose for the workshop."
+  },
+  {
+    "objectID": "index_en.html#a-note-on-exercises",
+    "href": "index_en.html#a-note-on-exercises",
+    "title": "R in Space",
+    "section": "A Note on Exercises",
+    "text": "A Note on Exercises\nChoose Your Route\n\n\n\n\n\n\n\nDo both levels!\n\n\nMore advanced participants can complete both workflows, as there will be advanced workflows available with both points and lines."
+  },
+  {
+    "objectID": "index_en.html#read-vector-data",
+    "href": "index_en.html#read-vector-data",
+    "title": "R in Space",
+    "section": "Read Vector Data",
+    "text": "Read Vector Data\n\nsfterra\n\n\n\naoi &lt;- st_read(\"data/polygons.gpkg\", layer = \"study_area\")\nzones &lt;- st_read(\"data/polygons.gpkg\", layer = \"zones\")\naoi\nzones\n\n\n\n\n\nSimple feature collection with 1 feature and 1 field\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -73 ymin: 46.55 xmax: -72.6 ymax: 47\nGeodetic CRS:  WGS 84\n        name                           geom\n1 study_area POLYGON ((-73 46.55, -72.6 ...\n\n\nSimple feature collection with 4 features and 2 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -73 ymin: 46.55 xmax: -72.6 ymax: 47\nGeodetic CRS:  WGS 84\n  zone_id   zone_type                           geom\n1      NW      forest POLYGON ((-73 46.775, -72.8...\n2      NE       urban POLYGON ((-72.8 46.775, -72...\n3      SW     wetland POLYGON ((-73 46.55, -72.8 ...\n4      SE agriculture POLYGON ((-72.8 46.55, -72....\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\naoi &lt;- vect(\"data/polygons.gpkg\", layer = \"study_area\")\nzones &lt;- vect(\"data/polygons.gpkg\", layer = \"zones\")\naoi\nzones\n\n\n\n\n\n        name\n1 study_area\n\n\n  zone_id   zone_type\n1      NW      forest\n2      NE       urban\n3      SW     wetland\n4      SE agriculture"
+  },
+  {
+    "objectID": "index_en.html#create-points-from-a-table",
+    "href": "index_en.html#create-points-from-a-table",
+    "title": "R in Space",
+    "section": "Create Points From A Table",
+    "text": "Create Points From A Table\n\nsfterra\n\n\n\nstations &lt;- read.csv(\"data/points.csv\") |&gt;\n  st_as_sf(coords = c(\"lon\", \"lat\"), crs = 4326, remove = FALSE)\n\n\n\n\n\nSimple feature collection with 6 features and 8 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -72.92 ymin: 46.7 xmax: -72.72 ymax: 46.94\nGeodetic CRS:  WGS 84\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n              geometry\n1 POINT (-72.92 46.78)\n2 POINT (-72.86 46.83)\n3 POINT (-72.79 46.88)\n4 POINT (-72.72 46.94)\n5  POINT (-72.88 46.7)\n6 POINT (-72.83 46.76)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nstations &lt;- read.csv(\"data/points.csv\") |&gt;\n  vect(geom = c(\"lon\", \"lat\"), crs = \"EPSG:4326\")\n\n\n\n\n\n  obs_id track_id seq           timestamp    category value\n1  OBS01        A   1 2026-03-01 08:00:00       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 agriculture    13"
+  },
+  {
+    "objectID": "index_en.html#inspect-vector-data",
+    "href": "index_en.html#inspect-vector-data",
+    "title": "R in Space",
+    "section": "Inspect Vector Data",
+    "text": "Inspect Vector Data\n\nsfterra\n\n\n\nst_geometry_type(zones)\nst_crs(zones)$input\nst_bbox(zones)\n\n\n\n[1] POLYGON POLYGON POLYGON POLYGON\n18 Levels: GEOMETRY POINT LINESTRING POLYGON MULTIPOINT ... TRIANGLE\n\n\n[1] \"WGS 84\"\n\n\n  xmin   ymin   xmax   ymax \n-73.00  46.55 -72.60  47.00 \n\n\n\n\n\ngeomtype(terra_zones)\ncrs(terra_zones, proj = TRUE)\next(terra_zones)\n\n\n\n[1] \"polygons\"\n\n\n[1] \"+proj=longlat +datum=WGS84 +no_defs\"\n\n\nSpatExtent : -73, -72.6, 46.55, 47 (xmin, xmax, ymin, ymax)\n\n\n\n\n\n\n\n\n\n\n\n\nSpatial projections\n\n\nCRS information tells you how coordinates are referenced on the Earth. When you need to inspect or identify a projection, epsg.io is a useful lookup tool."
+  },
+  {
+    "objectID": "index_en.html#transform-crs",
+    "href": "index_en.html#transform-crs",
+    "title": "R in Space",
+    "section": "Transform CRS",
+    "text": "Transform CRS\n\nsfterra\n\n\n\nzones_qc &lt;- st_transform(zones, 32198)\npoints_qc &lt;- st_transform(points_sf, 32198)\nst_crs(points_qc)$input\nst_bbox(points_qc)\n\n\n\n\n\n[1] \"EPSG:32198\"\n\n\n     xmin      ymin      xmax      ymax \n-340347.3  299996.6 -318731.3  336605.7 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nzones_qc &lt;- project(terra_zones, \"EPSG:32198\")\npoints_qc &lt;- project(terra_points, \"EPSG:32198\")\ncrs(points_qc, proj = TRUE)\next(points_qc)\n\n\n\n\n\n[1] \"+proj=lcc +lat_0=44 +lon_0=-68.5 +lat_1=60 +lat_2=46 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs\"\n\n\nSpatExtent : -340347.271129903, -318731.322956473, 299996.592973116, 336605.692155159 (xmin, xmax, ymin, ymax)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMeasurements\n\n\nUse a suitable projected CRS when you need interpretable distances, lengths, or areas."
+  },
+  {
+    "objectID": "index_en.html#export-vector-outputs",
+    "href": "index_en.html#export-vector-outputs",
+    "title": "R in Space",
+    "section": "Export Vector Outputs",
+    "text": "Export Vector Outputs\n\nsfterra\n\n\n\nst_write(points_sf_qc, \"outputs/points_projected.gpkg\")\n\n\n\n        object                    file exists features\n1 points_sf_qc file1190fd5130ba8f.gpkg   TRUE       12\n\n\n\n\n\nwriteVector(terra_points_qc, \"outputs/points_projected.gpkg\")\n\n\n\n           object                    file exists features\n1 terra_points_qc file1190fd3ae052f8.gpkg   TRUE       12"
+  },
+  {
+    "objectID": "index_en.html#exercise-1",
+    "href": "index_en.html#exercise-1",
+    "title": "R in Space",
+    "section": "Exercise 1",
+    "text": "Exercise 1\nVector Foundations\nImport, inspect, transform, export\n\nBonus: use R as a converter"
+  },
+  {
+    "objectID": "index_en.html#build-lines-from-ordered-points",
+    "href": "index_en.html#build-lines-from-ordered-points",
+    "title": "R in Space",
+    "section": "Build Lines From Ordered Points",
+    "text": "Build Lines From Ordered Points\n\nsfterra\n\n\n\ntracks &lt;- points_sf |&gt;\n  dplyr::arrange(track_id, timestamp) |&gt;\n  dplyr::group_by(track_id) |&gt;\n  dplyr::summarise(do_union = FALSE) |&gt;\n  st_cast(\"LINESTRING\")\n\n\n\n\n\nSimple feature collection with 3 features and 1 field\nGeometry type: LINESTRING\nDimension:     XY\nBounding box:  xmin: -72.95 ymin: 46.6 xmax: -72.69 ymax: 46.94\nGeodetic CRS:  WGS 84\n# A tibble: 3 × 2\n  track_id                                                 geometry\n  &lt;chr&gt;                                            &lt;LINESTRING [°]&gt;\n1 A        (-72.92 46.78, -72.86 46.83, -72.79 46.88, -72.72 46.94)\n2 B         (-72.88 46.7, -72.83 46.76, -72.76 46.82, -72.69 46.87)\n3 C         (-72.95 46.6, -72.89 46.66, -72.82 46.73, -72.75 46.79)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntracks_tbl &lt;- points_tbl |&gt;\n  dplyr::arrange(track_id, timestamp) |&gt;\n  dplyr::summarise(\n    wkt = paste0(\n      \"LINESTRING (\",\n      paste(paste(lon, lat), collapse = \", \"),\n      \")\"\n    ),\n    .by = track_id\n  ) |&gt;\n  terra::vect(geom = \"wkt\", crs = \"EPSG:4326\")\n\n\n\n\n\n  track_id\n1        A\n2        B\n3        C"
+  },
+  {
+    "objectID": "index_en.html#quick-static-mapping",
+    "href": "index_en.html#quick-static-mapping",
+    "title": "R in Space",
+    "section": "Quick Static Mapping",
+    "text": "Quick Static Mapping\n\nsfterra\n\n\n\nplot(st_geometry(aoi), col = \"#f7fbfc\", border = \"#355c67\")\nplot(st_geometry(zones), add = TRUE, border = \"#264653\")\nplot(st_geometry(stations), pch = 16, col = \"#7f1d1d\", add = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\nplot(aoi, col = \"#f7fbfc\", border = \"#355c67\")\nplot(zones, add = TRUE, border = \"#264653\")\nplot(stations, pch = 16, col = \"#7f1d1d\", add = TRUE)"
+  },
+  {
+    "objectID": "index_en.html#quick-interactive-mapping",
+    "href": "index_en.html#quick-interactive-mapping",
+    "title": "R in Space",
+    "section": "Quick Interactive Mapping",
+    "text": "Quick Interactive Mapping\n\nsfterra\n\n\n\nmapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")\n\n\n\n\n\n\n\n\n\n\nmapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")"
+  },
+  {
+    "objectID": "index_en.html#export-interactive-maps",
+    "href": "index_en.html#export-interactive-maps",
+    "title": "R in Space",
+    "section": "Export Interactive Maps",
+    "text": "Export Interactive Maps\n\nsfterra\n\n\n\nm &lt;- mapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")\n\nmapview::mapshot(m, file = \"outputs/interactive_map.html\")\n\n\n\n          object                   file format\n1 mapview sf map file1190fdcf76f53.html   html\n\n\n\n\n\nm &lt;- mapview(zones, zcol = \"zone_id\", layer.name = \"Zones\") +\n  mapview(stations, zcol = \"category\", layer.name = \"Observations\")\n\nmapview::mapshot(m, file = \"outputs/interactive_map.html\")\n\n\n\n             object                    file format\n1 mapview terra map file1190fd681203f8.html   html\n\n\n\n\n\n\n\n\n\n\n\n\nShare your maps!\n\n\nInteractive mapview outputs can be saved as standalone HTML files and shared like any other web document."
+  },
+  {
+    "objectID": "index_en.html#exercise-2",
+    "href": "index_en.html#exercise-2",
+    "title": "R in Space",
+    "section": "Exercise 2",
+    "text": "Exercise 2\nVector Foundations on Your Data\nImport, inspect, transform, export, visualize"
+  },
+  {
+    "objectID": "index_en.html#subset-to-a-study-area",
+    "href": "index_en.html#subset-to-a-study-area",
+    "title": "R in Space",
+    "section": "Subset To A Study Area",
+    "text": "Subset To A Study Area\n\nsfterra\n\n\n\nfocus_area &lt;- zones |&gt;\n  dplyr::filter(zone_id %in% c(\"NE\", \"SE\")) |&gt;\n  dplyr::summarise()\n\npoints_focus &lt;- st_filter(points_sf, focus_area)\nzones_focus &lt;- st_crop(zones, st_bbox(focus_area))\n\n\n\n\n\nSimple feature collection with 5 features and 8 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -72.79 ymin: 46.79 xmax: -72.69 ymax: 46.94\nGeodetic CRS:  WGS 84\n  obs_id track_id seq           timestamp    lon   lat category value\n1  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88   forest    21\n2  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94   forest    24\n3  OBS07        B   3 2026-03-02 10:00:00 -72.76 46.82  wetland    17\n4  OBS08        B   4 2026-03-02 11:00:00 -72.69 46.87  wetland    18\n5  OBS12        C   4 2026-03-03 11:00:00 -72.75 46.79    urban    19\n              geometry\n1 POINT (-72.79 46.88)\n2 POINT (-72.72 46.94)\n3 POINT (-72.76 46.82)\n4 POINT (-72.69 46.87)\n5 POINT (-72.75 46.79)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nfocus_area &lt;- terra_zones[terra_zones$zone_id %in% c(\"NE\", \"SE\")]\npoints_focus &lt;- crop(terra_points, focus_area)\nzones_focus &lt;- crop(terra_zones, ext(focus_area))\n\n\n\n\n\n  obs_id track_id seq           timestamp category value\n1  OBS03        A   3 2026-03-01 10:00:00   forest    21\n2  OBS04        A   4 2026-03-01 11:00:00   forest    24\n3  OBS07        B   3 2026-03-02 10:00:00  wetland    17\n4  OBS08        B   4 2026-03-02 11:00:00  wetland    18\n5  OBS12        C   4 2026-03-03 11:00:00    urban    19"
+  },
+  {
+    "objectID": "index_en.html#measure-vector-features",
+    "href": "index_en.html#measure-vector-features",
+    "title": "R in Space",
+    "section": "Measure Vector Features",
+    "text": "Measure Vector Features\n\nsfterra\n\n\n\nzone_area &lt;- units::set_units(st_area(zones_qc), \"km^2\")\ntrack_length &lt;- units::set_units(st_length(tracks_sf_qc), \"km\")\nboundary_distance &lt;- units::set_units(st_distance(points_sf_qc, st_boundary(aoi_qc)), \"km\")\nzone_area\ntrack_length\nhead(boundary_distance)\n\n\n\n\n\n  zone_id area_km2\n1      NW    380.0\n2      NE    380.0\n3      SW    381.9\n4      SE    381.9\n\n\n  track_id length_km\n1        A      23.4\n2        B      23.9\n3        C      26.1\n\n\n\n\n\n  obs_id boundary_km\n1  OBS01         6.1\n2  OBS02        10.7\n3  OBS03        13.3\n4  OBS04         6.7\n5  OBS05         9.2\n6  OBS06        13.0\n\n\n\n\n\n\n\nzone_area &lt;- expanse(terra_zones_qc, unit = \"km\")\ntrack_length &lt;- perim(terra_tracks_qc) / 1000\nboundary_distance &lt;- distance(terra_points_qc, as.lines(terra_aoi_qc))[, 1] / 1000\nzone_area\ntrack_length\nhead(boundary_distance)\n\n\n\n\n\n  zone_id area_km2\n1      NW    381.3\n2      NE    381.3\n3      SW    382.9\n4      SE    382.9\n\n\n  track_id length_km\n1        A      23.4\n2        B      23.9\n3        C      26.1\n\n\n\n\n\n  obs_id boundary_km\n1  OBS01         6.1\n2  OBS02        10.7\n3  OBS03        13.3\n4  OBS04         6.7\n5  OBS05         9.2\n6  OBS06        13.0\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nsf often returns unit-aware measurements. terra often returns numeric values whose meaning depends on the CRS and function used."
+  },
+  {
+    "objectID": "index_en.html#join-attributes-to-features",
+    "href": "index_en.html#join-attributes-to-features",
+    "title": "R in Space",
+    "section": "Join Attributes To Features",
+    "text": "Join Attributes To Features\n\nsfterra\n\n\n\npoints_joined &lt;- st_join(points_sf, zones[, c(\"zone_id\", \"zone_type\")])\n\n\n\n\n\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n  zone_id zone_type\n1      NW    forest\n2      NW    forest\n3      NE     urban\n4      NE     urban\n5      SW   wetland\n6      SW   wetland\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npoint_values &lt;- extract(terra_zones, terra_points)\npoints_joined &lt;- cbind(terra_points, point_values[, c(\"zone_id\", \"zone_type\")])\n\n\n\n\n\n  obs_id track_id seq           timestamp    category value zone_id zone_type\n1  OBS01        A   1 2026-03-01 08:00:00       urban    14      NW    forest\n2  OBS02        A   2 2026-03-01 09:00:00       urban    16      NW    forest\n3  OBS03        A   3 2026-03-01 10:00:00      forest    21      NE     urban\n4  OBS04        A   4 2026-03-01 11:00:00      forest    24      NE     urban\n5  OBS05        B   1 2026-03-02 08:00:00 agriculture    11      SW   wetland\n6  OBS06        B   2 2026-03-02 09:00:00 agriculture    13      SW   wetland"
+  },
+  {
+    "objectID": "index_en.html#intersect-geometries",
+    "href": "index_en.html#intersect-geometries",
+    "title": "R in Space",
+    "section": "Intersect Geometries",
+    "text": "Intersect Geometries\n\nsfterra\n\n\n\ntrack_segments &lt;- st_intersection(tracks_sf_qc, zones_qc)\n\n\n\n\n\n# A tibble: 6 × 3\n  track_id zone_id zone_type\n  &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    \n1 A        NW      forest   \n2 B        NW      forest   \n3 A        NE      urban    \n4 B        NE      urban    \n5 C        NE      urban    \n6 B        SW      wetland  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntrack_segments &lt;- intersect(terra_tracks_qc, terra_zones_qc)\n\n\n\n\n\n  track_id zone_id   zone_type\n1        A      NE       urban\n2        A      NW      forest\n3        B      SW     wetland\n4        B      NE       urban\n5        B      NW      forest\n6        C      SE agriculture\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nUse a join when you want to attach attributes. Use an intersection when you want overlap to create new geometries."
+  },
+  {
+    "objectID": "index_en.html#buffers",
+    "href": "index_en.html#buffers",
+    "title": "R in Space",
+    "section": "Buffers",
+    "text": "Buffers\n\nsfterra\n\n\n\npoint_buffers &lt;- st_buffer(points_sf_qc, dist = 10000)\nst_geometry_type(point_buffers)\n\n\n\n\n\n[1] POLYGON\n18 Levels: GEOMETRY POINT LINESTRING POLYGON MULTIPOINT ... TRIANGLE\n\n\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npoint_buffers &lt;- buffer(terra_points_qc, width = 10000)\ngeomtype(point_buffers)\n\n\n\n\n\n[1] \"polygons\"\n\n\n  obs_id track_id seq           timestamp    category value\n1  OBS01        A   1 2026-03-01 08:00:00       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 agriculture    13\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\nBuffers create new geometries at a fixed distance around features, so they are usually done in a projected CRS with interpretable distance units."
+  },
+  {
+    "objectID": "index_en.html#exercise-3",
+    "href": "index_en.html#exercise-3",
+    "title": "R in Space",
+    "section": "Exercise 3",
+    "text": "Exercise 3\nVector Operations\nSubset, measure, join, intersect, buffer"
+  },
+  {
+    "objectID": "index_en.html#read-raster-data",
+    "href": "index_en.html#read-raster-data",
+    "title": "R in Space",
+    "section": "Read Raster Data",
+    "text": "Read Raster Data\n\nstarsterra\n\n\n\nsurface &lt;- read_stars(\"data/surface.tif\")\nsurface\n\n\n\n\n\nstars object with 2 dimensions and 1 attribute\nattribute(s):\n             Min. 1st Qu. Median     Mean 3rd Qu.   Max.\nsurface.tif   9.6 40.8325   48.5 50.00007  59.805 100.32\ndimension(s):\n  from to offset    delta refsys point x/y\nx    1 40    -73     0.01 WGS 84 FALSE [x]\ny    1 40     47 -0.01125 WGS 84 FALSE [y]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nsurface &lt;- rast(\"data/surface.tif\")\nsurface\n\n\n\n\n\nclass       : SpatRaster \nsize        : 40, 40, 1  (nrow, ncol, nlyr)\nresolution  : 0.01, 0.01125  (x, y)\nextent      : -73, -72.6, 46.55, 47  (xmin, xmax, ymin, ymax)\ncoord. ref. : lon/lat WGS 84 (EPSG:4326) \nsource      : surface.tif \nname        : surface_value \nmin value   :          9.60 \nmax value   :        100.32"
+  },
+  {
+    "objectID": "index_en.html#inspect-raster-data",
+    "href": "index_en.html#inspect-raster-data",
+    "title": "R in Space",
+    "section": "Inspect Raster Data",
+    "text": "Inspect Raster Data\n\nstarsterra\n\n\n\nst_dimensions(surface)\nst_bbox(surface)\nst_crs(surface)$input\n\n\n\n  from to offset    delta refsys point x/y\nx    1 40    -73     0.01 WGS 84 FALSE [x]\ny    1 40     47 -0.01125 WGS 84 FALSE [y]\n\n\n  xmin   ymin   xmax   ymax \n-73.00  46.55 -72.60  47.00 \n\n\n[1] \"WGS 84\"\n\n\n\n\n\ndim(surface)\nres(surface)\next(surface)\ncrs(surface, proj = TRUE)\n\n\n\n[1] 40 40  1\n\n\n[1] 0.01000 0.01125\n\n\nSpatExtent : -73, -72.6, 46.55, 47 (xmin, xmax, ymin, ymax)\n\n\n[1] \"+proj=longlat +datum=WGS84 +no_defs\""
+  },
+  {
+    "objectID": "index_en.html#export-raster-outputs",
+    "href": "index_en.html#export-raster-outputs",
+    "title": "R in Space",
+    "section": "Export Raster Outputs",
+    "text": "Export Raster Outputs\n\nstarsterra\n\n\n\nwrite_stars(surface_mask, \"outputs/surface_focus.tif\")\n\n\n\n              object                   file exists\n1 surface_stars_mask file1190fd5db62a11.tif   TRUE\n\n\n\n\n\nwriteRaster(surface_mask, \"outputs/surface_focus.tif\", overwrite = TRUE)\n\n\n\n              object                  file exists\n1 surface_terra_mask file1190fdacce4cb.tif   TRUE"
+  },
+  {
+    "objectID": "index_en.html#quick-static-raster-plotting",
+    "href": "index_en.html#quick-static-raster-plotting",
+    "title": "R in Space",
+    "section": "Quick Static Raster Plotting",
+    "text": "Quick Static Raster Plotting\n\nstarsterra\n\n\n\nplot(surface, col = viridis::viridis(100))\n\n\n\n\n\n\n\n\n\n\n\n\n\nplot(surface)"
+  },
+  {
+    "objectID": "index_en.html#quick-interactive-raster-mapping",
+    "href": "index_en.html#quick-interactive-raster-mapping",
+    "title": "R in Space",
+    "section": "Quick Interactive Raster Mapping",
+    "text": "Quick Interactive Raster Mapping\n\nstarsterra\n\n\n\nmapview(surface) + mapview(aoi)\n\n\n\n\n\n\n\n\n\n\nmapview(surface) + mapview(aoi)"
+  },
+  {
+    "objectID": "index_en.html#exercise-4",
+    "href": "index_en.html#exercise-4",
+    "title": "R in Space",
+    "section": "Exercise 4",
+    "text": "Exercise 4\nRaster Foundations\nImport, inspect, transform, export, visualize"
+  },
+  {
+    "objectID": "index_en.html#crop-mask-project",
+    "href": "index_en.html#crop-mask-project",
+    "title": "R in Space",
+    "section": "Crop, Mask, Project",
+    "text": "Crop, Mask, Project\n\nstarsterra\n\n\n\ncrop_zone &lt;- zones |&gt; dplyr::filter(zone_id == \"NE\")\nbuffer_one &lt;- st_transform(point_buffers[1, ], st_crs(surface))\nsurface_qc &lt;- st_warp(surface, crs = st_crs(aoi_qc))\nsurface_crop &lt;- st_crop(surface, st_bbox(crop_zone))\nsurface_mask &lt;- surface[buffer_one]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ncrop_zone &lt;- zones[zones$zone_id == \"NE\"]\nbuffer_one &lt;- project(point_buffers[1], crs(surface))\nsurface_qc &lt;- project(surface, \"EPSG:32198\")\nsurface_crop &lt;- crop(surface, crop_zone)\nsurface_mask &lt;- mask(surface, buffer_one)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRaster manipulations\n\n\nHere the three operations are shown independently: project changes CRS, crop uses one zone as the target extent, and mask keeps cells only inside a single buffer geometry."
+  },
+  {
+    "objectID": "index_en.html#resampling",
+    "href": "index_en.html#resampling",
+    "title": "R in Space",
+    "section": "Resampling",
+    "text": "Resampling\n\nstarsterra\n\n\n\ntemplate &lt;- st_as_stars(st_bbox(surface), dx = 0.05, dy = 0.05)\nst_crs(template) &lt;- st_crs(surface)\nsurface_near &lt;- st_warp(surface, dest = template, method = \"near\", use_gdal = TRUE)\nsurface_bilinear &lt;- st_warp(surface, dest = template, method = \"bilinear\", use_gdal = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntemplate &lt;- rast(ext(surface), resolution = 0.05, crs = crs(surface))\nsurface_near &lt;- resample(surface, template, method = \"near\")\nsurface_bilinear &lt;- resample(surface, template, method = \"bilinear\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nResampling changes the cell grid\n\n\nNear is common for categorical rasters, while bilinear is common for continuous surfaces."
+  },
+  {
+    "objectID": "index_en.html#multiple-raster-layers",
+    "href": "index_en.html#multiple-raster-layers",
+    "title": "R in Space",
+    "section": "Multiple Raster Layers",
+    "text": "Multiple Raster Layers\n\nstarsterra\n\n\n\nsurface2 &lt;- surface * 1.1\nnames(surface2) &lt;- \"surface2\"\nsurface_stack &lt;- c(surface, surface2)\nsurface_mean &lt;- st_apply(surface_stack, MARGIN = c(\"x\", \"y\"), FUN = mean)\n\n\n\n\n\n[1] \"surface.tif\" \"surface_alt\"\n\n\n[1] 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nsurface2 &lt;- surface * 1.1\nnames(surface2) &lt;- \"surface2\"\nsurface_stack &lt;- c(surface, surface2)\nsurface_mean &lt;- app(surface_stack, mean)\n\n\n\n\n\n[1] \"surface_value\" \"surface_alt\"  \n\n\n[1] 2\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMulti-layer rasters\n\n\nCan represent bands, variables, or time steps. Cell-wise functions combine information across layers."
+  },
+  {
+    "objectID": "index_en.html#exercise-5",
+    "href": "index_en.html#exercise-5",
+    "title": "R in Space",
+    "section": "Exercise 5",
+    "text": "Exercise 5\nRaster Operations\nProject, crop, mask, resample, layer operations"
+  },
+  {
+    "objectID": "index_en.html#working-with-vectors-rasters",
+    "href": "index_en.html#working-with-vectors-rasters",
+    "title": "R in Space",
+    "section": "Working with Vectors & Rasters",
+    "text": "Working with Vectors & Rasters"
+  },
+  {
+    "objectID": "index_en.html#extract-raster-values-to-points",
+    "href": "index_en.html#extract-raster-values-to-points",
+    "title": "R in Space",
+    "section": "Extract Raster Values To Points",
+    "text": "Extract Raster Values To Points\n\nsf/starsterra\n\n\n\npoints_surface &lt;- st_extract(surface, points_joined)\nnames(points_surface)[1] &lt;- \"surface_value\"\n\n\n\n\n\n  obs_id track_id seq           timestamp    lon   lat    category value\n1  OBS01        A   1 2026-03-01 08:00:00 -72.92 46.78       urban    14\n2  OBS02        A   2 2026-03-01 09:00:00 -72.86 46.83       urban    16\n3  OBS03        A   3 2026-03-01 10:00:00 -72.79 46.88      forest    21\n4  OBS04        A   4 2026-03-01 11:00:00 -72.72 46.94      forest    24\n5  OBS05        B   1 2026-03-02 08:00:00 -72.88 46.70 agriculture    11\n6  OBS06        B   2 2026-03-02 09:00:00 -72.83 46.76 agriculture    13\n  zone_id zone_type surface_value\n1      NW    forest         49.71\n2      NW    forest         48.70\n3      NE     urban         47.72\n4      NE     urban         61.39\n5      SW   wetland         51.67\n6      SW   wetland         45.88\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npoint_vals &lt;- extract(surface, points_joined)\npoints_surface &lt;- cbind(points_joined, point_vals[, \"surface_value\", drop = FALSE])\n\n\n\n\n\n  obs_id zone_id zone_type surface_value\n1  OBS01      NW    forest         48.69\n2  OBS02      NW    forest         49.60\n3  OBS03      NE     urban         47.72\n4  OBS04      NE     urban         59.98\n5  OBS05      SW   wetland         51.67\n6  OBS06      SW   wetland         47.16"
+  },
+  {
+    "objectID": "index_en.html#extract-raster-values-to-lines",
+    "href": "index_en.html#extract-raster-values-to-lines",
+    "title": "R in Space",
+    "section": "Extract Raster Values To Lines",
+    "text": "Extract Raster Values To Lines\n\nsf/starsterra\n\n\n\ntracks_surface &lt;- st_extract(surface, tracks, FUN = function(x) mean(x, na.rm = TRUE))\n\n\n\n\n\n# A tibble: 3 × 2\n  track_id surface_value\n  &lt;chr&gt;            &lt;dbl&gt;\n1 A                 50.0\n2 B                 45.0\n3 C                 44.3\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ntrack_vals &lt;- extract(surface, tracks, fun = mean, na.rm = TRUE)\ntracks_surface &lt;- cbind(tracks, track_vals[, \"surface_value\", drop = FALSE])\n\n\n\n\n\n  track_id surface_value\n1        A      50.02471\n2        B      45.14939\n3        C      44.24216"
+  },
+  {
+    "objectID": "index_en.html#extract-raster-values-to-polygons",
+    "href": "index_en.html#extract-raster-values-to-polygons",
+    "title": "R in Space",
+    "section": "Extract Raster Values To Polygons",
+    "text": "Extract Raster Values To Polygons\n\nsf/starsterra\n\n\n\nzones_surface &lt;- st_extract(surface, zones, FUN = function(x) mean(x, na.rm = TRUE))\n\n\n\n\n\n  zone_id   zone_type surface_value\n1      NW      forest      55.93852\n2      NE       urban      60.33677\n3      SW     wetland      39.66305\n4      SE agriculture      44.06193\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nzone_vals &lt;- extract(surface, zones, fun = mean, na.rm = TRUE)\nzones_surface &lt;- cbind(zones, zone_vals[, \"surface_value\", drop = FALSE])\n\n\n\n\n\n  zone_id   zone_type surface_value\n1      NW      forest      55.93852\n2      NE       urban      60.33677\n3      SW     wetland      39.66305\n4      SE agriculture      44.06193"
+  },
+  {
+    "objectID": "index_en.html#summarise-extracted-values",
+    "href": "index_en.html#summarise-extracted-values",
+    "title": "R in Space",
+    "section": "Summarise Extracted Values",
+    "text": "Summarise Extracted Values\n\nsf/starsterra\n\n\n\npoint_zone_summary &lt;- points_surface |&gt;\n  st_drop_geometry() |&gt;\n  group_by(zone_id, zone_type) |&gt;\n  summarise(\n    point_n = n(),\n    mean_surface = mean(surface_value, na.rm = TRUE),\n    mean_value = mean(value, na.rm = TRUE)\n  )\n\n\n\n# A tibble: 3 × 5\n  zone_id zone_type point_n mean_surface mean_value\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;\n1 NE      urban           5         48.4       19.8\n2 NW      forest          2         49.2       15  \n3 SW      wetland         5         44.7       11.6\n\n\n\n\n\npoint_zone_summary &lt;- as.data.frame(points_surface) |&gt;\n  group_by(zone_id, zone_type) |&gt;\n  summarise(\n    point_n = n(),\n    mean_surface = mean(surface_value, na.rm = TRUE),\n    mean_value = mean(value, na.rm = TRUE)\n  )\n\n\n\n# A tibble: 3 × 5\n  zone_id zone_type point_n mean_surface mean_value\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;\n1 NE      urban           5         47.6       19.8\n2 NW      forest          2         49.1       15  \n3 SW      wetland         5         44.5       11.6"
+  },
+  {
+    "objectID": "index_en.html#build-analysis-tables",
+    "href": "index_en.html#build-analysis-tables",
+    "title": "R in Space",
+    "section": "Build Analysis Tables",
+    "text": "Build Analysis Tables\n\nsf/starsterra\n\n\n\nanalysis_table &lt;- point_zone_summary |&gt;\n  left_join(zone_area, by = \"zone_id\") |&gt;\n  select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)\n\n\n\n# A tibble: 3 × 6\n  zone_id zone_type point_n mean_surface mean_value area_km2\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;\n1 NE      urban           5         48.4       19.8     380 \n2 NW      forest          2         49.2       15       380 \n3 SW      wetland         5         44.7       11.6     382.\n\n\n\n\n\nanalysis_table &lt;- point_zone_summary |&gt;\n  left_join(zone_area, by = \"zone_id\") |&gt;\n  select(zone_id, zone_type, point_n, mean_surface, mean_value, area_km2)\n\n\n\n# A tibble: 3 × 6\n  zone_id zone_type point_n mean_surface mean_value area_km2\n  &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;\n1 NE      urban           5         47.6       19.8     381.\n2 NW      forest          2         49.1       15       381.\n3 SW      wetland         5         44.5       11.6     383."
+  },
+  {
+    "objectID": "index_en.html#exercise-6",
+    "href": "index_en.html#exercise-6",
+    "title": "R in Space",
+    "section": "Exercise 6",
+    "text": "Exercise 6\nIntegrated Workflows\nExtract, summarise, build analysis tables"
+  },
+  {
+    "objectID": "index_en.html#spatial-analytics-1",
+    "href": "index_en.html#spatial-analytics-1",
+    "title": "R in Space",
+    "section": "Spatial Analytics",
+    "text": "Spatial Analytics\n\nspatial analytics is a very broad field\nthis workshop does not aim to cover that full breadth\nour emphasis is on getting spatial data ready for analysis\nwe use simple GLMs and KDEs as illustrative examples of what can follow\n\n\n\n\n\n\n\nThe point here is not the analyses themselves. The point is the workflow that gets you from spatial data to analysis-ready inputs."
+  },
+  {
+    "objectID": "index_en.html#prepare-data-for-analysis",
+    "href": "index_en.html#prepare-data-for-analysis",
+    "title": "R in Space",
+    "section": "Prepare Data For Analysis",
+    "text": "Prepare Data For Analysis\n\nsf/starsterra\n\n\n\nanalysis_data &lt;- points_surface |&gt;\n  st_drop_geometry() |&gt;\n  select(obs_id, track_id, zone_id, zone_type, category, value, surface_value) |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\n\n\n  obs_id track_id zone_id zone_type    category value surface_value\n1  OBS01        A      NW    forest       urban    14         49.71\n2  OBS02        A      NW    forest       urban    16         48.70\n3  OBS03        A      NE     urban      forest    21         47.72\n4  OBS04        A      NE     urban      forest    24         61.39\n5  OBS05        B      SW   wetland agriculture    11         51.67\n6  OBS06        B      SW   wetland agriculture    13         45.88\n\n\n\n\n\nanalysis_data &lt;- as.data.frame(points_surface) |&gt;\n  select(obs_id, track_id, zone_id, zone_type, category, value, surface_value) |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\n\n\n  obs_id track_id zone_id zone_type    category value surface_value\n1  OBS01        A      NW    forest       urban    14         48.69\n2  OBS02        A      NW    forest       urban    16         49.60\n3  OBS03        A      NE     urban      forest    21         47.72\n4  OBS04        A      NE     urban      forest    24         59.98\n5  OBS05        B      SW   wetland agriculture    11         51.67\n6  OBS06        B      SW   wetland agriculture    13         47.16"
+  },
+  {
+    "objectID": "index_en.html#a-simple-glm",
+    "href": "index_en.html#a-simple-glm",
+    "title": "R in Space",
+    "section": "A Simple GLM",
+    "text": "A Simple GLM\n\nsf/starsterra\n\n\n\nglm_fit &lt;- glm(\n  value ~ surface_value + zone_type,\n  family = poisson(),\n  data = analysis_data\n)\nsummary(glm_fit)\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)    2.178      0.536   4.064    0.000\n2    surface_value    0.011      0.010   1.052    0.293\n3   zone_typeurban    0.283      0.208   1.356    0.175\n4 zone_typewetland   -0.211      0.229  -0.921    0.357\n\n\n\n\n\nglm_fit &lt;- glm(\n  value ~ surface_value + zone_type,\n  family = poisson(),\n  data = analysis_data\n)\nsummary(glm_fit)\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)    2.114      0.550   3.841    0.000\n2    surface_value    0.012      0.011   1.144    0.253\n3   zone_typeurban    0.292      0.209   1.399    0.162\n4 zone_typewetland   -0.205      0.229  -0.897    0.370"
+  },
+  {
+    "objectID": "index_en.html#bonus-advanced-glm",
+    "href": "index_en.html#bonus-advanced-glm",
+    "title": "R in Space",
+    "section": "Bonus: Advanced GLM",
+    "text": "Bonus: Advanced GLM\n\nsf/starsterra\n\n\n\npseudo_points &lt;- st_sample(aoi_qc, size = nrow(points_qc), exact = TRUE) |&gt;\n  st_as_sf() |&gt;\n  st_join(zones_qc[, c(\"zone_id\", \"zone_type\")])\n\npseudo_points$surface_value &lt;- st_extract(surface_qc, pseudo_points)[[1]]\npseudo_points$presence &lt;- 0\npoints_qc$presence &lt;- 1\n\npa_data &lt;- bind_rows(points_qc, pseudo_points) |&gt;\n  st_drop_geometry() |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\nglm_pa &lt;- glm(presence ~ surface_value + zone_type, family = binomial(), data = pa_data)\n\n\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)  -16.407   3143.229  -0.005    0.996\n2    surface_value   -0.039      0.036  -1.098    0.272\n3  zone_typeforest   19.471   3143.229   0.006    0.995\n4   zone_typeurban   18.584   3143.229   0.006    0.995\n5 zone_typewetland   18.917   3143.229   0.006    0.995\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\npseudo_points &lt;- spatSample(aoi_qc, size = nrow(points_qc), method = \"random\", as.points = TRUE)\npseudo_zone &lt;- extract(zones_qc, pseudo_points)\npseudo_surface &lt;- extract(surface_qc, pseudo_points)\npseudo_points &lt;- cbind(pseudo_points, pseudo_zone[, c(\"zone_id\", \"zone_type\")], pseudo_surface[, \"surface_value\", drop = FALSE])\npseudo_points$presence &lt;- 0\npoints_qc$presence &lt;- 1\n\npa_data &lt;- bind_rows(as.data.frame(points_qc), as.data.frame(pseudo_points)) |&gt;\n  filter(!is.na(zone_id), !is.na(surface_value))\n\nglm_pa &lt;- glm(presence ~ surface_value + zone_type, family = binomial(), data = pa_data)\n\n\n\n\n\n              term Estimate Std..Error z.value Pr...z..\n1      (Intercept)  -15.383   4166.523  -0.004    0.997\n2    surface_value   -0.096      0.083  -1.165    0.244\n3  zone_typeforest   19.171   4166.522   0.005    0.996\n4   zone_typeurban   22.227   4166.522   0.005    0.996\n5 zone_typewetland   21.540   4166.522   0.005    0.996"
+  },
+  {
+    "objectID": "index_en.html#exercise-7",
+    "href": "index_en.html#exercise-7",
+    "title": "R in Space",
+    "section": "Exercise 7",
+    "text": "Exercise 7\nSpatial Analytics\nPrepare data, fit simple GLMs\n\nBonus: generate pseudo-absences for your GLM with points data"
+  },
+  {
+    "objectID": "index_en.html#kernel-density-estimation-kde",
+    "href": "index_en.html#kernel-density-estimation-kde",
+    "title": "R in Space",
+    "section": "Kernel Density Estimation (KDE)",
+    "text": "Kernel Density Estimation (KDE)\nUse as an exploratory tools\n\nuseful for point patterns\nproduces a smooth intensity surface\nhelps visualize concentration or hotspots\noften used for exploration rather than formal inference"
+  },
+  {
+    "objectID": "index_en.html#kernel-density-estimation-kde-1",
+    "href": "index_en.html#kernel-density-estimation-kde-1",
+    "title": "R in Space",
+    "section": "Kernel Density Estimation (KDE)",
+    "text": "Kernel Density Estimation (KDE)\n\nsf/starsterra\n\n\n\npts_xy &lt;- st_coordinates(points_qc)\nbbox &lt;- st_bbox(aoi_qc)\npoints_kde &lt;- MASS::kde2d(\n  pts_xy[, 1], pts_xy[, 2],\n  n = 80,\n  h = c(10000, 10000),\n  lims = c(bbox[\"xmin\"], bbox[\"xmax\"], bbox[\"ymin\"], bbox[\"ymax\"])\n)\n\n\n\n$x_head\n[1] -344515.3 -344091.9 -343668.5 -343245.1 -342821.7 -342398.3\n\n$y_head\n[1] 292854.6 293508.9 294163.2 294817.6 295471.9 296126.2\n\n$z_dim\n[1] 80 80\n\n\n\n\n\npts_xy &lt;- crds(points_qc)\nbbox &lt;- ext(aoi_qc)\npoints_kde &lt;- MASS::kde2d(\n  pts_xy[, 1], pts_xy[, 2],\n  n = 80,\n  h = c(10000, 10000),\n  lims = c(bbox$xmin, bbox$xmax, bbox$ymin, bbox$ymax)\n)\n\n\n\n$x_head\n[1] -344515.3 -344091.9 -343668.5 -343245.1 -342821.7 -342398.3\n\n$y_head\n[1] 292854.6 293508.9 294163.2 294817.6 295471.9 296126.2\n\n$z_dim\n[1] 80 80"
+  },
+  {
+    "objectID": "index_en.html#kernel-density-estimation-kde-2",
+    "href": "index_en.html#kernel-density-estimation-kde-2",
+    "title": "R in Space",
+    "section": "Kernel Density Estimation (KDE)",
+    "text": "Kernel Density Estimation (KDE)\n\nsf/starsterra\n\n\n\npoints_kde &lt;- st_as_stars(\n  list(kde = points_kde$z),\n  dimensions = st_dimensions(x = points_kde$x, y = points_kde$y)\n) |&gt;\n  st_set_crs(32198)\n\npoints_kde &lt;- points_kde[aoi_qc]\npoints_kde_plot &lt;- points_kde\npoints_kde_plot[[1]] &lt;- points_kde_plot[[1]] / max(points_kde_plot[[1]], na.rm = TRUE)\n\n\n\n\n\n\n\n\n\n\n\n\n\npoints_kde &lt;- rast(\n  t(points_kde$z)[nrow(t(points_kde$z)):1, ],\n  extent = ext(min(points_kde$x), max(points_kde$x), min(points_kde$y), max(points_kde$y)),\n  crs = \"EPSG:32198\"\n)\n\npoints_kde &lt;- mask(points_kde, aoi_qc)\npoints_kde_plot &lt;- points_kde / global(points_kde, \"max\", na.rm = TRUE)[1, 1]"
+  },
+  {
+    "objectID": "index_en.html#exercise-8",
+    "href": "index_en.html#exercise-8",
+    "title": "R in Space",
+    "section": "Exercise 8",
+    "text": "Exercise 8\nSpatial Analytics\nFit KDEs and explore surfaces"
+  },
+  {
+    "objectID": "index_en.html#advanced-mapping-1",
+    "href": "index_en.html#advanced-mapping-1",
+    "title": "R in Space",
+    "section": "Advanced Mapping",
+    "text": "Advanced Mapping\n\n\nQuick exploration\n\nplot()\nmapview()\nfast QA/QC and data inspection\n\n\nCommunication\n\nggplot2\ntmap\nmore deliberate legends, palettes, labels, and layout\n\n\n\n\n\nUse exploratory maps to inspect data quickly, then move to more deliberate mapping tools when the goal is communication or sharing."
+  },
+  {
+    "objectID": "index_en.html#advanced-mapping-with-ggplot2",
+    "href": "index_en.html#advanced-mapping-with-ggplot2",
+    "title": "R in Space",
+    "section": "Advanced Mapping with ggplot2",
+    "text": "Advanced Mapping with ggplot2\nggplot2 works especially well for polished static maps, particularly with sf and stars objects.\n\n\n\ngg &lt;- ggplot() +\n  geom_stars(\n    data = points_kde_sf_plot\n  ) +\n  scale_fill_viridis_c(name = \"KDE\") +\n  geom_sf(\n    data = zones_qc, \n    fill = NA, \n    color = \"#355c67\"\n  ) +\n  geom_sf(\n    data = aoi_qc, \n    fill = NA, \n    color = \"#17313b\"\n  ) +\n  geom_sf(\n    data = points_sf_qc, \n    aes(color = category), \n    size = 1.7\n   ) +\n  coord_sf(expand = FALSE) +\n  theme_minimal()\ngg"
+  },
+  {
+    "objectID": "index_en.html#advanced-mapping-with-tmap",
+    "href": "index_en.html#advanced-mapping-with-tmap",
+    "title": "R in Space",
+    "section": "Advanced Mapping with tmap",
+    "text": "Advanced Mapping with tmap\ntmap is built for thematic mapping and works well when you want a more map-focused grammar than ggplot2.\n\n\n\ntm &lt;- tm_shape(points_kde_sf_plot) +\n  tm_raster(col.scale = tm_scale_continuous(\n    values = \"viridis\"\n  )) +\n  tm_shape(zones_qc) +\n  tm_borders(col = \"#355c67\") +\n  tm_shape(points_sf_qc) +\n  tm_symbols(\n    fill = \"category\", \n    size = 0.5\n  ) +\n  tm_shape(aoi_qc) +\n  tm_borders(col = \"#17313b\") +\n  tm_layout(\n    frame = FALSE, \n    legend.outside = TRUE\n  )\ntm"
+  },
+  {
+    "objectID": "index_en.html#advanced-mapping-with-tmap-1",
+    "href": "index_en.html#advanced-mapping-with-tmap-1",
+    "title": "R in Space",
+    "section": "Advanced Mapping with tmap",
+    "text": "Advanced Mapping with tmap\nOne advantage of tmap is that the same map logic can often be used for static output or for an interactive shared map.\n\ntm_html &lt;- tmap_leaflet(tm)\ntm_html"
+  },
+  {
+    "objectID": "index_en.html#export-and-share-maps",
+    "href": "index_en.html#export-and-share-maps",
+    "title": "R in Space",
+    "section": "Export And Share Maps",
+    "text": "Export And Share Maps\n\nggplot2tmap\n\n\n\nggsave(\n  filename = \"outputs/advanced_map.png\",\n  plot = gg,\n  width = 8,\n  height = 6,\n  dpi = 300\n)\n\nggsave(\n  filename = \"outputs/advanced_map.pdf\",\n  plot = gg,\n  width = 8,\n  height = 6\n)\n\n\n\n                    output             file                   tool\n1      presentation figure advanced_map.png ggsave(..., dpi = 300)\n2 publication-ready figure advanced_map.pdf            ggsave(...)\n\n\n\n\n\ntmap_save(\n  tm = tm,\n  filename = \"outputs/advanced_map.png\",\n  width = 8,\n  height = 6,\n  dpi = 300\n)\n\ntmap_mode(\"view\")\ntmap_save(\n  tm = tm,\n  filename = \"outputs/advanced_map.html\"\n)\ntmap_mode(\"plot\")\n\n\n\n                  output              file                               tool\n1    static thematic map  advanced_map.png                     tmap_save(...)\n2 interactive shared map advanced_map.html tmap_mode(\"view\") + tmap_save(...)"
+  },
+  {
+    "objectID": "index_en.html#exercise-9",
+    "href": "index_en.html#exercise-9",
+    "title": "R in Space",
+    "section": "Exercise 9",
+    "text": "Exercise 9\nAdvanced Mapping\nBuild, export, and share maps"
+  },
+  {
+    "objectID": "index_en.html#takeaways",
+    "href": "index_en.html#takeaways",
+    "title": "R in Space",
+    "section": "Takeaways",
+    "text": "Takeaways\n\nvector and raster are different data models\nsf, stars, and terra cover most common spatial workflows in R\nCRS decisions affect measurements and overlays\njoins, intersections, crops, masks, and extraction are core operations\nspatial analysis in R is often a bridge between GIS tasks and standard statistical workflows\ntreat R as both an analysis environment and a GIS"
+  },
+  {
+    "objectID": "index_en.html#using-recent-technos-for-spatial-data",
+    "href": "index_en.html#using-recent-technos-for-spatial-data",
+    "title": "R in Space",
+    "section": "Using recent technos for spatial data",
+    "text": "Using recent technos for spatial data\n\nhttps://github.com/geoarrow/geoarrow-r\nhttps://sedona.apache.org/latest/api/rdocs/articles/apache-sedona.html\nhttps://cidree.github.io/duckspatial/\nhttps://r-cf.github.io/zarr/\nhttps://stacspec.org/en"
+  },
+  {
+    "objectID": "index_en.html#shiny-app-assistant",
+    "href": "index_en.html#shiny-app-assistant",
+    "title": "R in Space",
+    "section": "Shiny App Assistant",
+    "text": "Shiny App Assistant\n\nhttps://gallery.shinyapps.io/assistant\nprompts:\n\nCreate an app that allows users to upload GeoJSON files and visualize them using Leaflet.\nModify the app to compute the total area when polygons are uploaded and display it in the card header.\nModify the app to also compute the total length for line geometries and display it in the card header.\n\n\n\n2 topics here AI + Shiny do claude and package after?"
+  },
+  {
+    "objectID": "index_en.html#closing",
+    "href": "index_en.html#closing",
+    "title": "R in Space",
+    "section": "Closing",
+    "text": "Closing\n\nstart with clear spatial objects and clear CRS\ninspect and map early, then analyse\nmove from spatial objects to clean analysis tables\nkeep building reusable workflows as your analyses grow"
+  }
+]

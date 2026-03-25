@@ -1,0 +1,1 @@
+Sitemap: https://inSileco.github.io/workshop_r_spatial/sitemap.xml
