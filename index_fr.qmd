@@ -1,5 +1,5 @@
 ---
-title: "R et espace"
+title: "R Spatial"
 author: "*inSileco*"
 date: "2026-03-25"
 from: markdown+emoji
@@ -119,7 +119,7 @@ L'atelier alterne entre du matériel pédagogique concis et des exercices appliq
 
 <!-- Discuter pourquoi il est pertinent d'utiliser R comme SIG -->
 
-## Construire des pipelines reproductibles
+## Construire des flux reproductibles
 
 ![](img/flow.svg)
 
@@ -423,7 +423,7 @@ Vous n'avez pas besoin de suivre les deux versions en même temps. Utilisez les 
 
 ***Choisissez votre parcours***
 
-![](img/route_matrix.svg){width=82% fig-align="center"}
+![](img/route_matrix_fr.svg){width=82% fig-align="center"}
 
 ::: {.callout-note}
 ### Faites les deux niveaux!
@@ -563,7 +563,7 @@ text(
 <!-- fin colonnes -->
 :::
 
-## Créer des points à partir d'un tableau
+## Convertir un tableau en points
 
 ::: {.panel-tabset .code-tabs}
 ##### `sf`
@@ -925,7 +925,7 @@ Importer, inspecter, transformer, exporter
 
 *Bonus : utiliser R comme un convertisseur de fichiers spatiaux*
 
-## Construire des lignes à partir de points ordonnés
+## Convertir des points en lignes
 
 ::: {.panel-tabset .code-tabs}
 ##### `sf`
@@ -2255,10 +2255,10 @@ Projeter, découper, masquer, rééchantillonner, opérations sur les couches
 
 ## Travailler avec vecteurs et rasters
 
-![](img/integration_workflow.svg){width=92% fig-align="center"}
+![](img/integration_workflow_fr.svg){width=92% fig-align="center"}
 
 
-## Extraire des valeurs raster avec des points
+## Extraction raster par points
 
 ::: {.panel-tabset .code-tabs}
 ##### `sf/stars`
@@ -2329,7 +2329,7 @@ plot(terra_points_surface, add = TRUE, pch = 21, bg = hcl.colors(nrow(terra_poin
 :::
 :::
 
-## Extraire des valeurs raster avec des lignes
+## Extraction raster par lignes
 
 ::: {.panel-tabset .code-tabs}
 ##### `sf/stars`
@@ -2401,7 +2401,7 @@ plot(terra_tracks_surface, add = TRUE, col = line_cols, lwd = 2.5)
 :::
 :::
 
-## Extraire des valeurs raster avec des polygones
+## Extraction raster par polygones
 
 ::: {.panel-tabset .code-tabs}
 ##### `sf/stars`
@@ -2770,7 +2770,7 @@ Préparer les données, ajuster des GLM simples
 
 *Bonus : générer des pseudo-absences pour votre GLM avec des données de points*
 
-## Estimation de densité par noyau (KDE)
+## Estimation de densité (KDE)
 
 ***Utiliser comme outil exploratoire***
 
@@ -2779,7 +2779,7 @@ Préparer les données, ajuster des GLM simples
 - aide a visualiser la concentration ou les points chauds
 - souvent utilisé pour l'exploration plutôt que pour l'inférence formelle
 
-## Estimation de densité par noyau (KDE)
+## Estimation de densité (KDE)
 
 ::: {.panel-tabset .code-tabs}
 ##### `sf/stars`
@@ -2837,7 +2837,7 @@ list(
 ```
 :::
 
-## Estimation de densité par noyau (KDE)
+## Estimation de densité (KDE)
 
 ::: {.panel-tabset .code-tabs}
 ##### `sf/stars`
