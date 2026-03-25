@@ -1,6 +1,9 @@
 project:
-  type: default
+  type: website
   output-dir: _site
+
+website:
+  title: "R in Space / R et espace"
 
 execute:
   echo: true
