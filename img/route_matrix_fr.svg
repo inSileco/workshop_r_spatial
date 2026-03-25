@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Matrice des parcours de l'atelier</title>
+  <desc id="desc">Une matrice à deux dimensions croisant le choix de l'outil et le niveau des participantes et participants. Débutant correspond au parcours points et avancé au parcours lignes pour sf/stars et terra.</desc>
+  <rect width="960" height="520" fill="#ffffff"/>
+
+  <text x="546.5" y="74" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#2b5964">Outils</text>
+  <text x="145" y="172" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#2b5964">Niveau</text>
+
+  <rect x="258" y="105" width="270" height="74" rx="12" fill="#eef8fb" stroke="#37abc8" stroke-width="2"/>
+  <rect x="565" y="105" width="270" height="74" rx="12" fill="#eef8fb" stroke="#37abc8" stroke-width="2"/>
+  <text x="393" y="150" dominant-baseline="middle" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#383d3d">sf/stars</text>
+  <text x="700" y="150" dominant-baseline="middle" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#383d3d">terra</text>
+
+  <rect x="70" y="210" width="150" height="104" rx="12" fill="#eef8fb" stroke="#37abc8" stroke-width="2"/>
+  <rect x="70" y="333" width="150" height="104" rx="12" fill="#eef8fb" stroke="#37abc8" stroke-width="2"/>
+  <text x="145" y="262" dominant-baseline="middle" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#383d3d">Débutant</text>
+  <text x="145" y="385" dominant-baseline="middle" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#383d3d">Avancé</text>
+
+  <rect x="258" y="210" width="270" height="104" rx="12" fill="#f7fbfc" stroke="#cfe9f0" stroke-width="2"/>
+  <rect x="565" y="210" width="270" height="104" rx="12" fill="#f7fbfc" stroke="#cfe9f0" stroke-width="2"/>
+  <rect x="258" y="333" width="270" height="104" rx="12" fill="#f7fbfc" stroke="#cfe9f0" stroke-width="2"/>
+  <rect x="565" y="333" width="270" height="104" rx="12" fill="#f7fbfc" stroke="#cfe9f0" stroke-width="2"/>
+
+  <text x="393" y="250" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#37abc8">Points</text>
+  <text x="393" y="280" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="17" fill="#4d636a">flux plus simple</text>
+
+  <text x="700" y="250" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#37abc8">Points</text>
+  <text x="700" y="280" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="17" fill="#4d636a">flux plus simple</text>
+
+  <text x="393" y="373" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#37abc8">Lignes</text>
+  <text x="393" y="403" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="17" fill="#4d636a">flux plus avancé</text>
+
+  <text x="700" y="373" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#37abc8">Lignes</text>
+  <text x="700" y="403" text-anchor="middle" font-family="Aptos, Segoe UI, sans-serif" font-size="17" fill="#4d636a">flux plus avancé</text>
+</svg>
