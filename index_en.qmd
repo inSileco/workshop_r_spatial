@@ -3110,6 +3110,9 @@ data.frame(
 
 Build, export, and share maps
 
+
+# The End
+
 ## Takeaways
 
 - vector and raster are different data models
@@ -3155,3 +3158,22 @@ do claude and package after?
 - inspect and map early, then analyse
 - move from spatial objects to clean analysis tables
 - keep building reusable workflows as your analyses grow
+
+
+# 
+
+::: {style="font-size: 120%;"}
+***Thank you!***
+:::
+
+
+::: {style="text-align:center; margin-top: 2.2rem;"}
+
+::: {style="font-size: 90%;"}
+*We would greatly appreciate your feedback!*
+:::
+
+<br>
+
+[*Feedback form*](https://insileco.io/en/forms/r-spatial-feedback/)
+:::

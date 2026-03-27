@@ -3108,6 +3108,8 @@ data.frame(
 
 Construire, exporter et partager des cartes
 
+# En Conclusion
+
 ## Points à retenir
 
 - vecteur et raster sont des modèles de données différents
@@ -3151,3 +3153,25 @@ faire claude et les paquets apres?
 - inspectez et cartographiez tot, puis analysez
 - passez des objets spatiaux à des tableaux d'analyse propres
 - continuez a construire des flux de travail réutilisables au fur et à mesure que vos analyses grandissent
+
+
+
+# 
+
+::: {style="font-size: 120%;"}
+***Merci!***
+:::
+
+
+::: {style="text-align:center; margin-top: 2.2rem;"}
+
+::: {style="font-size: 90%;"}
+*Nous apprécierions grandement vos commentaires!*
+:::
+
+<br>
+
+[*Formulaire de rétroaction*](https://insileco.io/fr/forms/r-spatial-feedback/)
+:::
+
+
